@@ -23,6 +23,8 @@ public class MainMenuNavigation : MonoBehaviour
 
     public void Exit()
     {
-       // todo
+        print("Exit firing!");
+
+        Application.Quit();
     }
 }
