@@ -62,6 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\cameraController.cs" />
     <Compile Include="Assets\Scripts\playerSC.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/UMSL/CS 4500/Unity/Actual Cave Sim Project/4500-Project/Binamite Cave Simulation/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

@@ -43,7 +43,11 @@ public class playerSC : MonoBehaviour
             //Rotate toward mouse input
             transform.up = direction;
         }
+    }
 
+    // FixedUpdate is called at a fixed interval. Use for physics code.
+    private void FixedUpdate()
+    {
         if (transform.position != targetPosition)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerSpeed * Time.deltaTime);
