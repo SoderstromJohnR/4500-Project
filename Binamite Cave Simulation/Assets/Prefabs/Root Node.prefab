@@ -94,4 +94,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   node: {fileID: 94365016284652643, guid: 9551a28dbba5fb84a8014d047cb8196f, type: 3}
-  maxDepth: 1
+  path: {fileID: 4545274290074083701, guid: cef4ee215d718874f8e367dca65fdee2, type: 3}
+  maxDepth: 4

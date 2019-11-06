@@ -66,6 +66,7 @@
     <Compile Include="Assets\Scripts\backController.cs" />
     <Compile Include="Assets\Scripts\closeController.cs" />
     <Compile Include="Assets\Scripts\exitController.cs" />
+    <Compile Include="Assets\Scripts\johnRootController.cs" />
     <Compile Include="Assets\Scripts\nodeStat.cs" />
     <Compile Include="Assets\Scripts\optionsController.cs" />
     <Compile Include="Assets\Scripts\pauseController.cs" />
