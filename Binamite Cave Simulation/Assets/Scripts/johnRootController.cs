@@ -17,14 +17,17 @@ public class johnRootController : MonoBehaviour
     private int tempIndex;
 
     private bool activate;
-    
+    private GameObject parentNode;
+    private GameObject leftChild;
+    private GameObject rightChild;
+    public int totalNodes;
 
 
 
     void Start()
     {
         activate = true;
-       
+        totalNodes = 1;
         //makePaths();
 
         //Should get half of the x distance shown
@@ -68,7 +71,8 @@ public class johnRootController : MonoBehaviour
     {
         GameObject newNode;
         newNode = Instantiate(node, new Vector3(newX, transform.position.y - newY, 0), transform.rotation);
-        newNode.GetComponent<nodeStat>().setIndex(++indexCount);
+        totalNodes += 1;
+        //newNode.GetComponent<nodeStat>().setIndex(++indexCount);
     }
 
     void Update()
@@ -78,7 +82,7 @@ public class johnRootController : MonoBehaviour
         if (activate)
         {
             setIndex(maxDepth);
-            
+            setPaths(totalNodes);
             activate = false;
         }
     }
@@ -93,13 +97,12 @@ public class johnRootController : MonoBehaviour
         _sprite.transform.right = direction;
         if (_mirrorZ) _sprite.transform.right *= -1f;
         Vector3 scale = new Vector3(1, 1, 1);
-        scale.x = Vector3.Distance(_initialPosition, _finalPosition);
-        _sprite.transform.localScale = scale;
+        //get size of sprite used
+        float spriteSize = path.GetComponent<SpriteRenderer>().sprite.rect.width / path.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit;
+        scale.x = Vector3.Distance(_initialPosition, _finalPosition) / spriteSize;      
+            _sprite.transform.localScale = scale;
     }
-    public void makePaths()
-    {
-        
-    }
+    
     public GameObject findObject(int n)
     {
         GameObject[] nodes;
@@ -131,5 +134,61 @@ public class johnRootController : MonoBehaviour
             }      
         }
         
+    }
+    public void setPaths(int n)
+    {
+        if (n > 2)
+        {
+            setPaths(n - 1);
+        }
+        int index = n;
+        int parentIndex = 0;
+        //put nodes in array
+        GameObject[] nodes;
+        nodes = GameObject.FindGameObjectsWithTag("Node");
+        //set the child nodes indices
+        int leftChildIndex = index * 2;
+        int rightChildIndex = leftChildIndex + 1;
+        bool leftTrue = false;
+        bool rightTrue = false;
+        //set the parent and child nodes
+        foreach (GameObject currentNode in nodes)
+        {
+            if (currentNode.GetComponent<nodeStat>().index == index)
+            {
+                parentNode = currentNode;               
+            }
+            if (currentNode.GetComponent<nodeStat>().index == leftChildIndex)
+            {
+                leftChild = currentNode;
+                leftTrue = true;
+            }
+            if (currentNode.GetComponent<nodeStat>().index == rightChildIndex)
+            {
+                rightChild = currentNode;
+                rightTrue = true;
+            }
+        }
+        //draw to the root
+        if (index == 2 || index == 3)
+        {
+            Stretch(Instantiate(path), parentNode.transform.position, gameObject.transform.position, true);
+        }
+        //draw all other paths
+        if (parentNode != null)
+        {
+            if (leftTrue)
+            {
+                Stretch(Instantiate(path), parentNode.transform.position, leftChild.transform.position, true);
+            }
+            if (rightTrue)
+            {
+                Stretch(Instantiate(path), parentNode.transform.position, rightChild.transform.position, true);
+            }
+        }
+        
+        
+
+
     }
 }

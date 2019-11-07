@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\johnRootController.cs" />
     <Compile Include="Assets\Scripts\nodeStat.cs" />
     <Compile Include="Assets\Scripts\optionsController.cs" />
+    <Compile Include="Assets\Scripts\pathController.cs" />
     <Compile Include="Assets\Scripts\pauseController.cs" />
     <Compile Include="Assets\Scripts\rootController.cs" />
     <Compile Include="Assets\Scripts\volumeController.cs" />
