@@ -35,66 +35,40 @@ public class johnRootController : MonoBehaviour
         currentDepth = 1;
         tempIndex = 2;
         indexCount = 1;
+       
 
-        float typeCaveNetwork = Random.Range(0.0f, 1.0f);
-        if (typeCaveNetwork < .01)
-        {
-            createCompleteCaves();
-        }
-        else
-        {
-            createIncompleteCaves();
-        }
+        createCaves();
 
-
+        
     }
 
-    void createCompleteCaves(int depth = 1, int divX = 1, float currentX = 0.0f, int index = 2)
+    void createCaves(int depth = 1 , int divX = 1, float currentX = 0.0f)
     {
         divX = divX * 2;
         float deltaX = startXDim / divX;
         float deltaY = depth * depthDistance;
         if (depth <= maxDepth)
         {
+            
+
             //Left child, subtract deltaX
-            createChildCave(currentX - deltaX, deltaY, index);
-            createCompleteCaves(depth + 1, divX, currentX - deltaX, index * 2);
+            createChildCave(currentX - deltaX, deltaY);
+            createCaves(depth + 1, divX, currentX - deltaX);
             //Right child, add deltaX
-            createChildCave(currentX + deltaX, deltaY, index + 1);
-            createCompleteCaves(depth + 1, divX, currentX + deltaX, (index + 1) * 2);
+            createChildCave(currentX + deltaX, deltaY);
+            createCaves(depth + 1, divX, currentX + deltaX);
+
+            
 
         }
+        
     }
 
-    void createIncompleteCaves(int depth = 1, int divX = 1, float currentX = 0.0f, int index = 2)
-    {
-        divX = divX * 2;
-        float deltaX = startXDim / divX;
-        float deltaY = depth * depthDistance;
-        float leftChild = Random.Range(0.0f, 1.0f);
-        float rightChild = Random.Range(0.0f, 1.0f);
-        if (depth <= maxDepth)
-        {
-            //Left child, subtract deltaX
-            if (leftChild < .85)
-            {
-                createChildCave(currentX - deltaX, deltaY, index);
-                createIncompleteCaves(depth + 1, divX, currentX - deltaX, index * 2);
-            }
-            //Right child, add deltaX
-            if (rightChild < .85)
-            {
-                createChildCave(currentX + deltaX, deltaY, index + 1);
-                createIncompleteCaves(depth + 1, divX, currentX + deltaX, (index + 1) * 2);
-            }
-        }
-    }
-
-    void createChildCave(float newX, float newY, int index)
+    void createChildCave(float newX, float newY)
     {
         GameObject newNode;
         newNode = Instantiate(node, new Vector3(newX, transform.position.y - newY, 0), transform.rotation);
-        newNode.GetComponent<nodeStat>().setIndex(index);
+        newNode.GetComponent<nodeStat>().setIndex(++indexCount);
     }
 
     void Update()
@@ -103,12 +77,7 @@ public class johnRootController : MonoBehaviour
         //this calls setIndex once for each depth (excluding zero)
         if (activate)
         {
-            int count = 1;
-            while(count <= maxDepth)
-            {
-                setIndex(count);
-                count++;
-            }
+            setIndex(maxDepth);
             
             activate = false;
         }
@@ -145,22 +114,22 @@ public class johnRootController : MonoBehaviour
         }
         return theNode;
     }
-    /* handled in creating cave system
     public void setIndex(int n)
     {
+        if (n > 1)
+        {
+            setIndex(n - 1);
+        }
         GameObject[] nodes;
-
         nodes = GameObject.FindGameObjectsWithTag("Node");
         foreach (GameObject currentNode in nodes)
         {
-
             //get nodes at depth n and set their index
-
             if (currentNode.GetComponent<nodeStat>().depth == n)
             {
                 currentNode.GetComponent<nodeStat>().index = tempIndex++;
             }      
         }
         
-    }*/
+    }
 }
