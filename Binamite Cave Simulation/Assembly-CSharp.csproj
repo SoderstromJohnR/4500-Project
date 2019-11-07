@@ -65,16 +65,16 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\audioObjController.cs" />
     <Compile Include="Assets\Scripts\backController.cs" />
+    <Compile Include="Assets\Scripts\cameraController.cs" />
     <Compile Include="Assets\Scripts\closeController.cs" />
     <Compile Include="Assets\Scripts\exitController.cs" />
     <Compile Include="Assets\Scripts\johnRootController.cs" />
     <Compile Include="Assets\Scripts\nodeStat.cs" />
     <Compile Include="Assets\Scripts\optionsController.cs" />
     <Compile Include="Assets\Scripts\pauseController.cs" />
+    <Compile Include="Assets\Scripts\playerSC.cs" />
     <Compile Include="Assets\Scripts\rootController.cs" />
     <Compile Include="Assets\Scripts\volumeController.cs" />
-    <Compile Include="Assets\Scripts\cameraController.cs" />
-    <Compile Include="Assets\Scripts\playerSC.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/UMSL/CS 4500/Unity Project/4500-Project/Binamite Cave Simulation/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
