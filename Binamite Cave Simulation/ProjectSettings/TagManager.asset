@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - pause
+  - AudioObj
+  - Node
+  - Path
   layers:
   - Default
   - TransparentFX
@@ -41,9 +45,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Cave
-    uniqueID: 2058627587
-    locked: 0
-  - name: Player
-    uniqueID: 1643339427
+  - name: one
+    uniqueID: 2901616081
     locked: 0
