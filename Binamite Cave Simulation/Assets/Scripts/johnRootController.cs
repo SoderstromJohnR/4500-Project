@@ -7,6 +7,7 @@ public class johnRootController : MonoBehaviour
     
     public GameObject node;
     public GameObject path;
+    public GameObject miner;
     public int maxDepth;
     public float halfWidth;
     public float depthDistance;
@@ -16,6 +17,7 @@ public class johnRootController : MonoBehaviour
     private float startXDim;
     private GameObject theNode;
     private int tempIndex;
+    private List<int> nodeIndices = new List<int>(); //Added to track all indices of created nodes
 
     private bool activate;
     private GameObject parentNode;
@@ -41,7 +43,6 @@ public class johnRootController : MonoBehaviour
         indexCount = 1;
 
         float typeCaveNetwork = Random.Range(0.0f, 1.0f);
-        print(typeCaveNetwork);
         if (typeCaveNetwork < chanceCompleteTree)
         {
             createCompleteCaves();
@@ -50,6 +51,8 @@ public class johnRootController : MonoBehaviour
         {
             createIncompleteCaves();
         }
+
+        setRandomMiner();
     }
 
     void createCompleteCaves(int depth = 1, int divX = 1, float currentX = 0.0f, int index = 2)
@@ -68,7 +71,7 @@ public class johnRootController : MonoBehaviour
 
         }
     }
-    void createIncompleteCaves(int depth = 1, int divX = 1, float currentX = 0.0f, int index = 2)
+    void createIncompleteCaves(int depth = 1, int divX = 1, float currentX = 0.0f, int index = 2, float chanceOfChildren = 1.0f)
     {
         divX = divX * 2;
         float deltaX = startXDim / divX;
@@ -78,16 +81,16 @@ public class johnRootController : MonoBehaviour
         if (depth <= maxDepth)
         {
             //Left child, subtract deltaX
-            if (leftChild < .85)
+            if (leftChild < chanceOfChildren)
             {
                 createChildCave(currentX - deltaX, deltaY, index);
-                createIncompleteCaves(depth + 1, divX, currentX - deltaX, index * 2);
+                createIncompleteCaves(depth + 1, divX, currentX - deltaX, index * 2, chanceOfChildren - .05f);
             }
             //Right child, add deltaX
-            if (rightChild < .85)
+            if (rightChild < chanceOfChildren)
             {
                 createChildCave(currentX + deltaX, deltaY, index + 1);
-                createIncompleteCaves(depth + 1, divX, currentX + deltaX, (index + 1) * 2);
+                createIncompleteCaves(depth + 1, divX, currentX + deltaX, (index + 1) * 2, chanceOfChildren - .05f);
             }
         }
     }
@@ -98,6 +101,7 @@ public class johnRootController : MonoBehaviour
         newNode = Instantiate(node, new Vector3(newX, transform.position.y - newY, 0), transform.rotation);
         newNode.GetComponent<nodeStat>().setIndex(index);
         totalNodes += 1;
+        nodeIndices.Add(index);
     }
 
 
@@ -144,6 +148,43 @@ public class johnRootController : MonoBehaviour
         }
         return theNode;
     }
+
+    //Makes use of tree's max depth and the findObject function above to select a random node that exists in the max depth
+    //
+    public GameObject getRandomNodeMaxDepth()
+    {
+        //Create a list for indices of nodes that actually exist
+        List<int> possibleIndices = new List<int>();
+
+        //Determine the index values of the max depth
+        int lowerBound = 1;
+        for (int i = 0; i < maxDepth; i++)
+        {
+            lowerBound *= 2;
+        }
+
+        //Extract all existing nodes at the max depth
+        //If there are none, reduce the depth by 1
+        while (possibleIndices.Count == 0)
+        {
+            for (int i = lowerBound; i < lowerBound * 2; i++)
+            {
+                if (nodeIndices.Contains(i))
+                {
+                    possibleIndices.Add(i);
+                }
+            }
+            if (nodeIndices.Count == 0)
+            {
+                lowerBound /= 2;
+            }
+        }
+
+        //Choose a random element from the list we just created and return that node
+        int randomIndex = Random.Range(0, possibleIndices.Count);
+        return findObject(possibleIndices[randomIndex]);
+    }
+
     public void setIndex(int n)
     {
         if (n > 1)
@@ -217,5 +258,12 @@ public class johnRootController : MonoBehaviour
         
 
 
+    }
+
+    //Determines a random cave, currently at the max depth, to create a lost miner
+    void setRandomMiner()
+    {
+        GameObject minerNode = getRandomNodeMaxDepth();
+        Instantiate(miner, minerNode.transform);
     }
 }

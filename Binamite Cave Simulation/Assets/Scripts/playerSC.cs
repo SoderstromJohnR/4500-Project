@@ -5,9 +5,12 @@ using UnityEngine;
 public class playerSC : MonoBehaviour
 {
     public float playerSpeed = 10;
+
+    private int caveIndex;
     private float playerActualSpeed;
     private float targetDistance;
     private bool isMoving = false;
+    private bool foundMiner = false;
     private Vector3 targetPosition;
 
     // Start is called before the first frame update
@@ -15,6 +18,7 @@ public class playerSC : MonoBehaviour
     {
         //Set the target position immediately to the player's starting location
         targetPosition = transform.position;
+        caveIndex = 1;
     }
 
     // Update is called once per frame
@@ -29,10 +33,18 @@ public class playerSC : MonoBehaviour
             //Check for click on object, go to center of object instead of mouse click
             Ray ray = Camera.main.ScreenPointToRay(targetPosition);
             RaycastHit2D hit = Physics2D.Raycast(target2D, Vector2.zero);
-            if (hit.transform != null)
+            if (hit.transform != null && hit.collider.gameObject.name == "Root Node")
             {
+                caveIndex = 1;
+                Debug.Log("Going to center of entrance instead");
+                targetPosition = hit.transform.gameObject.transform.position;
+            }
+            else if (hit.transform != null && hit.collider.gameObject.name == "Node(Clone)")
+            {
+                caveIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
                 Debug.Log("Going to center of cave instead");
                 targetPosition = hit.transform.gameObject.transform.position;
+                Debug.Log("Player index: " + caveIndex.ToString());
             }
 
             //Back to working with any target position
@@ -76,5 +88,24 @@ public class playerSC : MonoBehaviour
         Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
         //Rotate toward mouse position
         transform.up = direction;
+    }
+
+    public int getIndex()
+    {
+        return caveIndex;
+    }
+
+    public bool checkMoving()
+    {
+        return isMoving;
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Collider2D>().gameObject.tag == "RandomMiner")
+        {
+            Debug.Log("Got to the miner!");
+            foundMiner = true;
+        }
     }
 }

@@ -11,6 +11,8 @@ public class nodeStat : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GetComponent<SpriteRenderer>().sortingLayerName = "Cave";
+
         currentDepth = 1;
 
         setDepth();
@@ -47,5 +49,10 @@ public class nodeStat : MonoBehaviour
             yPosition -= rc.depthDistance;
 
         }
+    }
+
+    public int getIndex()
+    {
+        return index;
     }
 }
