@@ -7,7 +7,7 @@ public class pathController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        GetComponent<SpriteRenderer>().sortingLayerName = "Tunnel";
     }
 
     // Update is called once per frame
