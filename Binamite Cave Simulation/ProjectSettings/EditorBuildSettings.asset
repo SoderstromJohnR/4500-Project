@@ -5,7 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/MainMenu.unity
+    guid: 973636aaa8e1503488e16230fd696ffa
+  - enabled: 1
+    path: Assets/Scenes/CavingGameStandIn.unity
+    guid: dec998d5c570efa42862367249ce2cce
+  - enabled: 0
+    path: Assets/Scenes/SearchingGameStandIn.unity
+    guid: afef18f135436b34aa4d532ad066ab85
+  - enabled: 1
+    path: Assets/Scenes/SearchingGame1.unity
+    guid: 4ca2582171e773d4abe4de9047ba0def
   m_configObjects: {}
