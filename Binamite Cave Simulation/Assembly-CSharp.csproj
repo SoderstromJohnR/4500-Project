@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\backController.cs" />
     <Compile Include="Assets\Scripts\cameraController.cs" />
     <Compile Include="Assets\Scripts\closeController.cs" />
+    <Compile Include="Assets\Scripts\dummyTestScript.cs" />
     <Compile Include="Assets\Scripts\exitController.cs" />
     <Compile Include="Assets\Scripts\johnRootController.cs" />
     <Compile Include="Assets\Scripts\MainMenuNavigation.cs" />
