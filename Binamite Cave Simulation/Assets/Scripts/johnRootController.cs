@@ -224,7 +224,7 @@ public class johnRootController : MonoBehaviour
         }
         if (rightInArray)
         {
-            createChildCave(currentX + deltaX, deltaY, index + 1);
+            createChildCave(currentX + deltaX, deltaY, index * 2 + 1);
             createLimitedCaveNetwork(caveArray, depth + 1, divX, currentX + deltaX, index * 2 + 1);
         }
     }
