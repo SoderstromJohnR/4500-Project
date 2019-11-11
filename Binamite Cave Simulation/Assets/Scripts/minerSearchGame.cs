@@ -5,7 +5,9 @@ using UnityEngine;
 public class minerSearchGame : MonoBehaviour
 {
     private GameObject minerShout;
+    private GameObject minerThanks;
     private GameObject player;
+
     private Vector3 nodeSize;
     private float distance;
     private Vector3 minerShoutPosition;
@@ -18,6 +20,8 @@ public class minerSearchGame : MonoBehaviour
         GetComponent<SpriteRenderer>().sortingLayerName = "OtherMiner";
 
         minerShout = Resources.Load<GameObject>("minerShout");
+        minerThanks = Resources.Load<GameObject>("minerThanks");
+
         player = GameObject.Find("playerPlaceholder");
         nodeSize = GameObject.FindGameObjectWithTag("Node").GetComponent<Renderer>().bounds.size / 1.5f;
         distance = nodeSize.x * nodeSize.x + nodeSize.y * nodeSize.y;
@@ -36,11 +40,13 @@ public class minerSearchGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Get current location of the player every time they shout
+        int playerIndex = player.GetComponent<playerSC>().getIndex();
+
         //Use Shout key, set to S for now, check if player is moving or not
         if (Input.GetKeyDown(KeyCode.S) && !player.GetComponent<playerSC>().checkMoving())
         {
-            //Get current location of the player every time they shout
-            int playerIndex = player.GetComponent<playerSC>().getIndex();
+
 
             //Check if we are on the left or right subtree of player
             bool isLeft = false;
@@ -84,6 +90,14 @@ public class minerSearchGame : MonoBehaviour
                     Instantiate(minerShout, minerShoutPosition, Quaternion.identity);
                 }
             }
+        }
+
+        if (caveIndex == playerIndex && !player.GetComponent<playerSC>().checkMoving())
+        {
+            change = new Vector3(0, distance, 0);
+            minerShoutPosition = player.transform.position + change;
+            Debug.Log("You found me! Thanks!");
+            Instantiate(minerThanks, minerShoutPosition, Quaternion.identity);
         }
     }
 }

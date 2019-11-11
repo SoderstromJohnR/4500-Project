@@ -33,7 +33,7 @@ public class backController : MonoBehaviour
     }
     private void OnMouseUp()
     {
-        SceneManager.LoadScene("BackScene", LoadSceneMode.Single);
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 
 }

@@ -7,6 +7,7 @@ public class playerSC : MonoBehaviour
     public float playerSpeed = 10;
 
     private int caveIndex;
+    private int currentCaveIndex;
     private float playerActualSpeed;
     private float targetDistance;
 
@@ -103,8 +104,10 @@ public class playerSC : MonoBehaviour
     {
         //Get the current mouse position
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
         //Get the directional vector from the player's location to the mouse position
         Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+
         //Rotate toward mouse position
         transform.up = direction;
     }
