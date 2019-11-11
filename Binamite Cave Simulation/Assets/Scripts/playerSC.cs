@@ -9,9 +9,12 @@ public class playerSC : MonoBehaviour
     private int caveIndex;
     private float playerActualSpeed;
     private float targetDistance;
+
     private bool isMoving = false;
     private bool foundMiner = false;
+
     private Vector3 targetPosition;
+    private Vector3 clickPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -27,24 +30,32 @@ public class playerSC : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             //Get world coordinates of mouse input
-            targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 target2D = new Vector2(targetPosition.x, targetPosition.y);
+            clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 click2D = new Vector2(clickPosition.x, clickPosition.y);
 
             //Check for click on object, go to center of object instead of mouse click
-            Ray ray = Camera.main.ScreenPointToRay(targetPosition);
-            RaycastHit2D hit = Physics2D.Raycast(target2D, Vector2.zero);
+            Ray ray = Camera.main.ScreenPointToRay(clickPosition);
+            RaycastHit2D hit = Physics2D.Raycast(click2D, Vector2.zero);
             if (hit.transform != null && hit.collider.gameObject.name == "Root Node")
             {
-                caveIndex = 1;
-                Debug.Log("Going to center of entrance instead");
-                targetPosition = hit.transform.gameObject.transform.position;
+                if (CaveIsReachable(1))
+                {
+                    caveIndex = 1;
+                    Debug.Log("Going to center of entrance instead");
+                    targetPosition = hit.transform.gameObject.transform.position;
+                }
             }
             else if (hit.transform != null && hit.collider.gameObject.name == "Node(Clone)")
             {
-                caveIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
-                Debug.Log("Going to center of cave instead");
-                targetPosition = hit.transform.gameObject.transform.position;
-                Debug.Log("Player index: " + caveIndex.ToString());
+                int hitIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
+                if (CaveIsReachable(hitIndex))
+                {
+                    caveIndex = hitIndex;
+                    Debug.Log("Going to center of cave instead");
+                    targetPosition = hit.transform.gameObject.transform.position;
+                    Debug.Log("Player index: " + caveIndex.ToString());
+                }
+
             }
 
             //Back to working with any target position
@@ -55,6 +66,14 @@ public class playerSC : MonoBehaviour
             //Rotate toward mouse input
             transform.up = direction;
         }
+    }
+
+    //True if the cave with index targetIndex is reachable from the cave with index caveIndex
+    private bool CaveIsReachable(int targetIndex)
+    {
+        return targetIndex == caveIndex * 2 
+            || targetIndex == caveIndex * 2 + 1 
+            || targetIndex == caveIndex / 2;
     }
 
     // FixedUpdate is called at a fixed interval. Use for physics code.
