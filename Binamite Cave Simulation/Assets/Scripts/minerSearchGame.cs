@@ -10,7 +10,7 @@ public class minerSearchGame : MonoBehaviour
     private float distance;
     private Vector3 minerShoutPosition;
     private Vector3 change;
-    private int caveIndex;
+    private int caveIndex; // The index of the cave the miner is in
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +22,7 @@ public class minerSearchGame : MonoBehaviour
         nodeSize = GameObject.FindGameObjectWithTag("Node").GetComponent<Renderer>().bounds.size / 1.5f;
         distance = nodeSize.x * nodeSize.x + nodeSize.y * nodeSize.y;
         distance = Mathf.Pow(distance, 0.5f);
+
         //Get cave index for miner from its parent cave.
         caveIndex = transform.parent.gameObject.GetComponent<nodeStat>().getIndex();
         Debug.Log("Miner index: " + caveIndex.ToString());
@@ -40,6 +41,7 @@ public class minerSearchGame : MonoBehaviour
         {
             //Get current location of the player every time they shout
             int playerIndex = player.GetComponent<playerSC>().getIndex();
+
             //Check if we are on the left or right subtree of player
             bool isLeft = false;
             int checkIndex = caveIndex;
