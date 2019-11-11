@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\backController.cs" />
     <Compile Include="Assets\Scripts\cameraController.cs" />
     <Compile Include="Assets\Scripts\closeController.cs" />
+    <Compile Include="Assets\Scripts\dummyTestScript.cs" />
     <Compile Include="Assets\Scripts\exitController.cs" />
     <Compile Include="Assets\Scripts\johnRootController.cs" />
     <Compile Include="Assets\Scripts\MainMenuNavigation.cs" />
@@ -78,7 +79,6 @@
     <Compile Include="Assets\Scripts\pauseController.cs" />
     <Compile Include="Assets\Scripts\playerSC.cs" />
     <Compile Include="Assets\Scripts\rootController.cs" />
-    <Compile Include="Assets\Scripts\tarikTestChange.cs" />
     <Compile Include="Assets\Scripts\volumeController.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
