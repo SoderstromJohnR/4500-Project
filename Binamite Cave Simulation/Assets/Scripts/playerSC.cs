@@ -41,6 +41,7 @@ public class playerSC : MonoBehaviour
             {
                 if (CaveIsReachable(1))
                 {
+                    if (caveIndex != 1) isMoving = true;
                     caveIndex = 1;
                     Debug.Log("Going to center of entrance instead");
                     targetPosition = hit.transform.gameObject.transform.position;
@@ -51,6 +52,7 @@ public class playerSC : MonoBehaviour
                 int hitIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
                 if (CaveIsReachable(hitIndex))
                 {
+                    if (caveIndex != hitIndex) isMoving = true;
                     caveIndex = hitIndex;
                     Debug.Log("Going to center of cave instead");
                     targetPosition = hit.transform.gameObject.transform.position;
@@ -94,6 +96,7 @@ public class playerSC : MonoBehaviour
         {
             //Allow processes that require the player to be still
             isMoving = false;
+
             //Rotate player toward mouse when not moving
             FaceMouse();
         }
