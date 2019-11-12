@@ -61,7 +61,7 @@ public class johnRootController : MonoBehaviour
             }
         }
 
-        //setRandomMiner();
+        setRandomMiner();
     }
 
     void createCompleteCaves(int depth = 1, int divX = 1, float currentX = 0.0f, int index = 2)
@@ -308,7 +308,7 @@ public class johnRootController : MonoBehaviour
                     possibleIndices.Add(i);
                 }
             }
-            if (nodeIndices.Count == 0)
+            if (possibleIndices.Count == 0)
             {
                 lowerBound /= 2;
             }
