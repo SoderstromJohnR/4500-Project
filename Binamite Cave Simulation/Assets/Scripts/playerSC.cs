@@ -7,11 +7,15 @@ public class playerSC : MonoBehaviour
     public float playerSpeed = 10;
 
     private int caveIndex;
+    private int currentCaveIndex;
     private float playerActualSpeed;
     private float targetDistance;
+
     private bool isMoving = false;
     private bool foundMiner = false;
+
     private Vector3 targetPosition;
+    private Vector3 clickPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -27,24 +31,34 @@ public class playerSC : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             //Get world coordinates of mouse input
-            targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 target2D = new Vector2(targetPosition.x, targetPosition.y);
+            clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 click2D = new Vector2(clickPosition.x, clickPosition.y);
 
             //Check for click on object, go to center of object instead of mouse click
-            Ray ray = Camera.main.ScreenPointToRay(targetPosition);
-            RaycastHit2D hit = Physics2D.Raycast(target2D, Vector2.zero);
+            Ray ray = Camera.main.ScreenPointToRay(clickPosition);
+            RaycastHit2D hit = Physics2D.Raycast(click2D, Vector2.zero);
             if (hit.transform != null && hit.collider.gameObject.name == "Root Node")
             {
-                caveIndex = 1;
-                Debug.Log("Going to center of entrance instead");
-                targetPosition = hit.transform.gameObject.transform.position;
+                if (CaveIsReachable(1))
+                {
+                    if (caveIndex != 1) isMoving = true;
+                    caveIndex = 1;
+                    Debug.Log("Going to center of entrance instead");
+                    targetPosition = hit.transform.gameObject.transform.position;
+                }
             }
             else if (hit.transform != null && hit.collider.gameObject.name == "Node(Clone)")
             {
-                caveIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
-                Debug.Log("Going to center of cave instead");
-                targetPosition = hit.transform.gameObject.transform.position;
-                Debug.Log("Player index: " + caveIndex.ToString());
+                int hitIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
+                if (CaveIsReachable(hitIndex))
+                {
+                    if (caveIndex != hitIndex) isMoving = true;
+                    caveIndex = hitIndex;
+                    Debug.Log("Going to center of cave instead");
+                    targetPosition = hit.transform.gameObject.transform.position;
+                    Debug.Log("Player index: " + caveIndex.ToString());
+                }
+
             }
 
             //Back to working with any target position
@@ -55,6 +69,14 @@ public class playerSC : MonoBehaviour
             //Rotate toward mouse input
             transform.up = direction;
         }
+    }
+
+    //True if the cave with index targetIndex is reachable from the cave with index caveIndex
+    private bool CaveIsReachable(int targetIndex)
+    {
+        return targetIndex == caveIndex * 2 
+            || targetIndex == caveIndex * 2 + 1 
+            || targetIndex == caveIndex / 2;
     }
 
     // FixedUpdate is called at a fixed interval. Use for physics code.
@@ -74,6 +96,7 @@ public class playerSC : MonoBehaviour
         {
             //Allow processes that require the player to be still
             isMoving = false;
+
             //Rotate player toward mouse when not moving
             FaceMouse();
         }
@@ -84,8 +107,10 @@ public class playerSC : MonoBehaviour
     {
         //Get the current mouse position
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
         //Get the directional vector from the player's location to the mouse position
         Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+
         //Rotate toward mouse position
         transform.up = direction;
     }
@@ -98,6 +123,11 @@ public class playerSC : MonoBehaviour
     public bool checkMoving()
     {
         return isMoving;
+    }
+
+    public bool checkMinerFound()
+    {
+        return foundMiner;
     }
 
     void OnTriggerEnter2D(Collider2D collision)

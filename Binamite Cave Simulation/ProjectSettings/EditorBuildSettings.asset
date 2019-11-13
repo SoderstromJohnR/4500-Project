@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SearchingGame1.unity
     guid: 4ca2582171e773d4abe4de9047ba0def
+  - enabled: 0
+    path: Assets/Scenes/SearchingGame2.unity
+    guid: f3918d6a095e3cf49b23f4647e664d0b
   m_configObjects: {}
