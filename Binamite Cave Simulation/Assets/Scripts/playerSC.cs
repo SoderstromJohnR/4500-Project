@@ -125,6 +125,11 @@ public class playerSC : MonoBehaviour
         return isMoving;
     }
 
+    public bool checkMinerFound()
+    {
+        return foundMiner;
+    }
+
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.GetComponent<Collider2D>().gameObject.tag == "RandomMiner")

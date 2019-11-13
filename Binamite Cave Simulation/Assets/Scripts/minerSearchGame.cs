@@ -14,6 +14,8 @@ public class minerSearchGame : MonoBehaviour
     private Vector3 change;
     private int caveIndex; // The index of the cave the miner is in
 
+    private bool minerFound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,8 @@ public class minerSearchGame : MonoBehaviour
         //Get cave index for miner from its parent cave.
         caveIndex = transform.parent.gameObject.GetComponent<nodeStat>().getIndex();
         Debug.Log("Miner index: " + caveIndex.ToString());
+
+        minerFound = false;
     }
 
     int getCaveIndex()
@@ -92,12 +96,15 @@ public class minerSearchGame : MonoBehaviour
             }
         }
 
-        if (caveIndex == playerIndex && !player.GetComponent<playerSC>().checkMoving())
+        // Displays minerThanks object if the miner has been found for the first time
+        if (!minerFound && player.GetComponent<playerSC>().checkMinerFound())
         {
             change = new Vector3(0, distance, 0);
             minerShoutPosition = player.transform.position + change;
             Debug.Log("You found me! Thanks!");
             Instantiate(minerThanks, minerShoutPosition, Quaternion.identity);
+
+            minerFound = true;
         }
     }
 }
