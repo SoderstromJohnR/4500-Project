@@ -5,12 +5,16 @@ using UnityEngine;
 public class minerSearchGame : MonoBehaviour
 {
     private GameObject minerShout;
+    private GameObject minerThanks;
     private GameObject player;
+
     private Vector3 nodeSize;
     private float distance;
     private Vector3 minerShoutPosition;
     private Vector3 change;
-    private int caveIndex;
+    private int caveIndex; // The index of the cave the miner is in
+
+    private bool minerFound;
 
     // Start is called before the first frame update
     void Start()
@@ -18,13 +22,18 @@ public class minerSearchGame : MonoBehaviour
         GetComponent<SpriteRenderer>().sortingLayerName = "OtherMiner";
 
         minerShout = Resources.Load<GameObject>("minerShout");
+        minerThanks = Resources.Load<GameObject>("minerThanks");
+
         player = GameObject.Find("playerPlaceholder");
         nodeSize = GameObject.FindGameObjectWithTag("Node").GetComponent<Renderer>().bounds.size / 1.5f;
         distance = nodeSize.x * nodeSize.x + nodeSize.y * nodeSize.y;
         distance = Mathf.Pow(distance, 0.5f);
+
         //Get cave index for miner from its parent cave.
         caveIndex = transform.parent.gameObject.GetComponent<nodeStat>().getIndex();
         Debug.Log("Miner index: " + caveIndex.ToString());
+
+        minerFound = false;
     }
 
     int getCaveIndex()
@@ -35,11 +44,14 @@ public class minerSearchGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Get current location of the player every time they shout
+        int playerIndex = player.GetComponent<playerSC>().getIndex();
+
         //Use Shout key, set to S for now, check if player is moving or not
         if (Input.GetKeyDown(KeyCode.S) && !player.GetComponent<playerSC>().checkMoving())
         {
-            //Get current location of the player every time they shout
-            int playerIndex = player.GetComponent<playerSC>().getIndex();
+
+
             //Check if we are on the left or right subtree of player
             bool isLeft = false;
             int checkIndex = caveIndex;
@@ -82,6 +94,17 @@ public class minerSearchGame : MonoBehaviour
                     Instantiate(minerShout, minerShoutPosition, Quaternion.identity);
                 }
             }
+        }
+
+        // Displays minerThanks object if the miner has been found for the first time
+        if (!minerFound && player.GetComponent<playerSC>().checkMinerFound())
+        {
+            change = new Vector3(0, distance, 0);
+            minerShoutPosition = player.transform.position + change;
+            Debug.Log("You found me! Thanks!");
+            Instantiate(minerThanks, minerShoutPosition, Quaternion.identity);
+
+            minerFound = true;
         }
     }
 }
