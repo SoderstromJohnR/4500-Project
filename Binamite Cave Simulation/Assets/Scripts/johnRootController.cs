@@ -43,6 +43,7 @@ public class johnRootController : MonoBehaviour
         currentDepth = 1;
         tempIndex = 2;
         indexCount = 1;
+        nodeIndices.Add(1); //Index 1 will not be added through functions, it already exists
 
         if (isLimitedToTotalNodes)
         {
@@ -399,5 +400,11 @@ public class johnRootController : MonoBehaviour
     {
         GameObject minerNode = getRandomNodeMaxDepth();
         Instantiate(miner, minerNode.transform);
+    }
+
+    //Give read-only access to list of cave indices
+    public List<int> getNodeIndices()
+    {
+        return nodeIndices;
     }
 }
