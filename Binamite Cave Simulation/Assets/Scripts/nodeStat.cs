@@ -8,9 +8,12 @@ public class nodeStat : MonoBehaviour
     public int index;
     private float yPosition;
     private int currentDepth;
+    public bool visited;
+    public bool visiting;
     // Start is called before the first frame update
     void Start()
     {
+        visited = false;
         GetComponent<SpriteRenderer>().sortingLayerName = "Cave";
 
         currentDepth = 1;
@@ -22,7 +25,14 @@ public class nodeStat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //set the node to black if it it hasn't been visited
+        if (!visited)
+        {
+            //Fetch the SpriteRenderer from the GameObject
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to black
+            nodeImage.color = Color.black;
+        }
     }
     public void setIndex(int n)
     {
@@ -54,5 +64,34 @@ public class nodeStat : MonoBehaviour
     public int getIndex()
     {
         return index;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            visited = true;
+            //Fetch the SpriteRenderer from the GameObject
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to green
+            nodeImage.color = Color.green;
+        }
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            visiting = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            //Fetch the SpriteRenderer from the GameObject
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to blue
+            nodeImage.color = Color.blue;
+        }
+        visiting = false;
     }
 }

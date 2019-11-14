@@ -26,6 +26,7 @@ public class johnRootController : MonoBehaviour
     private GameObject leftChild;
     private GameObject rightChild;
     public int totalNodes;
+    public bool visiting;
 
 
 
@@ -354,12 +355,14 @@ public class johnRootController : MonoBehaviour
         int rightChildIndex = leftChildIndex + 1;
         bool leftTrue = false;
         bool rightTrue = false;
+        bool parentTrue = false;
         //set the parent and child nodes
         foreach (GameObject currentNode in nodes)
         {
             if (currentNode.GetComponent<nodeStat>().index == index)
             {
-                parentNode = currentNode;               
+                parentNode = currentNode;
+                parentTrue = true;
             }
             if (currentNode.GetComponent<nodeStat>().index == leftChildIndex)
             {
@@ -373,24 +376,40 @@ public class johnRootController : MonoBehaviour
             }
         }
         //draw to the root
-        if (index == 2 || index == 3)
+        if (parentTrue)
         {
-            Stretch(Instantiate(path), parentNode.transform.position, gameObject.transform.position, true);
+            if (index == 2 || index == 3)
+            {
+                GameObject basket = Instantiate(path);
+                Stretch(basket, parentNode.transform.position, gameObject.transform.position, true);
+                pathStat script = basket.GetComponent<pathStat>();
+                //set path index
+                script.index = index;
+            }
         }
+
         //draw all other paths
         if (parentNode != null)
         {
             if (leftTrue)
             {
-                Stretch(Instantiate(path), parentNode.transform.position, leftChild.transform.position, true);
+                GameObject basket = Instantiate(path);
+                Stretch(basket, parentNode.transform.position, leftChild.transform.position, true);
+                pathStat script = basket.GetComponent<pathStat>();
+                //set path index
+                script.index = leftChildIndex;
             }
             if (rightTrue)
             {
-                Stretch(Instantiate(path), parentNode.transform.position, rightChild.transform.position, true);
+                GameObject basket = Instantiate(path);
+                Stretch(basket, parentNode.transform.position, rightChild.transform.position, true);
+                pathStat script = basket.GetComponent<pathStat>();
+                //set path index
+                script.index = rightChildIndex;
             }
         }
-        
-        
+
+
 
 
     }
@@ -406,5 +425,34 @@ public class johnRootController : MonoBehaviour
     public List<int> getNodeIndices()
     {
         return nodeIndices;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            
+            //Fetch the SpriteRenderer from the GameObject
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to green
+            nodeImage.color = Color.green;
+        }
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            visiting = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            //Fetch the SpriteRenderer from the GameObject
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to blue
+            nodeImage.color = Color.blue;
+        }
+        visiting = false;
     }
 }

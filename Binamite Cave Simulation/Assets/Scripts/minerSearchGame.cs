@@ -106,5 +106,25 @@ public class minerSearchGame : MonoBehaviour
 
             minerFound = true;
         }
+        //if player is close become visible
+        playerClose();
+    }
+    void playerClose()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        float dist = Vector3.Distance(player.transform.position, transform.position);
+        //Fetch the SpriteRenderer from the GameObject
+        SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+        if (dist <= 2)
+        {
+            //Set the GameObject's Color to black
+            nodeImage.color = Color.white;
+        }
+        else
+        {
+            //Set the GameObject's Color to black
+            nodeImage.color = Color.black;
+        }
+
     }
 }
