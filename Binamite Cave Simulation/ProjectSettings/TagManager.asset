@@ -48,3 +48,6 @@ TagManager:
   - name: one
     uniqueID: 2901616081
     locked: 0
+  - name: Menu
+    uniqueID: 80142171
+    locked: 0

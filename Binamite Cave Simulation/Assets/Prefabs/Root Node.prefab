@@ -11,10 +11,11 @@ GameObject:
   - component: {fileID: 5405280279933358572}
   - component: {fileID: 5405280279933358579}
   - component: {fileID: 370671975}
+  - component: {fileID: -8978624332872124865}
   - component: {fileID: 2404348916549335215}
   m_Layer: 0
   m_Name: Root Node
-  m_TagString: Untagged
+  m_TagString: Root Node
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -68,8 +69,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2058627587
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -96,9 +97,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   node: {fileID: 94365016284652643, guid: 9551a28dbba5fb84a8014d047cb8196f, type: 3}
   path: {fileID: 4545274290074083701, guid: cef4ee215d718874f8e367dca65fdee2, type: 3}
+  miner: {fileID: 5172197077995127369, guid: 45c1867d51f76ec4e8c94ba232a19434, type: 3}
   maxDepth: 4
   halfWidth: 8
   depthDistance: 1.5
+  chanceCompleteTree: 0.01
+  isLimitedToTotalNodes: 1
+  limitedTreeNodes: 14
+  totalNodes: 6
+--- !u!114 &-8978624332872124865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5405280279933358578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d314ab70af8e0f54e98a8dc400bb9bcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visiting: 0
 --- !u!58 &2404348916549335215
 CircleCollider2D:
   m_ObjectHideFlags: 0
