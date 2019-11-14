@@ -5,6 +5,7 @@ using UnityEngine;
 public class playerSC : MonoBehaviour
 {
     public float playerSpeed = 10;
+    public GameObject camera;
 
     private int caveIndex;
     private int currentCaveIndex;
@@ -60,6 +61,9 @@ public class playerSC : MonoBehaviour
                 }
 
             }
+
+            //Send new index to camera
+            camera.GetComponent<cameraController>().changePlayerIndex(caveIndex);
 
             //Back to working with any target position
             targetPosition.z = transform.position.z;
