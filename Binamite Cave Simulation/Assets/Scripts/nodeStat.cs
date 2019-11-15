@@ -8,10 +8,14 @@ public class nodeStat : MonoBehaviour
     public int index;
     private float yPosition;
     private int currentDepth;
+    private bool leftDebris;
+    private bool rightDebris;
+    private GameObject debris;
     // Start is called before the first frame update
     void Start()
     {
         GetComponent<SpriteRenderer>().sortingLayerName = "Cave";
+        debris = Resources.Load<GameObject>("basicDebrisPlaceHolder");
 
         currentDepth = 1;
 
@@ -51,8 +55,36 @@ public class nodeStat : MonoBehaviour
         }
     }
 
+    //Add debris based on passed boolean values for each side, no debris needed for parent
+    public void setDebris(bool left, bool right)
+    {
+        float depthDistance = 2.0f;
+        Vector3 size = this.GetComponent<Renderer>().bounds.size;
+        Vector2 direction = new Vector2(this.transform.position.x, this.transform.position.y);
+    }
+
     public int getIndex()
     {
         return index;
+    }
+
+    public bool getLeftDebris()
+    {
+        return leftDebris;
+    }
+
+    public bool getRightDebris()
+    {
+        return rightDebris;
+    }
+
+    protected void setLeftDebris(bool debris)
+    {
+        leftDebris = debris;
+    }
+
+    protected void setRightDebris(bool debris)
+    {
+        rightDebris = debris;
     }
 }

@@ -18,8 +18,12 @@ public class johnRootController : MonoBehaviour
     private int currentDepth;
     private float startXDim;
     private GameObject theNode;
+    private GameObject debris;
     private int tempIndex;
     private List<int> nodeIndices = new List<int>(); //Added to track all indices of created nodes
+
+    private bool leftDebris;
+    private bool rightDebris;
 
     private bool activate;
     private GameObject parentNode;
@@ -62,7 +66,11 @@ public class johnRootController : MonoBehaviour
             }
         }
 
-        setRandomMiner();
+        //Use for first gamemode
+        debris = Resources.Load<GameObject>("basicDebrisPlaceholder");
+        setInitialDebris(true, true);
+        //Use for second gamemode, episode 2
+        //setRandomMiner();
     }
 
     void createCompleteCaves(int depth = 1, int divX = 1, float currentX = 0.0f, int index = 2)
@@ -393,6 +401,26 @@ public class johnRootController : MonoBehaviour
         
 
 
+    }
+
+    //Use in gamemodes where debris is needed in entrance cave
+    //This will instantiate debris in the entrance cave
+    void setInitialDebris(bool left, bool right)
+    {
+        leftDebris = left;
+        rightDebris = right;
+        float deltaX = transform.position.x - (startXDim / 2);
+        float deltaY = transform.position.y - depthDistance;
+        Vector3 size = GetComponent<Renderer>().bounds.size;
+        float distance = size.y / 2.1f;
+        if (leftDebris)
+        {
+            //deltaX is the value toward the right child, multiple by -1 to get left
+            float angle = Mathf.Atan2(-1 * deltaX, deltaY) * Mathf.Rad2Deg;
+            Debug.Log(angle);
+            Vector3 insPosition = transform.position + Quaternion.AngleAxis(angle, Vector3.up) * transform.forward * distance;
+            Instantiate(debris, insPosition, Quaternion.AngleAxis(angle, Vector3.up), transform);
+        }
     }
 
     //Determines a random cave, currently at the max depth, to create a lost miner

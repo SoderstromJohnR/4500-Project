@@ -52,6 +52,9 @@ TagManager:
   - name: Cave
     uniqueID: 2058627587
     locked: 0
+  - name: OnCave
+    uniqueID: 17477329
+    locked: 0
   - name: OtherMiner
     uniqueID: 1146134469
     locked: 0

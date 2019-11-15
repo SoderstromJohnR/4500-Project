@@ -63,16 +63,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\minerShout.cs" />
     <Compile Include="Assets\Scripts\audioObjController.cs" />
     <Compile Include="Assets\Scripts\BackButton.cs" />
     <Compile Include="Assets\Scripts\backController.cs" />
     <Compile Include="Assets\Scripts\cameraController.cs" />
     <Compile Include="Assets\Scripts\closeController.cs" />
+    <Compile Include="Assets\Scripts\debrisController.cs" />
     <Compile Include="Assets\Scripts\exitController.cs" />
     <Compile Include="Assets\Scripts\johnRootController.cs" />
     <Compile Include="Assets\Scripts\MainMenuNavigation.cs" />
     <Compile Include="Assets\Scripts\minerSearchGame.cs" />
+    <Compile Include="Assets\Scripts\minerShout.cs" />
     <Compile Include="Assets\Scripts\nodeStat.cs" />
     <Compile Include="Assets\Scripts\optionsController.cs" />
     <Compile Include="Assets\Scripts\pathController.cs" />
