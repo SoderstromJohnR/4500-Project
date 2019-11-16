@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 5623175599633926477}
   - component: {fileID: 4711433994944247877}
   - component: {fileID: 398056240}
+  - component: {fileID: 968340148840863530}
   m_Layer: 0
   m_Name: basicDebrisPlaceholder
-  m_TagString: Untagged
+  m_TagString: Debris
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -93,3 +94,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ca23a0103605f7419f9e1fb5131e333, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!70 &968340148840863530
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6094789858983932241}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.7124836, y: 0.43541443}
+  m_Direction: 1

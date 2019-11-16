@@ -404,22 +404,66 @@ public class johnRootController : MonoBehaviour
     }
 
     //Use in gamemodes where debris is needed in entrance cave
-    //This will instantiate debris in the entrance cave
+    //This will instantiate debris in the entrance cave where the side, left or right, is true
+    //Then it calls the debris setting function for all other caves
     void setInitialDebris(bool left, bool right)
     {
+        GameObject newDebris;
         leftDebris = left;
         rightDebris = right;
-        float deltaX = transform.position.x - (startXDim / 2);
-        float deltaY = transform.position.y - depthDistance;
+        //Check if the child cave exists - if not, no need to place debris
+        if (!nodeIndices.Contains(2))
+        {
+            leftDebris = false;
+        }
+        if (!nodeIndices.Contains(3))
+        {
+            rightDebris = false;
+        }
+
+        //Calculate necessary values to place and angle debris correctly
+        float deltaX = startXDim / 2;
+        float deltaY = depthDistance;
         Vector3 size = GetComponent<Renderer>().bounds.size;
-        float distance = size.y / 2.1f;
+        float distance = size.y / 2.5f;
+        float angle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg;
+
+        //Place the debris using above values if they are set to true
         if (leftDebris)
         {
             //deltaX is the value toward the right child, multiple by -1 to get left
-            float angle = Mathf.Atan2(-1 * deltaX, deltaY) * Mathf.Rad2Deg;
-            Debug.Log(angle);
-            Vector3 insPosition = transform.position + Quaternion.AngleAxis(angle, Vector3.up) * transform.forward * distance;
-            Instantiate(debris, insPosition, Quaternion.AngleAxis(angle, Vector3.up), transform);
+            Vector3 insPosition = transform.position + Quaternion.AngleAxis(angle + 180, Vector3.forward) * transform.right * distance;
+            newDebris = Instantiate(debris, insPosition, Quaternion.AngleAxis(angle - 90, Vector3.forward), transform);
+            newDebris.GetComponent<debrisController>().setIsLeftDebris(true);
+            newDebris.GetComponent<debrisController>().setChildOfRoot(true);
+        }
+        if (rightDebris)
+        {
+            //deltaX is the value toward the right child, multiple by -1 to get left
+            Vector3 insPosition = transform.position + Quaternion.AngleAxis(-1 * angle, Vector3.forward) * transform.right * distance;
+            newDebris = Instantiate(debris, insPosition, Quaternion.AngleAxis(90 - angle, Vector3.forward), transform);
+            newDebris.GetComponent<debrisController>().setIsLeftDebris(false);
+            newDebris.GetComponent<debrisController>().setChildOfRoot(true);
+        }
+
+        //Now loop through other nodes and pass the startXDim and depthDistance values to calculate angles - don't need to start at index 0, already done
+        //Any further constraints like not having leftDebris on leftmost nodes can be added here
+        for (int index = 1; index < nodeIndices.Count; index++)
+        {
+            int nodeIndex = nodeIndices[index];
+            //Make sure each node has a left/right child before adding debris
+            bool tempLeft = false;
+            bool tempRight = false;
+            if (nodeIndices.Contains(nodeIndex * 2))
+            {
+                tempLeft = true;
+            }
+            if (nodeIndices.Contains(nodeIndex * 2 + 1))
+            {
+                tempRight = true;
+            }
+            
+            findObject(nodeIndex).GetComponent<nodeStat>().setDebris(startXDim, depthDistance, tempLeft, tempRight);
         }
     }
 
@@ -434,5 +478,25 @@ public class johnRootController : MonoBehaviour
     public List<int> getNodeIndices()
     {
         return nodeIndices;
+    }
+
+    public bool getLeftDebris()
+    {
+        return leftDebris;
+    }
+
+    public bool getRightDebris()
+    {
+        return rightDebris;
+    }
+
+    public void removeLeftDebris()
+    {
+        leftDebris = false;
+    }
+
+    public void removeRightDebris()
+    {
+        rightDebris = false;
     }
 }

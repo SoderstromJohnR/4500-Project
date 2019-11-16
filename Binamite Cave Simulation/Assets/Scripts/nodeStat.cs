@@ -8,19 +8,18 @@ public class nodeStat : MonoBehaviour
     public int index;
     private float yPosition;
     private int currentDepth;
-    private bool leftDebris;
-    private bool rightDebris;
+    protected bool leftDebris;
+    protected bool rightDebris;
     private GameObject debris;
     // Start is called before the first frame update
     void Start()
     {
         GetComponent<SpriteRenderer>().sortingLayerName = "Cave";
-        debris = Resources.Load<GameObject>("basicDebrisPlaceHolder");
+        
 
         currentDepth = 1;
 
         setDepth();
-        
     }
 
     // Update is called once per frame
@@ -56,11 +55,39 @@ public class nodeStat : MonoBehaviour
     }
 
     //Add debris based on passed boolean values for each side, no debris needed for parent
-    public void setDebris(bool left, bool right)
+    public void setDebris(float xDim, float depthDistance, bool left, bool right)
     {
-        float depthDistance = 2.0f;
-        Vector3 size = this.GetComponent<Renderer>().bounds.size;
-        Vector2 direction = new Vector2(this.transform.position.x, this.transform.position.y);
+        debris = Resources.Load<GameObject>("basicDebrisPlaceholder");
+        GameObject newDebris;
+        //Calculate necessary values to place and angle debris correctly
+        float deltaX = xDim;
+        //Didn't see a good way to wait for the depth to be set, unfortunately
+        for (int i = 1; i <= index; i *= 2)
+        {
+            deltaX /= 2;
+        }
+        float deltaY = depthDistance;
+        Vector3 size = GetComponent<Renderer>().bounds.size;
+        float distance = size.y / 2.5f;
+        float angle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg;
+
+        //Place the debris using above values if they are set to true
+        if (left)
+        {
+            //deltaX is the value toward the right child, multiple by -1 to get left
+            Vector3 insPosition = transform.position + Quaternion.AngleAxis(angle + 180, Vector3.forward) * transform.right * distance;
+            newDebris = Instantiate(debris, insPosition, Quaternion.AngleAxis(angle - 90, Vector3.forward), transform);
+            newDebris.GetComponent<debrisController>().setIsLeftDebris(true);
+            newDebris.GetComponent<debrisController>().setChildOfRoot(false);
+        }
+        if (right)
+        {
+            //deltaX is the value toward the right child, multiple by -1 to get left
+            Vector3 insPosition = transform.position + Quaternion.AngleAxis(-1 * angle, Vector3.forward) * transform.right * distance;
+            newDebris = Instantiate(debris, insPosition, Quaternion.AngleAxis(90 - angle, Vector3.forward), transform);
+            newDebris.GetComponent<debrisController>().setIsLeftDebris(false);
+            newDebris.GetComponent<debrisController>().setChildOfRoot(false);
+        }
     }
 
     public int getIndex()
@@ -78,13 +105,13 @@ public class nodeStat : MonoBehaviour
         return rightDebris;
     }
 
-    protected void setLeftDebris(bool debris)
+    public void removeLeftDebris()
     {
-        leftDebris = debris;
+        leftDebris = false;
     }
 
-    protected void setRightDebris(bool debris)
+    public void removeRightDebris()
     {
-        rightDebris = debris;
+        rightDebris = false;
     }
 }

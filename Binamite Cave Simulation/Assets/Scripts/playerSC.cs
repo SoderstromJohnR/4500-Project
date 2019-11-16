@@ -6,6 +6,7 @@ public class playerSC : MonoBehaviour
 {
     public float playerSpeed = 10;
     public GameObject camera;
+    public GameObject root;
 
     private int caveIndex;
     private int currentCaveIndex;
@@ -14,9 +15,11 @@ public class playerSC : MonoBehaviour
 
     private bool isMoving = false;
     private bool foundMiner = false;
+    private bool clearDebris = false;
 
     private Vector3 targetPosition;
     private Vector3 clickPosition;
+    private Vector3 storePosition;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +32,7 @@ public class playerSC : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!clearDebris && !isMoving && Input.GetMouseButtonDown(0))
         {
             //Get world coordinates of mouse input
             clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -61,6 +64,21 @@ public class playerSC : MonoBehaviour
                 }
 
             }
+            //Check to see if debris is in the current cave
+            //Move to debris, set it to be destroyed, then move back
+            else if (hit.transform != null && hit.collider.gameObject.tag == "Debris")
+            {
+                GameObject debris = hit.collider.gameObject;
+                //Check now if debris is in the same cave
+                if ((caveIndex == 1 && debris.GetComponent<debrisController>().getChildOfRoot()) || (!debris.GetComponent<debrisController>().getChildOfRoot() && debris.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
+                {
+                    storePosition = transform.position;
+                    targetPosition = debris.transform.position;
+                    debris.GetComponent<debrisController>().setFlagDestroy();
+                    Debug.Log("Moving to debris");
+                    clearDebris = true;
+                }
+            }
 
             //Send new index to camera
             camera.GetComponent<cameraController>().changePlayerIndex(caveIndex);
@@ -78,8 +96,24 @@ public class playerSC : MonoBehaviour
     //True if the cave with index targetIndex is reachable from the cave with index caveIndex
     private bool CaveIsReachable(int targetIndex)
     {
-        return targetIndex == caveIndex * 2 
-            || targetIndex == caveIndex * 2 + 1 
+        //Get the current node and find if it has debris blocking the path
+        //Not necessary in checking for parent node access, any debris is already destroyed
+        bool left = false;
+        bool right = false;
+        if (caveIndex == 1)
+        {
+            left = root.GetComponent<johnRootController>().getLeftDebris();
+            right = root.GetComponent<johnRootController>().getRightDebris();
+        }
+        else
+        {
+            GameObject currentCave = root.GetComponent<johnRootController>().findObject(caveIndex);
+            left = currentCave.GetComponent<nodeStat>().getLeftDebris();
+            right = currentCave.GetComponent<nodeStat>().getRightDebris();
+        }
+        //Checks both for a valid target cave's index, and if debris blocks the path we want to take
+        return targetIndex == caveIndex * 2  && !left
+            || targetIndex == caveIndex * 2 + 1 && !right
             || targetIndex == caveIndex / 2;
     }
 
@@ -95,6 +129,14 @@ public class playerSC : MonoBehaviour
             {
                 isMoving = true;
             }
+        }
+        else if (clearDebris)
+        {
+            //Doesn't work because of this function type, want to wait a second
+            //yield return new WaitForSeconds(1.5f);
+            targetPosition = storePosition;
+            Debug.Log("Moving away from debris");
+            clearDebris = false;
         }
         else
         {
