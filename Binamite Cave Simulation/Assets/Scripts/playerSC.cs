@@ -45,6 +45,7 @@ public class playerSC : MonoBehaviour
             {
                 if (CaveIsReachable(1))
                 {
+                    playerActualSpeed = playerSpeed;
                     if (caveIndex != 1) isMoving = true;
                     caveIndex = 1;
                     Debug.Log("Going to center of entrance instead");
@@ -56,6 +57,7 @@ public class playerSC : MonoBehaviour
                 int hitIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
                 if (CaveIsReachable(hitIndex))
                 {
+                    playerActualSpeed = playerSpeed;
                     if (caveIndex != hitIndex) isMoving = true;
                     caveIndex = hitIndex;
                     Debug.Log("Going to center of cave instead");
@@ -72,6 +74,7 @@ public class playerSC : MonoBehaviour
                 //Check now if debris is in the same cave
                 if ((caveIndex == 1 && debris.GetComponent<debrisController>().getChildOfRoot()) || (!debris.GetComponent<debrisController>().getChildOfRoot() && debris.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
                 {
+                    playerActualSpeed = 3.0f;
                     storePosition = transform.position;
                     targetPosition = debris.transform.position;
                     debris.GetComponent<debrisController>().setFlagDestroy();
@@ -122,7 +125,7 @@ public class playerSC : MonoBehaviour
     {
         if (transform.position != targetPosition)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerActualSpeed * Time.deltaTime);
 
             //Stop processes that require the player to be still
             if (!isMoving)

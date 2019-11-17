@@ -7,10 +7,13 @@ public class debrisController : MonoBehaviour
     private bool flagDestroy;
     private bool childOfRoot;
     private bool isLeftDebris;
+    private GameObject dynamite;
+    private GameObject childDynamite;
 
     // Start is called before the first frame update
     void Start()
     {
+        dynamite = Resources.Load<GameObject>("dynamite");
         GetComponent<SpriteRenderer>().sortingLayerName = "OnCave";
         gameObject.transform.localScale = new Vector3(.1f, .1f, 1);
         flagDestroy = false;
@@ -21,7 +24,7 @@ public class debrisController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.D) && flagDestroy)
         {
-            destroyWithAnimation();
+            removeDebris();
         }
     }
 
@@ -29,13 +32,15 @@ public class debrisController : MonoBehaviour
     public void setFlagDestroy()
     {
         flagDestroy = true;
+        childDynamite = Instantiate(dynamite, transform);
         Debug.Log("Preparing to destroy");
     }
 
     //Destroy all debris that is set to go off
-    public void destroyWithAnimation()
+    public void removeDebris()
     {
-        Destroy(gameObject, 2);
+        childDynamite.GetComponent<dynamiteController>().runExplosion();
+        Destroy(GetComponent<SpriteRenderer>());
         if (childOfRoot && isLeftDebris)
         {
             transform.GetComponentInParent<johnRootController>().removeLeftDebris();
@@ -52,6 +57,7 @@ public class debrisController : MonoBehaviour
         {
             transform.GetComponentInParent<nodeStat>().removeLeftDebris();
         }
+        Destroy(gameObject, 2.0f);
     }
 
     public void setChildOfRoot(bool status)
