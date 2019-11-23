@@ -8,8 +8,8 @@ public class nodeStat : MonoBehaviour
     public int index;
     private float yPosition;
     private int currentDepth;
-    protected bool leftDebris;
-    protected bool rightDebris;
+    [SerializeField] private bool leftDebris;
+    [SerializeField] private bool rightDebris;
     private GameObject debris;
     // Start is called before the first frame update
     void Start()
@@ -57,6 +57,10 @@ public class nodeStat : MonoBehaviour
     //Add debris based on passed boolean values for each side, no debris needed for parent
     public void setDebris(float xDim, float depthDistance, bool left, bool right)
     {
+        //First, make sure we set the debris fields in the class correctly
+        leftDebris = left;
+        rightDebris = right;
+
         debris = Resources.Load<GameObject>("basicDebrisPlaceholder");
         GameObject newDebris;
         //Calculate necessary values to place and angle debris correctly
@@ -70,12 +74,13 @@ public class nodeStat : MonoBehaviour
         Vector3 size = GetComponent<Renderer>().bounds.size;
         float distance = size.y / 2.5f;
         float angle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg;
-
+        
         //Place the debris using above values if they are set to true
         if (left)
         {
             //deltaX is the value toward the right child, multiple by -1 to get left
             Vector3 insPosition = transform.position + Quaternion.AngleAxis(angle + 180, Vector3.forward) * transform.right * distance;
+            insPosition.z += 1;
             newDebris = Instantiate(debris, insPosition, Quaternion.AngleAxis(angle - 90, Vector3.forward), transform);
             newDebris.GetComponent<debrisController>().setIsLeftDebris(true);
             newDebris.GetComponent<debrisController>().setChildOfRoot(false);
@@ -84,6 +89,7 @@ public class nodeStat : MonoBehaviour
         {
             //deltaX is the value toward the right child, multiple by -1 to get left
             Vector3 insPosition = transform.position + Quaternion.AngleAxis(-1 * angle, Vector3.forward) * transform.right * distance;
+            insPosition.z += 1;
             newDebris = Instantiate(debris, insPosition, Quaternion.AngleAxis(90 - angle, Vector3.forward), transform);
             newDebris.GetComponent<debrisController>().setIsLeftDebris(false);
             newDebris.GetComponent<debrisController>().setChildOfRoot(false);

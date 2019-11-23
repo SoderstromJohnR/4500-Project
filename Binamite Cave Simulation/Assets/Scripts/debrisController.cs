@@ -6,7 +6,7 @@ public class debrisController : MonoBehaviour
 {
     private bool flagDestroy;
     private bool childOfRoot;
-    private bool isLeftDebris;
+    [SerializeField] private bool isLeftDebris;
     private GameObject dynamite;
     private GameObject childDynamite;
 
@@ -15,6 +15,7 @@ public class debrisController : MonoBehaviour
     {
         dynamite = Resources.Load<GameObject>("dynamite");
         GetComponent<SpriteRenderer>().sortingLayerName = "OnCave";
+        gameObject.tag = "Debris";
         gameObject.transform.localScale = new Vector3(.1f, .1f, 1);
         flagDestroy = false;
     }
@@ -43,19 +44,19 @@ public class debrisController : MonoBehaviour
         Destroy(GetComponent<SpriteRenderer>());
         if (childOfRoot && isLeftDebris)
         {
-            transform.GetComponentInParent<johnRootController>().removeLeftDebris();
+            GetComponentInParent<johnRootController>().removeLeftDebris();
         }
         else if (childOfRoot && !isLeftDebris)
         {
-            transform.GetComponentInParent<johnRootController>().removeRightDebris();
+            GetComponentInParent<johnRootController>().removeRightDebris();
         }
         else if (isLeftDebris)
         {
-            transform.GetComponentInParent<nodeStat>().removeLeftDebris();
+            GetComponentInParent<nodeStat>().removeLeftDebris();
         }
         else
         {
-            transform.GetComponentInParent<nodeStat>().removeLeftDebris();
+            GetComponentInParent<nodeStat>().removeRightDebris();
         }
         Destroy(gameObject, 2.0f);
     }
@@ -73,5 +74,10 @@ public class debrisController : MonoBehaviour
     public bool getChildOfRoot()
     {
         return childOfRoot;
+    }
+
+    public bool getFlagDestroy()
+    {
+        return flagDestroy;
     }
 }

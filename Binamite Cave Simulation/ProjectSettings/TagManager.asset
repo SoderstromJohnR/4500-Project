@@ -9,6 +9,7 @@ TagManager:
   - Node
   - pause
   - RandomMiner
+  - Debris
   layers:
   - Default
   - TransparentFX

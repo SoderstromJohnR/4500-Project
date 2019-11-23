@@ -39,9 +39,21 @@ public class playerSC : MonoBehaviour
             Vector2 click2D = new Vector2(clickPosition.x, clickPosition.y);
 
             //Check for click on object, go to center of object instead of mouse click
+            //LayerMask clickLayer = LayerMask.GetMask("Node", "Debris");
             Ray ray = Camera.main.ScreenPointToRay(clickPosition);
-            RaycastHit2D hit = Physics2D.Raycast(click2D, Vector2.zero);
-            if (hit.transform != null && hit.collider.gameObject.name == "Root Node")
+            RaycastHit2D[] hitAll = Physics2D.RaycastAll(click2D, Vector2.zero);
+
+            //Not my favorite solution, but it solves the issue of clicking on debris and it only registering the node
+            RaycastHit2D hit = hitAll[0];
+            foreach (RaycastHit2D temp in hitAll)
+            {
+                if (temp.collider.gameObject.tag == "Debris")
+                {
+                    hit = temp;
+                }
+            }
+
+            if (hit.collider != null && hit.collider.gameObject.name == "Root Node")
             {
                 if (CaveIsReachable(1))
                 {
@@ -52,7 +64,7 @@ public class playerSC : MonoBehaviour
                     targetPosition = hit.transform.gameObject.transform.position;
                 }
             }
-            else if (hit.transform != null && hit.collider.gameObject.name == "Node(Clone)")
+            else if (hit.collider != null && hit.collider.gameObject.name == "Node(Clone)")
             {
                 int hitIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
                 if (CaveIsReachable(hitIndex))
@@ -68,18 +80,21 @@ public class playerSC : MonoBehaviour
             }
             //Check to see if debris is in the current cave
             //Move to debris, set it to be destroyed, then move back
-            else if (hit.transform != null && hit.collider.gameObject.tag == "Debris")
+            else if (hit.collider != null && hit.collider.gameObject.tag == "Debris")
             {
                 GameObject debris = hit.collider.gameObject;
-                //Check now if debris is in the same cave
-                if ((caveIndex == 1 && debris.GetComponent<debrisController>().getChildOfRoot()) || (!debris.GetComponent<debrisController>().getChildOfRoot() && debris.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
+                if (!debris.GetComponent<debrisController>().getFlagDestroy())
                 {
-                    playerActualSpeed = 3.0f;
-                    storePosition = transform.position;
-                    targetPosition = debris.transform.position;
-                    debris.GetComponent<debrisController>().setFlagDestroy();
-                    Debug.Log("Moving to debris");
-                    clearDebris = true;
+                    //Check now if debris is in the same cave
+                    if ((caveIndex == 1 && debris.GetComponent<debrisController>().getChildOfRoot()) || (!debris.GetComponent<debrisController>().getChildOfRoot() && debris.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
+                    {
+                        playerActualSpeed = 3.0f;
+                        storePosition = transform.position;
+                        targetPosition = debris.transform.position;
+                        debris.GetComponent<debrisController>().setFlagDestroy();
+                        Debug.Log("Moving to debris");
+                        clearDebris = true;
+                    }
                 }
             }
 
@@ -115,9 +130,22 @@ public class playerSC : MonoBehaviour
             right = currentCave.GetComponent<nodeStat>().getRightDebris();
         }
         //Checks both for a valid target cave's index, and if debris blocks the path we want to take
-        return targetIndex == caveIndex * 2  && !left
-            || targetIndex == caveIndex * 2 + 1 && !right
-            || targetIndex == caveIndex / 2;
+        if (targetIndex == caveIndex * 2)
+        {
+            return !left;
+        }
+        else if (targetIndex == caveIndex * 2 + 1)
+        {
+            return !right;
+        }
+        else if (targetIndex == caveIndex / 2)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     // FixedUpdate is called at a fixed interval. Use for physics code.

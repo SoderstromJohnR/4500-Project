@@ -43,7 +43,12 @@ public class johnRootController : MonoBehaviour
         //startXDim = Camera.main.orthographicSize;
         //Now keep smaller for smaller trees, closer to full size as we add to the depth
         //startXDim = (maxDepth / (maxDepth + 1)) * startXDim;
-        startXDim = halfWidth * ((float)maxDepth / (float)(maxDepth + 2));
+        float distPerNode = GetComponent<Renderer>().bounds.size.x;
+        float gap = depthDistance / maxDepth;
+        int numLeaves = (int)Mathf.Pow(2, maxDepth);
+        float totalXDim = distPerNode * numLeaves + gap * (numLeaves - 1);
+        startXDim = totalXDim / 2;
+        //startXDim = halfWidth * ((float)maxDepth / (float)(maxDepth + 2));
         currentDepth = 1;
         tempIndex = 2;
         indexCount = 1;
@@ -462,8 +467,11 @@ public class johnRootController : MonoBehaviour
             {
                 tempRight = true;
             }
-            
-            findObject(nodeIndex).GetComponent<nodeStat>().setDebris(startXDim, depthDistance, tempLeft, tempRight);
+            //Don't bother calling if neither tunnel is blocked by debris
+            if (tempLeft || tempRight)
+            {
+                findObject(nodeIndex).GetComponent<nodeStat>().setDebris(startXDim, depthDistance, tempLeft, tempRight);
+            }
         }
     }
 
@@ -498,5 +506,10 @@ public class johnRootController : MonoBehaviour
     public void removeRightDebris()
     {
         rightDebris = false;
+    }
+
+    public float getBaseXDistance()
+    {
+        return startXDim;
     }
 }
