@@ -56,9 +56,10 @@ public class minerSearchGame : MonoBehaviour
             bool isLeft = false;
             int checkIndex = caveIndex;
             
-            //Check through parent
+            //Check through parent caves up to root or until it finds the player
             while (checkIndex != 0 && checkIndex != playerIndex)
             {
+                //Track if the child we moved from is the left or right child of the parent
                 if ((checkIndex % 2) == 0)
                 {
                     isLeft = true;
@@ -67,9 +68,11 @@ public class minerSearchGame : MonoBehaviour
                 {
                     isLeft = false;
                 }
+                //Move to next parent node
                 checkIndex = checkIndex / 2;
             }
 
+            //If previous loop completed without finding the player, they are in the wrong subtree
             if (checkIndex != playerIndex)
             {
                 change = new Vector3(0, distance, 0);
@@ -77,8 +80,12 @@ public class minerSearchGame : MonoBehaviour
                 Debug.Log("I'm behind you!");
                 Instantiate(minerShout, minerShoutPosition, Quaternion.identity);
             }
+            //If the player was found and they aren't already in the same cave as the miner,
+            //run this check.
             else if (caveIndex != playerIndex)
             {
+                //If the last node checked was the left child, mark miner on left and place
+                //speech bubble appropriately
                 if (isLeft)
                 {
                     change = new Vector3(-1, -1, 0).normalized * distance;
@@ -86,6 +93,7 @@ public class minerSearchGame : MonoBehaviour
                     Debug.Log("I'm on the left!");
                     Instantiate(minerShout, minerShoutPosition, Quaternion.identity);
                 }
+                //This goes off if the last node checked was the right child
                 else
                 {
                     change = new Vector3(1, -1, 0).normalized * distance;

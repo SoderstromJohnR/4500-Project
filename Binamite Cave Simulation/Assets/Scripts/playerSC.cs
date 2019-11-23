@@ -6,6 +6,7 @@ public class playerSC : MonoBehaviour
 {
     public float playerSpeed = 10;
     public GameObject camera;
+    public GameObject root;
 
     private int caveIndex;
     private int currentCaveIndex;
@@ -14,9 +15,11 @@ public class playerSC : MonoBehaviour
 
     private bool isMoving = false;
     private bool foundMiner = false;
+    private bool clearDebris = false;
 
     private Vector3 targetPosition;
     private Vector3 clickPosition;
+    private Vector3 storePosition;
 
     // Start is called before the first frame update
     void Start()
@@ -29,30 +32,44 @@ public class playerSC : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!clearDebris && !isMoving && Input.GetMouseButtonDown(0))
         {
             //Get world coordinates of mouse input
             clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 click2D = new Vector2(clickPosition.x, clickPosition.y);
 
             //Check for click on object, go to center of object instead of mouse click
+            //LayerMask clickLayer = LayerMask.GetMask("Node", "Debris");
             Ray ray = Camera.main.ScreenPointToRay(clickPosition);
-            RaycastHit2D hit = Physics2D.Raycast(click2D, Vector2.zero);
-            if (hit.transform != null && hit.collider.gameObject.name == "Root Node")
+            RaycastHit2D[] hitAll = Physics2D.RaycastAll(click2D, Vector2.zero);
+
+            //Not my favorite solution, but it solves the issue of clicking on debris and it only registering the node
+            RaycastHit2D hit = hitAll[0];
+            foreach (RaycastHit2D temp in hitAll)
+            {
+                if (temp.collider.gameObject.tag == "Debris")
+                {
+                    hit = temp;
+                }
+            }
+
+            if (hit.collider != null && hit.collider.gameObject.name == "Root Node")
             {
                 if (CaveIsReachable(1))
                 {
+                    playerActualSpeed = playerSpeed;
                     if (caveIndex != 1) isMoving = true;
                     caveIndex = 1;
                     Debug.Log("Going to center of entrance instead");
                     targetPosition = hit.transform.gameObject.transform.position;
                 }
             }
-            else if (hit.transform != null && hit.collider.gameObject.name == "Node(Clone)")
+            else if (hit.collider != null && hit.collider.gameObject.name == "Node(Clone)")
             {
                 int hitIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
                 if (CaveIsReachable(hitIndex))
                 {
+                    playerActualSpeed = playerSpeed;
                     if (caveIndex != hitIndex) isMoving = true;
                     caveIndex = hitIndex;
                     Debug.Log("Going to center of cave instead");
@@ -60,6 +77,25 @@ public class playerSC : MonoBehaviour
                     Debug.Log("Player index: " + caveIndex.ToString());
                 }
 
+            }
+            //Check to see if debris is in the current cave
+            //Move to debris, set it to be destroyed, then move back
+            else if (hit.collider != null && hit.collider.gameObject.tag == "Debris")
+            {
+                GameObject debris = hit.collider.gameObject;
+                if (!debris.GetComponent<debrisController>().getFlagDestroy())
+                {
+                    //Check now if debris is in the same cave
+                    if ((caveIndex == 1 && debris.GetComponent<debrisController>().getChildOfRoot()) || (!debris.GetComponent<debrisController>().getChildOfRoot() && debris.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
+                    {
+                        playerActualSpeed = 3.0f;
+                        storePosition = transform.position;
+                        targetPosition = debris.transform.position;
+                        debris.GetComponent<debrisController>().setFlagDestroy();
+                        Debug.Log("Moving to debris");
+                        clearDebris = true;
+                    }
+                }
             }
 
             //Send new index to camera
@@ -78,9 +114,38 @@ public class playerSC : MonoBehaviour
     //True if the cave with index targetIndex is reachable from the cave with index caveIndex
     private bool CaveIsReachable(int targetIndex)
     {
-        return targetIndex == caveIndex * 2 
-            || targetIndex == caveIndex * 2 + 1 
-            || targetIndex == caveIndex / 2;
+        //Get the current node and find if it has debris blocking the path
+        //Not necessary in checking for parent node access, any debris is already destroyed
+        bool left = false;
+        bool right = false;
+        if (caveIndex == 1)
+        {
+            left = root.GetComponent<johnRootController>().getLeftDebris();
+            right = root.GetComponent<johnRootController>().getRightDebris();
+        }
+        else
+        {
+            GameObject currentCave = root.GetComponent<johnRootController>().findObject(caveIndex);
+            left = currentCave.GetComponent<nodeStat>().getLeftDebris();
+            right = currentCave.GetComponent<nodeStat>().getRightDebris();
+        }
+        //Checks both for a valid target cave's index, and if debris blocks the path we want to take
+        if (targetIndex == caveIndex * 2)
+        {
+            return !left;
+        }
+        else if (targetIndex == caveIndex * 2 + 1)
+        {
+            return !right;
+        }
+        else if (targetIndex == caveIndex / 2)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     // FixedUpdate is called at a fixed interval. Use for physics code.
@@ -88,13 +153,21 @@ public class playerSC : MonoBehaviour
     {
         if (transform.position != targetPosition)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerActualSpeed * Time.deltaTime);
 
             //Stop processes that require the player to be still
             if (!isMoving)
             {
                 isMoving = true;
             }
+        }
+        else if (clearDebris)
+        {
+            //Doesn't work because of this function type, want to wait a second
+            //yield return new WaitForSeconds(1.5f);
+            targetPosition = storePosition;
+            Debug.Log("Moving away from debris");
+            clearDebris = false;
         }
         else
         {
