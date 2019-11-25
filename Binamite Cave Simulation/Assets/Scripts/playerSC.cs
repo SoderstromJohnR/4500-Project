@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class playerSC : MonoBehaviour
 {
-    public float playerSpeed = 10;
+    public float playerSpeed;
     public GameObject camera;
     public GameObject root;
 
@@ -21,12 +21,22 @@ public class playerSC : MonoBehaviour
     private Vector3 clickPosition;
     private Vector3 storePosition;
 
+    private bool detonation;
+    [SerializeField] private int numCaveMoves;
+    [SerializeField] private int numExplosions;
+    [SerializeField] private int numDetonations;
+    [SerializeField] private int numMinerShouts;
+
     // Start is called before the first frame update
     void Start()
     {
         //Set the target position immediately to the player's starting location
         targetPosition = transform.position;
         caveIndex = 1;
+        numCaveMoves = 0;
+        numMinerShouts = 0;
+        numDetonations = 0;
+        detonation = false;
     }
 
     // Update is called once per frame
@@ -62,6 +72,9 @@ public class playerSC : MonoBehaviour
                     caveIndex = 1;
                     Debug.Log("Going to center of entrance instead");
                     targetPosition = hit.transform.gameObject.transform.position;
+                    //Send new index to camera
+                    camera.GetComponent<cameraController>().changePlayerIndex(caveIndex);
+                    numCaveMoves += 1;
                 }
             }
             else if (hit.collider != null && hit.collider.gameObject.name == "Node(Clone)")
@@ -75,8 +88,10 @@ public class playerSC : MonoBehaviour
                     Debug.Log("Going to center of cave instead");
                     targetPosition = hit.transform.gameObject.transform.position;
                     Debug.Log("Player index: " + caveIndex.ToString());
+                    //Send new index to camera
+                    camera.GetComponent<cameraController>().changePlayerIndex(caveIndex);
+                    numCaveMoves += 1;
                 }
-
             }
             //Check to see if debris is in the current cave
             //Move to debris, set it to be destroyed, then move back
@@ -97,9 +112,6 @@ public class playerSC : MonoBehaviour
                     }
                 }
             }
-
-            //Send new index to camera
-            camera.GetComponent<cameraController>().changePlayerIndex(caveIndex);
 
             //Back to working with any target position
             targetPosition.z = transform.position.z;
@@ -192,6 +204,53 @@ public class playerSC : MonoBehaviour
         transform.up = direction;
     }
 
+    //Trigger when the player enters the cave the miner is in
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Collider2D>().gameObject.tag == "RandomMiner")
+        {
+            Debug.Log("Got to the miner!");
+            foundMiner = true;
+        }
+    }
+
+    //Reset the number of moves the player has made and their position at the root
+    public void resetPlayer()
+    {
+        numCaveMoves = 0;
+        numMinerShouts = 0;
+        numDetonations = 0;
+        transform.position = root.transform.position;
+        targetPosition = transform.position;
+        caveIndex = 1;
+        camera.GetComponent<cameraController>().changePlayerIndex(caveIndex);
+    }
+
+    //Called by the minerSearchGame script, increments the number of shouts made
+    public void incMinerShout()
+    {
+        numMinerShouts += 1;
+    }
+
+    //Called by debrisController script, increments number of explosions and
+    //number of detonations (times detonate is pressed with at least one explosion)
+    public void incExplosions()
+    {
+        numExplosions += 1;
+        detonation = true;
+        Invoke("incDetonations", 0.5f);
+    }
+
+    //Increment number of detonations without counting multiple explosions at once
+    void incDetonations()
+    {
+        if (detonation)
+        {
+            detonation = false;
+            numDetonations += 1;
+        }
+    }
+
     public int getIndex()
     {
         return caveIndex;
@@ -207,12 +266,23 @@ public class playerSC : MonoBehaviour
         return foundMiner;
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    public int getNumCaveMoves()
     {
-        if (collision.GetComponent<Collider2D>().gameObject.tag == "RandomMiner")
-        {
-            Debug.Log("Got to the miner!");
-            foundMiner = true;
-        }
+        return numCaveMoves;
+    }
+
+    public int getNumExplosions()
+    {
+        return numExplosions;
+    }
+
+    public int getNumDetonations()
+    {
+        return numDetonations;
+    }
+
+    public int getNumMinerShouts()
+    {
+        return numMinerShouts;
     }
 }

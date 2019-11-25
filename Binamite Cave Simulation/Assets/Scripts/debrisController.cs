@@ -9,6 +9,9 @@ public class debrisController : MonoBehaviour
     [SerializeField] private bool isLeftDebris;
     private GameObject dynamite;
     private GameObject childDynamite;
+    private GameObject player;
+
+    private int tempGamemode = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -18,12 +21,17 @@ public class debrisController : MonoBehaviour
         gameObject.tag = "Debris";
         gameObject.transform.localScale = new Vector3(.1f, .1f, 1);
         flagDestroy = false;
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.D) && flagDestroy)
+        if (Input.GetKeyDown(KeyCode.D) && flagDestroy && tempGamemode == 0)
+        {
+            removeDebris();
+        }
+        else if (Input.GetKeyDown(KeyCode.D) && flagDestroy && tempGamemode == 1 && player.GetComponent<playerSC>().getIndex() == 1)
         {
             removeDebris();
         }
@@ -38,8 +46,10 @@ public class debrisController : MonoBehaviour
     }
 
     //Destroy all debris that is set to go off
-    public void removeDebris()
+    void removeDebris()
     {
+        player.GetComponent<playerSC>().incExplosions();
+
         childDynamite.GetComponent<dynamiteController>().runExplosion();
         Destroy(GetComponent<SpriteRenderer>());
         if (childOfRoot && isLeftDebris)
@@ -59,6 +69,12 @@ public class debrisController : MonoBehaviour
             GetComponentInParent<nodeStat>().removeRightDebris();
         }
         Destroy(gameObject, 2.0f);
+    }
+
+    //Send a message when the object is destroyed
+    void OnDestroy()
+    {
+        Debug.Log("Debris destroyed");
     }
 
     public void setChildOfRoot(bool status)

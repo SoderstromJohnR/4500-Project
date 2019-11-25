@@ -494,6 +494,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: playerPlaceholder
       objectReference: {fileID: 0}
+    - target: {fileID: 1390268383810389668, guid: 0923eb4679662784e9694477ac470d53,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 1390268383810389671, guid: 0923eb4679662784e9694477ac470d53,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -654,7 +659,7 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
       propertyPath: isLimitedToTotalNodes
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
       propertyPath: totalNodes
@@ -662,7 +667,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
       propertyPath: limitedTreeNodes
-      value: 15
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
       propertyPath: maxDepth
@@ -671,6 +676,14 @@ PrefabInstance:
     - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
       propertyPath: debris
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
+      propertyPath: tempGamemode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
+      propertyPath: tempEpisode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5405280279933358579, guid: f68cf2a5eaf43b14eba446f1bc09ae8f,
         type: 3}
