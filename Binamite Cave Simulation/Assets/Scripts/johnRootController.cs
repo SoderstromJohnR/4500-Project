@@ -22,6 +22,8 @@ public class johnRootController : MonoBehaviour
     private int tempIndex;
     private List<int> nodeIndices = new List<int>(); //Added to track all indices of created nodes
 
+    [SerializeField] private int numMovesVisitAll;
+
     private bool leftDebris;
     private bool rightDebris;
 
@@ -31,7 +33,8 @@ public class johnRootController : MonoBehaviour
     private GameObject rightChild;
     public int totalNodes;
 
-
+    public int tempGamemode;
+    public int tempEpisode;
 
     void Start()
     {
@@ -76,6 +79,8 @@ public class johnRootController : MonoBehaviour
         setInitialDebris(true, true);
         //Use for second gamemode, episode 2
         //setRandomMiner();
+
+        Invoke("preLikeTraverse", .5f);
     }
 
     void createCompleteCaves(int depth = 1, int divX = 1, float currentX = 0.0f, int index = 2)
@@ -434,7 +439,7 @@ public class johnRootController : MonoBehaviour
         float angle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg;
 
         //Place the debris using above values if they are set to true
-        if (leftDebris)
+        if (leftDebris && placeDebris(1, true))
         {
             //deltaX is the value toward the right child, multiple by -1 to get left
             Vector3 insPosition = transform.position + Quaternion.AngleAxis(angle + 180, Vector3.forward) * transform.right * distance;
@@ -442,7 +447,7 @@ public class johnRootController : MonoBehaviour
             newDebris.GetComponent<debrisController>().setIsLeftDebris(true);
             newDebris.GetComponent<debrisController>().setChildOfRoot(true);
         }
-        if (rightDebris)
+        if (rightDebris && placeDebris(1, false))
         {
             //deltaX is the value toward the right child, multiple by -1 to get left
             Vector3 insPosition = transform.position + Quaternion.AngleAxis(-1 * angle, Vector3.forward) * transform.right * distance;
@@ -461,11 +466,11 @@ public class johnRootController : MonoBehaviour
             bool tempRight = false;
             if (nodeIndices.Contains(nodeIndex * 2))
             {
-                tempLeft = true;
+                tempLeft = placeDebris(nodeIndex, true);
             }
             if (nodeIndices.Contains(nodeIndex * 2 + 1))
             {
-                tempRight = true;
+                tempRight = placeDebris(nodeIndex, false);
             }
             //Don't bother calling if neither tunnel is blocked by debris
             if (tempLeft || tempRight)
@@ -473,6 +478,36 @@ public class johnRootController : MonoBehaviour
                 findObject(nodeIndex).GetComponent<nodeStat>().setDebris(startXDim, depthDistance, tempLeft, tempRight);
             }
         }
+    }
+
+    //Determine if debris should be placed based on gamemode and episode number, called by setInitialDebris
+    bool placeDebris(int index, bool isLeft)
+    {
+        bool place = true;
+        //Don't place debris on leftmost nodes based on gamemode and episode
+        if (tempGamemode == 1 && tempEpisode == 1 && isLeft)
+        {
+            for (int i = 1; i <= index; i *= 2)
+            {
+                if (i == index)
+                {
+                    place = false;
+                }
+            }
+        }
+        //Don't place debris on rightmost nodes based on gamemode and episode
+        else if (tempGamemode == 1 && tempEpisode == 2 && !isLeft)
+        {
+            for (int i = 1; i <= index; i = i * 2 + 1)
+            {
+                if (i == index)
+                {
+                    place = false;
+                }
+            }
+        }
+
+        return place;
     }
 
     //Determines a random cave, currently at the max depth, to create a lost miner
@@ -486,6 +521,70 @@ public class johnRootController : MonoBehaviour
     public List<int> getNodeIndices()
     {
         return nodeIndices;
+    }
+
+    //Calculate number of moves to visit all caves, ending at the deepest
+    void preLikeTraverse()
+    {
+        //Initialize number of moves to 0
+        numMovesVisitAll = 0;
+        //Account for nodes possibly not reaching the maximum depth the tree allows
+        int tempDepth = 0;
+        //Temporary list of all node indices so we can remove as we go
+        List<int> tempList = nodeIndices;
+        //Stack simulates recursive traversal
+        Stack<int> tempStack = new Stack<int>(maxDepth + 2);
+        //Start with the first index, root, always there
+        tempStack.Push(1);
+        int current = tempStack.Peek();
+        while (tempStack.Count > 0)
+        {
+            //Calculate left index, travel to it if it exists
+            int left = current * 2;
+            while (tempList.Contains(left))
+            {
+                //Increment movement as if we traveled to the left child
+                tempStack.Push(left);
+                numMovesVisitAll += 1;
+                //Our current index is now the one we 'traveled' to, recalculate left child
+                current = left;
+                left = current * 2;
+                //Remove current index so we don't revisit nodes multiple times
+                tempList.Remove(current);
+                //Check our depth just to be safe
+                if (tempDepth < tempStack.Count - 1)
+                {
+                    tempDepth = tempStack.Count - 1;
+                }
+            }
+            //Once we've traveled as far left as possible, without revisiting nodes, travel to right index if it exists
+            int right = left + 1;
+            if (tempList.Contains(right))
+            {
+                //Increment movement as if we traveled to the right child
+                tempStack.Push(right);
+                numMovesVisitAll += 1;
+                //Our current index is now the one we 'traveled' to, don't need to recalculate since this is an if statement
+                current = right;
+                tempList.Remove(current);
+                if (tempDepth < tempStack.Count - 1)
+                {
+                    tempDepth = tempStack.Count - 1;
+                }
+            }
+            //If there are no left or right children, remove the current index and 'travel' back to the parent
+            else
+            {
+                if (tempStack.Pop() != 1)
+                {
+                    numMovesVisitAll += 1;
+                    current = tempStack.Peek();
+                }
+            }
+        }
+        
+        //If we stop at a cave at the max depth in the tree, we can reduce the number of moves to visit all caves
+        numMovesVisitAll -= tempDepth;
     }
 
     public bool getLeftDebris()
@@ -511,5 +610,10 @@ public class johnRootController : MonoBehaviour
     public float getBaseXDistance()
     {
         return startXDim;
+    }
+
+    public int getNumMovesVisitAll()
+    {
+        return numMovesVisitAll;
     }
 }

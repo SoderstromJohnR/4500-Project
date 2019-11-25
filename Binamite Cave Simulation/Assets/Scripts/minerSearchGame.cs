@@ -50,8 +50,6 @@ public class minerSearchGame : MonoBehaviour
         //Use Shout key, set to S for now, check if player is moving or not
         if (Input.GetKeyDown(KeyCode.S) && !player.GetComponent<playerSC>().checkMoving())
         {
-
-
             //Check if we are on the left or right subtree of player
             bool isLeft = false;
             int checkIndex = caveIndex;
@@ -101,6 +99,9 @@ public class minerSearchGame : MonoBehaviour
                     Debug.Log("I'm on the right!");
                     Instantiate(minerShout, minerShoutPosition, Quaternion.identity);
                 }
+
+                //Increment number of shouts made
+                player.GetComponent<playerSC>().incMinerShout();
             }
         }
 
