@@ -439,7 +439,7 @@ public class johnRootController : MonoBehaviour
         float angle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg;
 
         //Place the debris using above values if they are set to true
-        if (leftDebris && placeDebris(1))
+        if (leftDebris && placeDebris(1, true))
         {
             //deltaX is the value toward the right child, multiple by -1 to get left
             Vector3 insPosition = transform.position + Quaternion.AngleAxis(angle + 180, Vector3.forward) * transform.right * distance;
@@ -447,7 +447,7 @@ public class johnRootController : MonoBehaviour
             newDebris.GetComponent<debrisController>().setIsLeftDebris(true);
             newDebris.GetComponent<debrisController>().setChildOfRoot(true);
         }
-        if (rightDebris && placeDebris(1))
+        if (rightDebris && placeDebris(1, false))
         {
             //deltaX is the value toward the right child, multiple by -1 to get left
             Vector3 insPosition = transform.position + Quaternion.AngleAxis(-1 * angle, Vector3.forward) * transform.right * distance;
@@ -466,11 +466,11 @@ public class johnRootController : MonoBehaviour
             bool tempRight = false;
             if (nodeIndices.Contains(nodeIndex * 2))
             {
-                tempLeft = placeDebris(nodeIndex);
+                tempLeft = placeDebris(nodeIndex, true);
             }
             if (nodeIndices.Contains(nodeIndex * 2 + 1))
             {
-                tempRight = placeDebris(nodeIndex);
+                tempRight = placeDebris(nodeIndex, false);
             }
             //Don't bother calling if neither tunnel is blocked by debris
             if (tempLeft || tempRight)
@@ -481,11 +481,11 @@ public class johnRootController : MonoBehaviour
     }
 
     //Determine if debris should be placed based on gamemode and episode number, called by setInitialDebris
-    bool placeDebris(int index)
+    bool placeDebris(int index, bool isLeft)
     {
         bool place = true;
         //Don't place debris on leftmost nodes based on gamemode and episode
-        if (tempGamemode == 1 && tempEpisode == 1)
+        if (tempGamemode == 1 && tempEpisode == 1 && isLeft)
         {
             for (int i = 1; i <= index; i *= 2)
             {
@@ -496,7 +496,7 @@ public class johnRootController : MonoBehaviour
             }
         }
         //Don't place debris on rightmost nodes based on gamemode and episode
-        else if (tempGamemode == 1 && tempEpisode == 2)
+        else if (tempGamemode == 1 && tempEpisode == 2 && !isLeft)
         {
             for (int i = 1; i <= index; i = i * 2 + 1)
             {
