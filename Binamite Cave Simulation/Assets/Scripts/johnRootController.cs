@@ -19,6 +19,7 @@ public class johnRootController : MonoBehaviour
     private float startXDim;
     private GameObject theNode;
     private GameObject debris;
+    private GameObject caveExit;
     private int tempIndex;
     private List<int> nodeIndices = new List<int>(); //Added to track all indices of created nodes
 
@@ -74,11 +75,13 @@ public class johnRootController : MonoBehaviour
             }
         }
 
+        caveExit = Resources.Load<GameObject>("caveExit");
+        setCaveExit();
         //Use for first gamemode
         debris = Resources.Load<GameObject>("basicDebrisPlaceholder");
         setInitialDebris(true, true);
         //Use for second gamemode, episode 2
-        //setRandomMiner();
+        setRandomMiner();
 
         Invoke("preLikeTraverse", .5f);
     }
@@ -585,6 +588,56 @@ public class johnRootController : MonoBehaviour
         
         //If we stop at a cave at the max depth in the tree, we can reduce the number of moves to visit all caves
         numMovesVisitAll -= tempDepth;
+    }
+
+    //Generate sprites for exiting cave to go to another
+    void setCaveExit()
+    {
+        bool leftExit = false;
+        bool rightExit = false;
+        if (nodeIndices.Contains(2))
+        {
+            leftExit = true;
+        }
+        if (nodeIndices.Contains(3))
+        {
+            rightExit = true;
+        }
+
+        //Calculate necessary values to place and angle debris correctly
+        float deltaX = startXDim / 2;
+        float deltaY = depthDistance;
+        Vector3 size = GetComponent<Renderer>().bounds.size;
+        float angle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg;
+
+        //Place the exits using above values if they are set to true
+        if (leftExit)
+        {
+            Instantiate(caveExit, transform.position, Quaternion.AngleAxis(angle + 90, Vector3.forward), transform);
+        }
+        if (rightExit)
+        {
+            Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 - angle, Vector3.forward), transform);
+        }
+
+        //Now loop through other nodes and pass the startXDim and depthDistance values to calculate angles - don't need to start at index 0, already done
+        for (int index = 1; index < nodeIndices.Count; index++)
+        {
+            int nodeIndex = nodeIndices[index];
+            //Make sure each node has a left/right child before adding an exit
+            bool tempLeft = false;
+            bool tempRight = false;
+            if (nodeIndices.Contains(nodeIndex * 2))
+            {
+                tempLeft = true;
+            }
+            if (nodeIndices.Contains(nodeIndex * 2 + 1))
+            {
+                tempRight = true;
+            }
+            //Will always need to call, always at least an exit to the parent
+            findObject(nodeIndex).GetComponent<nodeStat>().setCaveExit(startXDim, depthDistance, tempLeft, tempRight);
+        }
     }
 
     public bool getLeftDebris()

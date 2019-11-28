@@ -19,7 +19,7 @@ public class debrisController : MonoBehaviour
         dynamite = Resources.Load<GameObject>("dynamite");
         GetComponent<SpriteRenderer>().sortingLayerName = "OnCave";
         gameObject.tag = "Debris";
-        gameObject.transform.localScale = new Vector3(.1f, .1f, 1);
+        //gameObject.transform.localScale = new Vector3(.1f, .1f, 1);
         flagDestroy = false;
         player = GameObject.FindGameObjectWithTag("Player");
     }

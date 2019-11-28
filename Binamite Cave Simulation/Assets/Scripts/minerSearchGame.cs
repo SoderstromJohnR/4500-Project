@@ -24,13 +24,13 @@ public class minerSearchGame : MonoBehaviour
         minerShout = Resources.Load<GameObject>("minerShout");
         minerThanks = Resources.Load<GameObject>("minerThanks");
 
-        player = GameObject.Find("playerPlaceholder");
-        nodeSize = GameObject.FindGameObjectWithTag("Node").GetComponent<Renderer>().bounds.size / 1.5f;
+        player = GameObject.Find("player");
+        nodeSize = GetComponentInParent<Renderer>().bounds.size / 1.5f;
         distance = nodeSize.x * nodeSize.x + nodeSize.y * nodeSize.y;
         distance = Mathf.Pow(distance, 0.5f);
 
         //Get cave index for miner from its parent cave.
-        caveIndex = transform.parent.gameObject.GetComponent<nodeStat>().getIndex();
+        caveIndex = GetComponentInParent<nodeStat>().getIndex();
         Debug.Log("Miner index: " + caveIndex.ToString());
 
         minerFound = false;

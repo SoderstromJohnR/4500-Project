@@ -53,6 +53,9 @@ TagManager:
   - name: Cave
     uniqueID: 2058627587
     locked: 0
+  - name: CaveExit
+    uniqueID: 1973701593
+    locked: 0
   - name: OnCave
     uniqueID: 17477329
     locked: 0

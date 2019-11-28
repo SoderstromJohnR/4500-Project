@@ -492,12 +492,7 @@ PrefabInstance:
     - target: {fileID: 1390268383810389668, guid: 0923eb4679662784e9694477ac470d53,
         type: 3}
       propertyPath: m_Name
-      value: playerPlaceholder
-      objectReference: {fileID: 0}
-    - target: {fileID: 1390268383810389668, guid: 0923eb4679662784e9694477ac470d53,
-        type: 3}
-      propertyPath: m_TagString
-      value: Player
+      value: player
       objectReference: {fileID: 0}
     - target: {fileID: 1390268383810389671, guid: 0923eb4679662784e9694477ac470d53,
         type: 3}
@@ -554,16 +549,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1390268383810389671, guid: 0923eb4679662784e9694477ac470d53,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1390268383810389671, guid: 0923eb4679662784e9694477ac470d53,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.2
-      objectReference: {fileID: 0}
     - target: {fileID: 1390268383810389672, guid: 0923eb4679662784e9694477ac470d53,
         type: 3}
       propertyPath: camera
@@ -587,11 +572,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Root Node
-      objectReference: {fileID: 0}
-    - target: {fileID: 5405280279933358578, guid: f68cf2a5eaf43b14eba446f1bc09ae8f,
-        type: 3}
-      propertyPath: m_TagString
-      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 5405280279933358572, guid: f68cf2a5eaf43b14eba446f1bc09ae8f,
         type: 3}
@@ -647,53 +627,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
-      propertyPath: chanceCompleteTree
-      value: 0.99
-      objectReference: {fileID: 0}
-    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
-      propertyPath: miner
-      value: 
-      objectReference: {fileID: 5172197077995127369, guid: 45c1867d51f76ec4e8c94ba232a19434,
-        type: 3}
-    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
-      propertyPath: isLimitedToTotalNodes
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
-      propertyPath: totalNodes
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
-      propertyPath: limitedTreeNodes
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
-      propertyPath: maxDepth
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
-      propertyPath: debris
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
-      propertyPath: tempGamemode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
-      propertyPath: tempEpisode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5405280279933358579, guid: f68cf2a5eaf43b14eba446f1bc09ae8f,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: 2058627587
-      objectReference: {fileID: 0}
-    - target: {fileID: 5405280279933358579, guid: f68cf2a5eaf43b14eba446f1bc09ae8f,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
