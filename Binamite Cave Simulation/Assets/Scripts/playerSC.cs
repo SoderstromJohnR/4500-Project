@@ -12,10 +12,13 @@ public class playerSC : MonoBehaviour
     private int currentCaveIndex;
     private float playerActualSpeed;
     private float targetDistance;
+    private float elapsedTime;
+    private float expectedTime;
 
     private bool isMoving = false;
     private bool foundMiner = false;
     private bool clearDebris = false;
+    private bool cameraFollow = true;
 
     private Vector3 targetPosition;
     private Vector3 clickPosition;
@@ -53,23 +56,48 @@ public class playerSC : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(clickPosition);
             RaycastHit2D[] hitAll = Physics2D.RaycastAll(click2D, Vector2.zero);
 
+            //Skip everything below if nothing was hit
             if (hitAll.Length > 0)
             {
-                //Not my favorite solution, but it solves the issue of clicking on debris and it only registering the node
-                RaycastHit2D hit = hitAll[0];
+                //The camera should follow in most situations
+                cameraFollow = true;
+                //If we will move anywhere, store our current position first
+                storePosition = transform.position;
+
+                //A solution I'm a bit happier with. Unlike the Raycast2D object, GameObject can be set to null at the start
+                //Everything in the list had a collision, so there is no need to check for that. The tempPriority gives us
+                //an easy way to stop from clicking on something unintended when objects overlap.
+                GameObject hit = null;
+                int tempPriority = 99;
                 foreach (RaycastHit2D temp in hitAll)
                 {
+                    //Debris is the highest priority. The player can only go to it if it's in the same cave,
+                    //though the player spazzes out a little if they click on one in another.
                     if (temp.collider.gameObject.tag == "Debris")
                     {
-                        hit = temp;
+                        Debug.Log("Selecting Debris");
+                        tempPriority = 1;
+                        hit = temp.collider.gameObject;
                     }
-                    else if (!(hit.collider.gameObject.tag == "Debris") && (temp.collider.gameObject.tag == "Node" || temp.collider.gameObject.name == "Root Node"))
+                    //The Cave Exit should only be available if any debris over it is clear.
+                    else if (tempPriority > 1 && temp.collider.gameObject.tag == "CaveExit")
                     {
-                        hit = temp;
+                        Debug.Log("Selecting CaveExit");
+                        tempPriority = 2;
+                        hit = temp.collider.gameObject;
+                    }
+                    //The caves/nodes have the largest area. If a player clicks near the higher priorities, they most likely
+                    //want to use those and not the cave itself.
+                    else if (tempPriority > 2 && (temp.collider.gameObject.tag == "Node" || temp.collider.gameObject.name == "Root Node"))
+                    {
+                        Debug.Log("Selecting Cave");
+                        tempPriority = 3;
+                        hit = temp.collider.gameObject;
                     }
                 }
 
-                if (hit.collider != null && hit.collider.gameObject.name == "Root Node")
+                //Use this if the player clicks on the root node/entrance
+                if (hit.name == "Root Node")
                 {
                     if (CaveIsReachable(1))
                     {
@@ -77,56 +105,103 @@ public class playerSC : MonoBehaviour
                         if (caveIndex != 1) isMoving = true;
                         caveIndex = 1;
                         Debug.Log("Going to center of entrance instead");
-                        targetPosition = hit.transform.gameObject.transform.position;
+                        targetPosition = hit.transform.position;
                         //Send new index to camera
-                        camera.GetComponent<cameraController>().changePlayerIndex(caveIndex);
+                        setExpectedTime();
+                        camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
                         numCaveMoves += 1;
                     }
                 }
-                else if (hit.collider != null && hit.collider.gameObject.name == "Node(Clone)")
+                //Use this if the player clicked on a cave other than the entrance
+                else if (hit.name == "Node(Clone)")
                 {
-                    int hitIndex = hit.collider.gameObject.GetComponent<nodeStat>().getIndex();
+                    int hitIndex = hit.GetComponent<nodeStat>().getIndex();
                     if (CaveIsReachable(hitIndex))
                     {
                         playerActualSpeed = playerSpeed;
                         if (caveIndex != hitIndex) isMoving = true;
                         caveIndex = hitIndex;
                         Debug.Log("Going to center of cave instead");
-                        targetPosition = hit.transform.gameObject.transform.position;
+                        targetPosition = hit.transform.position;
                         Debug.Log("Player index: " + caveIndex.ToString());
                         //Send new index to camera
-                        camera.GetComponent<cameraController>().changePlayerIndex(caveIndex);
+                        setExpectedTime();
+                        camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
                         numCaveMoves += 1;
                     }
                 }
                 //Check to see if debris is in the current cave
                 //Move to debris, set it to be destroyed, then move back
-                else if (hit.collider != null && hit.collider.gameObject.tag == "Debris")
+                else if (hit.tag == "Debris")
                 {
-                    GameObject debris = hit.collider.gameObject;
-                    if (!debris.GetComponent<debrisController>().getFlagDestroy())
+                    if (!hit.GetComponent<debrisController>().getFlagDestroy())
                     {
+                        cameraFollow = false;
                         //Check now if debris is in the same cave
-                        if ((caveIndex == 1 && debris.GetComponent<debrisController>().getChildOfRoot()) || (!debris.GetComponent<debrisController>().getChildOfRoot() && debris.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
+                        if ((caveIndex == 1 && hit.GetComponent<debrisController>().getChildOfRoot()) || (!hit.GetComponent<debrisController>().getChildOfRoot() && hit.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
                         {
                             playerActualSpeed = playerSpeed * 0.3f;
-                            storePosition = transform.position;
-                            targetPosition = debris.transform.position;
-                            debris.GetComponent<debrisController>().setFlagDestroy();
+                            targetPosition = hit.transform.position;
+                            setExpectedTime();
+                            hit.GetComponent<debrisController>().setFlagDestroy();
                             Debug.Log("Moving to debris");
                             clearDebris = true;
                         }
+                    }
+                }
+                //Check to see if a cave exit was clicked, then use its index to get the new cave
+                else if (hit.tag == "CaveExit")
+                {
+                    playerActualSpeed = playerSpeed;
+                    int tempIndex = hit.GetComponent<caveExitController>().targetIndex;
+                    if (tempIndex != caveIndex)
+                    {
+                        if (tempIndex == 1)
+                        {
+                            caveIndex = 1;
+                            targetPosition = root.transform.position;
+                            numCaveMoves += 1;
+                        }
+                        else if (CaveIsReachable(tempIndex))
+                        {
+                            caveIndex = tempIndex;
+                            targetPosition = root.GetComponent<johnRootController>().findObject(caveIndex).transform.position;
+                            numCaveMoves += 1;
+                        }
+                        setExpectedTime();
+                        camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
+                        Debug.Log("Going to cave this exits to.");
+                        Debug.Log("Player index: " + caveIndex.ToString());
                     }
                 }
 
                 //Back to working with any target position
                 targetPosition.z = transform.position.z;
 
+                //Reset elapsed time. The expected travel time has already been set
+                elapsedTime = 0;
+
                 //Get the directional vector from the player's location to the mouse input
                 Vector2 direction = new Vector2(targetPosition.x - transform.position.x, targetPosition.y - transform.position.y);
                 //Rotate toward mouse input
                 transform.up = direction;
             }
+        }
+    }
+
+    //Set an expected travel time, speeding it up if travel would take longer than maxTime seconds
+    void setExpectedTime()
+    {
+        Debug.Log((targetPosition - storePosition).magnitude);
+        float maxTime = 2;
+        expectedTime = (targetPosition - storePosition).magnitude;
+        if (expectedTime / playerActualSpeed > maxTime)
+        {
+            expectedTime = maxTime;
+        }
+        else
+        {
+            expectedTime /= playerActualSpeed;
         }
     }
 
@@ -170,24 +245,32 @@ public class playerSC : MonoBehaviour
     // FixedUpdate is called at a fixed interval. Use for physics code.
     private void FixedUpdate()
     {
-        if (transform.position != targetPosition)
+        //If the player performed an action that causes the player to move,
+        //the values below will be set and elapsed time will be 0 initially.
+        if (elapsedTime < expectedTime)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerActualSpeed * Time.deltaTime);
-
-            //Stop processes that require the player to be still
+            elapsedTime += Time.deltaTime;
+            float timePercent = elapsedTime / expectedTime;
+            transform.position = Vector3.Lerp(storePosition, targetPosition, timePercent);
             if (!isMoving)
             {
                 isMoving = true;
             }
         }
+        //If the player completed moving but was clearing debris, clear it and then
+        //swap the stored and target positions while resetting elapsed time to 0.
+        //The expected time needs no change because it's the same distance.
         else if (clearDebris)
         {
             //Doesn't work because of this function type, want to wait a second
             //yield return new WaitForSeconds(1.5f);
             targetPosition = storePosition;
+            storePosition = transform.position;
             Debug.Log("Moving away from debris");
             clearDebris = false;
+            elapsedTime = 0;
         }
+        //Perform this when the player isn't doing something that will cause them to move
         else
         {
             //Allow processes that require the player to be still
@@ -230,7 +313,7 @@ public class playerSC : MonoBehaviour
         transform.position = root.transform.position;
         targetPosition = transform.position;
         caveIndex = 1;
-        camera.GetComponent<cameraController>().changePlayerIndex(caveIndex);
+        camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, 0);
     }
 
     //Called by the minerSearchGame script, increments the number of shouts made
@@ -291,5 +374,10 @@ public class playerSC : MonoBehaviour
     public int getNumMinerShouts()
     {
         return numMinerShouts;
+    }
+
+    public bool getCameraFollow()
+    {
+        return cameraFollow;
     }
 }

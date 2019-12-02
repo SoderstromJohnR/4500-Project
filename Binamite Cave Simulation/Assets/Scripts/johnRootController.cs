@@ -593,6 +593,7 @@ public class johnRootController : MonoBehaviour
     //Generate sprites for exiting cave to go to another
     void setCaveExit()
     {
+        GameObject tempCaveExit;
         bool leftExit = false;
         bool rightExit = false;
         if (nodeIndices.Contains(2))
@@ -613,11 +614,13 @@ public class johnRootController : MonoBehaviour
         //Place the exits using above values if they are set to true
         if (leftExit)
         {
-            Instantiate(caveExit, transform.position, Quaternion.AngleAxis(angle + 90, Vector3.forward), transform);
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(angle + 90, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = 2;
         }
         if (rightExit)
         {
-            Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 - angle, Vector3.forward), transform);
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 - angle, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = 3;
         }
 
         //Now loop through other nodes and pass the startXDim and depthDistance values to calculate angles - don't need to start at index 0, already done

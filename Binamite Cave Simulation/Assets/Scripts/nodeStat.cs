@@ -100,6 +100,7 @@ public class nodeStat : MonoBehaviour
     public void setCaveExit(float xDim, float depthDistance, bool left, bool right)
     {
         //Set temporary variables to add cave exits appropriately
+        GameObject tempCaveExit;
         bool leftChild = left;
         bool rightChild = right;
 
@@ -118,11 +119,13 @@ public class nodeStat : MonoBehaviour
         //Place the cave exits to children
         if (left)
         {
-            Instantiate(caveExit, transform.position, Quaternion.AngleAxis(angle + 90, Vector3.forward), transform);
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(angle + 90, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = index * 2;
         }
         if (right)
         {
-            Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 - angle, Vector3.forward), transform);
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 - angle, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = index * 2 + 1;
         }
 
         //Now place the exit to parent
@@ -130,11 +133,13 @@ public class nodeStat : MonoBehaviour
         angle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg;
         if (index % 2 == 1)
         {
-            Instantiate(caveExit, transform.position, Quaternion.AngleAxis(90 - angle, Vector3.forward), transform);
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(90 - angle, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = index / 2;
         }
         else
         {
-            Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 + angle, Vector3.forward), transform);
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 + angle, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = index / 2;
         }
     }
 

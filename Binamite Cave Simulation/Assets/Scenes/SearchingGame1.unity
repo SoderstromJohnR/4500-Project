@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -587,10 +588,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5405280279933358578, guid: f68cf2a5eaf43b14eba446f1bc09ae8f,
-        type: 3}
-      propertyPath: m_Name
-      value: Root Node
+    - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
+      propertyPath: maxDepth
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5405280279933358572, guid: f68cf2a5eaf43b14eba446f1bc09ae8f,
         type: 3}
@@ -647,6 +647,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5405280279933358578, guid: f68cf2a5eaf43b14eba446f1bc09ae8f,
+        type: 3}
+      propertyPath: m_Name
+      value: Root Node
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
 --- !u!1001 &6561559388257934503
@@ -656,11 +661,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6561559387553444626, guid: 869f8e884e782f0428113e026a7af3b8,
-        type: 3}
-      propertyPath: m_Name
-      value: pauseObj
-      objectReference: {fileID: 0}
     - target: {fileID: 6561559387553444624, guid: 869f8e884e782f0428113e026a7af3b8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -716,20 +716,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6561559388406327679, guid: 869f8e884e782f0428113e026a7af3b8,
+    - target: {fileID: 6561559387553444626, guid: 869f8e884e782f0428113e026a7af3b8,
         type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1555612602}
-    - target: {fileID: 6561559389251414053, guid: 869f8e884e782f0428113e026a7af3b8,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6561559389251414053, guid: 869f8e884e782f0428113e026a7af3b8,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
+      propertyPath: m_Name
+      value: pauseObj
       objectReference: {fileID: 0}
     - target: {fileID: 6561559387798499973, guid: 869f8e884e782f0428113e026a7af3b8,
         type: 3}
@@ -742,6 +732,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6561559387798499973, guid: 869f8e884e782f0428113e026a7af3b8,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6561559388406327679, guid: 869f8e884e782f0428113e026a7af3b8,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1555612602}
+    - target: {fileID: 6561559389251414053, guid: 869f8e884e782f0428113e026a7af3b8,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6561559389251414053, guid: 869f8e884e782f0428113e026a7af3b8,
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
