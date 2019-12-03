@@ -11,9 +11,13 @@ public class nodeStat : MonoBehaviour
     [SerializeField] private bool leftDebris;
     [SerializeField] private bool rightDebris;
     private GameObject debris;
+
+    public bool visiting;
+    public bool visited;
     // Start is called before the first frame update
     void Start()
     {
+        visited = false;
         GetComponent<SpriteRenderer>().sortingLayerName = "Cave";
         
 
@@ -166,5 +170,34 @@ public class nodeStat : MonoBehaviour
     public void removeRightDebris()
     {
         rightDebris = false;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            visited = true;
+            //Fetch the SpriteRenderer from the GameObject
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to green
+            nodeImage.color = Color.green;
+        }
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            visiting = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            //Fetch the SpriteRenderer from the GameObject
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to blue
+            nodeImage.color = Color.white;
+        }
+        visiting = false;
     }
 }

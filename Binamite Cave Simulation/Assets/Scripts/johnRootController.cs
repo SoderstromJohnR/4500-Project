@@ -37,6 +37,8 @@ public class johnRootController : MonoBehaviour
     public int tempGamemode;
     public int tempEpisode;
 
+    public bool visiting;
+
     void Start()
     {
         activate = true;
@@ -272,6 +274,7 @@ public class johnRootController : MonoBehaviour
             setPaths(totalNodes);
             activate = false;
         }
+        setPathWidth();
     }
     
     //stretch function
@@ -671,5 +674,43 @@ public class johnRootController : MonoBehaviour
     public int getNumMovesVisitAll()
     {
         return numMovesVisitAll;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+
+            //Fetch the SpriteRenderer from the GameObject
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to green
+            nodeImage.color = Color.green;
+        }
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            visiting = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            //Fetch the SpriteRenderer from the GameObject
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to blue
+            nodeImage.color = Color.white;
+        }
+        visiting = false;
+    }
+    public void setPathWidth()
+    {
+        GameObject[] paths = GameObject.FindGameObjectsWithTag("Path");
+        foreach (GameObject currentPath in paths)
+        {
+            currentPath.transform.localScale = new Vector3(currentPath.transform.localScale.x, 5, currentPath.transform.localScale.z);
+        }
+
     }
 }

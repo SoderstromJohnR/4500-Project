@@ -19,6 +19,10 @@ public class minerSearchGame : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+        //Set the GameObject's Color to green
+        nodeImage.color = Color.black;
+
         GetComponent<SpriteRenderer>().sortingLayerName = "OtherMiner";
 
         minerShout = Resources.Load<GameObject>("minerShout");
@@ -121,5 +125,19 @@ public class minerSearchGame : MonoBehaviour
 
             minerFound = true;
         }
+
+        imVisible();
+    }
+    public void imVisible()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        float dist = Vector3.Distance(player.transform.position, transform.position);
+        if (dist <= 3)
+        {
+            SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
+            //Set the GameObject's Color to green
+            nodeImage.color = Color.white;
+        }
+        
     }
 }
