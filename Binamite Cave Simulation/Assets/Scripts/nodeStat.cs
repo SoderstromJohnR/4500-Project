@@ -96,6 +96,53 @@ public class nodeStat : MonoBehaviour
         }
     }
 
+    //Add exits to parent and/or child caves, appearance only
+    public void setCaveExit(float xDim, float depthDistance, bool left, bool right)
+    {
+        //Set temporary variables to add cave exits appropriately
+        GameObject tempCaveExit;
+        bool leftChild = left;
+        bool rightChild = right;
+
+        GameObject caveExit = Resources.Load<GameObject>("caveExit");
+        //Calculate necessary values to place and angle exits correctly
+        float deltaX = xDim;
+        //Didn't see a good way to wait for the depth to be set, unfortunately
+        for (int i = 1; i <= index; i *= 2)
+        {
+            deltaX /= 2;
+        }
+        float deltaY = depthDistance;
+        Vector3 size = GetComponent<Renderer>().bounds.size;
+        float angle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg;
+
+        //Place the cave exits to children
+        if (left)
+        {
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(angle + 90, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = index * 2;
+        }
+        if (right)
+        {
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 - angle, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = index * 2 + 1;
+        }
+
+        //Now place the exit to parent
+        deltaX *= 2;
+        angle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg;
+        if (index % 2 == 1)
+        {
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(90 - angle, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = index / 2;
+        }
+        else
+        {
+            tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 + angle, Vector3.forward), transform);
+            tempCaveExit.GetComponent<caveExitController>().targetIndex = index / 2;
+        }
+    }
+
     public int getIndex()
     {
         return index;

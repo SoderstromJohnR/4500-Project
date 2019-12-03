@@ -11,8 +11,8 @@ public class minerSearchGame : MonoBehaviour
     private Vector3 nodeSize;
     private float distance;
     private Vector3 minerShoutPosition;
-    private Vector3 change;
     private int caveIndex; // The index of the cave the miner is in
+    private GameObject root;
 
     private bool minerFound;
 
@@ -23,14 +23,15 @@ public class minerSearchGame : MonoBehaviour
 
         minerShout = Resources.Load<GameObject>("minerShout");
         minerThanks = Resources.Load<GameObject>("minerThanks");
+        root = GameObject.Find("Root Node");
 
-        player = GameObject.Find("playerPlaceholder");
-        nodeSize = GameObject.FindGameObjectWithTag("Node").GetComponent<Renderer>().bounds.size / 1.5f;
+        player = GameObject.Find("player");
+        nodeSize = GetComponentInParent<Renderer>().bounds.size / 1.5f;
         distance = nodeSize.x * nodeSize.x + nodeSize.y * nodeSize.y;
         distance = Mathf.Pow(distance, 0.5f);
 
         //Get cave index for miner from its parent cave.
-        caveIndex = transform.parent.gameObject.GetComponent<nodeStat>().getIndex();
+        caveIndex = GetComponentInParent<nodeStat>().getIndex();
         Debug.Log("Miner index: " + caveIndex.ToString());
 
         minerFound = false;
@@ -73,8 +74,10 @@ public class minerSearchGame : MonoBehaviour
             //If previous loop completed without finding the player, they are in the wrong subtree
             if (checkIndex != playerIndex)
             {
-                change = new Vector3(0, distance, 0);
-                minerShoutPosition = player.transform.position + change;
+                minerShoutPosition = root.GetComponent<johnRootController>().findObject(playerIndex / 2).transform.position;
+                minerShoutPosition -= player.transform.position;
+                minerShoutPosition = minerShoutPosition.normalized * distance;
+                minerShoutPosition += player.transform.position;
                 Debug.Log("I'm behind you!");
                 Instantiate(minerShout, minerShoutPosition, Quaternion.identity);
             }
@@ -86,16 +89,20 @@ public class minerSearchGame : MonoBehaviour
                 //speech bubble appropriately
                 if (isLeft)
                 {
-                    change = new Vector3(-1, -1, 0).normalized * distance;
-                    minerShoutPosition = player.transform.position + change;
+                    minerShoutPosition = root.GetComponent<johnRootController>().findObject(playerIndex * 2).transform.position;
+                    minerShoutPosition -= player.transform.position;
+                    minerShoutPosition = minerShoutPosition.normalized * distance;
+                    minerShoutPosition += player.transform.position;
                     Debug.Log("I'm on the left!");
                     Instantiate(minerShout, minerShoutPosition, Quaternion.identity);
                 }
                 //This goes off if the last node checked was the right child
                 else
                 {
-                    change = new Vector3(1, -1, 0).normalized * distance;
-                    minerShoutPosition = player.transform.position + change;
+                    minerShoutPosition = root.GetComponent<johnRootController>().findObject(playerIndex * 2 + 1).transform.position;
+                    minerShoutPosition -= player.transform.position;
+                    minerShoutPosition = minerShoutPosition.normalized * distance;
+                    minerShoutPosition += player.transform.position;
                     Debug.Log("I'm on the right!");
                     Instantiate(minerShout, minerShoutPosition, Quaternion.identity);
                 }
@@ -108,8 +115,7 @@ public class minerSearchGame : MonoBehaviour
         // Displays minerThanks object if the miner has been found for the first time
         if (!minerFound && player.GetComponent<playerSC>().checkMinerFound())
         {
-            change = new Vector3(0, distance, 0);
-            minerShoutPosition = player.transform.position + change;
+            minerShoutPosition = transform.parent.position + new Vector3(0, distance, 0);
             Debug.Log("You found me! Thanks!");
             Instantiate(minerThanks, minerShoutPosition, Quaternion.identity);
 

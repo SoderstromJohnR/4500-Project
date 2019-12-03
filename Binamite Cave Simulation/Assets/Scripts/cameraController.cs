@@ -8,20 +8,29 @@ public class cameraController : MonoBehaviour
     public GameObject root;
     public float cameraMargin;
 
+    private float currentSize;
+    private Vector3 currentPosition;
+    private float targetSize;
+    private Vector3 targetPosition;
     private float fullSizeCamera;
     private Vector3 fullCaveCamera;
     private float zoomSizeCamera;
     private Vector3 zoomCaveCamera;
-
-    private float currentSize;
+    private float nodeZoomSize;
+    
     private float distance;
     private float startMoveDistance;
     private float elapsedChangeZoom;
+    private float elapsedTimeChange;
+    private float expectedTimeChange;
+    private Vector3 lastPosition;
     private GameObject currentCave;
+    private Vector3 currentCavePosition;
     private bool nodesMade = false;
     private bool cameraFullScreen = true;
     private bool cameraZoomBig = true;
     private bool changingZoom = false;
+    private bool nodeZoomCamera = false;
     private List<int> nodeIndices;
     private Vector3 offset;
     private Camera cam;
@@ -42,60 +51,79 @@ public class cameraController : MonoBehaviour
             getCaveFullBounds();
             setFullCamera();
             getCaveZoomBounds(1);
+            getNodeZoomSize();
             nodesMade = true;
         }
 
         //Change camera mode on input
-        if (Input.GetKeyDown(KeyCode.M) && !changingZoom)
+        if (Input.GetKeyDown(KeyCode.M) && !changingZoom && !player.GetComponent<playerSC>().checkMoving())
         {
             changingZoom = true;
-            //Change camera setting, then shift camera based on it
             cameraFullScreen = !cameraFullScreen;
-            if (cameraFullScreen)
-            {
-                //setFullCamera();
-            }
-            else
-            {
-                //setZoomCamera();
-            }
+            setCurrentAndTargets();
+        }
+
+        //Change zoomed in camera mode on input
+        if (Input.GetKeyDown(KeyCode.N) && !cameraFullScreen && !changingZoom && !player.GetComponent<playerSC>().checkMoving())
+        {
+            changingZoom = true;
+            nodeZoomCamera = !nodeZoomCamera;
+            setCurrentAndTargets();
         }
         
+        //Change the size of the camera based on where we're zooming
         //Smooth changes from full cave network to zoomed in
         if (changingZoom)
         {
             elapsedChangeZoom += Time.deltaTime;
-            if (cameraFullScreen)
-            {
-                cam.orthographicSize = Mathf.SmoothStep(zoomSizeCamera, fullSizeCamera, elapsedChangeZoom);
-                float xCam = Mathf.SmoothStep(zoomCaveCamera.x, fullCaveCamera.x, elapsedChangeZoom);
-                float yCam = Mathf.SmoothStep(zoomCaveCamera.y, fullCaveCamera.y, elapsedChangeZoom);
-                transform.position = new Vector3(xCam, yCam, transform.position.z);
-            }
-            else
-            {
-                cam.orthographicSize = Mathf.SmoothStep(fullSizeCamera, zoomSizeCamera, elapsedChangeZoom);
-                float xCam = Mathf.SmoothStep(fullCaveCamera.x, zoomCaveCamera.x, elapsedChangeZoom);
-                float yCam = Mathf.SmoothStep(fullCaveCamera.y, zoomCaveCamera.y, elapsedChangeZoom);
-                transform.position = new Vector3(xCam, yCam, transform.position.z);
-            }
+            cam.orthographicSize = Mathf.SmoothStep(currentSize, targetSize, elapsedChangeZoom);
+            transform.position = Vector3.Lerp(currentPosition, targetPosition, elapsedChangeZoom);
             if (elapsedChangeZoom > 1.0f)
             {
                 changingZoom = false;
                 elapsedChangeZoom = 0;
             }
         }
-        
-        //If we're in zoomed mode, move the camera as the player changes cave
-        //Still need to try to improve the smoothness, but it works at least
-        if (!cameraFullScreen && (transform.position.x != currentCave.transform.position.x))
+
+        //This was smoother than the previous method, zooms the camera so that the parent and children nodes, if any existed,
+        //will always be visible in the partially zoomed in mode
+        if (!cameraFullScreen && elapsedTimeChange <= expectedTimeChange)
         {
-            //Find current distance from player to center of cave
-            distance = Mathf.Sqrt(Mathf.Pow(transform.position.x - currentCave.transform.position.x, 2) + Mathf.Pow(transform.position.y - currentCave.transform.position.y, 2));
-            //Get percent (float from 0 to 1) that increases the closer we get to the center of the cave
-            float zoomShift = (startMoveDistance - distance) / startMoveDistance;
-            cam.orthographicSize = Mathf.SmoothStep(currentSize, zoomSizeCamera, zoomShift);
+            elapsedTimeChange += Time.deltaTime;
+            float elapsedTimePercent = elapsedTimeChange / expectedTimeChange;
+            cam.orthographicSize = Mathf.SmoothStep(currentSize, targetSize, elapsedTimePercent);
+            if (elapsedTimeChange > expectedTimeChange)
+            {
+                expectedTimeChange = 0;
+            }
+        }
+        //Focus the camera on the player, placing it in the above if statement left the camera in an odd position
+        if (!cameraFullScreen && player.GetComponent<playerSC>().checkMoving() && player.GetComponent<playerSC>().getCameraFollow())
+        {
             transform.position = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
+        }
+    }
+
+    //Set current size and position, and target size and position based on camera booleans from input
+    //These will be used in the latter part of LateUpdate to move and zoom the camera
+    void setCurrentAndTargets()
+    {
+        currentSize = cam.orthographicSize;
+        currentPosition = transform.position;
+        if (cameraFullScreen)
+        {
+            targetSize = fullSizeCamera;
+            targetPosition = fullCaveCamera;
+        }
+        else if (!nodeZoomCamera)
+        {
+            targetSize = zoomSizeCamera;
+            targetPosition = zoomCaveCamera;
+        }
+        else
+        {
+            targetSize = nodeZoomSize;
+            targetPosition = zoomCaveCamera;
         }
     }
 
@@ -210,6 +238,13 @@ public class cameraController : MonoBehaviour
         zoomSizeCamera = Mathf.Max(((zoomMaxX - zoomMinX) / 2.0f) / cam.aspect, (zoomMaxY - zoomMinY) / 2.0f);
     }
 
+    //Get the size for zooming into an individual node
+    void getNodeZoomSize()
+    {
+        nodeZoomSize = root.GetComponent<Renderer>().bounds.size.y;
+        nodeZoomSize += 2 * cameraMargin;
+    }
+
     //Change camera position and size based on previously obtained 
     //minimum and maximum x and y values for current and directly connected caves
     void setZoomCamera()
@@ -220,7 +255,8 @@ public class cameraController : MonoBehaviour
 
     //If player changes index, expect it to use a function call
     //Change zoom camera position as index changes
-    public void changePlayerIndex(int index)
+    //Get expected time for the player to move
+    public void changePlayerIndex(int index, float expectedTime)
     {
         //Change the current cave to the new one for size and position changes
         if (index == 1)
@@ -232,12 +268,17 @@ public class cameraController : MonoBehaviour
             currentCave = root.GetComponent<johnRootController>().findObject(index);
         }
         getCaveZoomBounds(index);
-
+        currentCavePosition = currentCave.transform.position;
+        currentCavePosition.z = transform.position.z;
         //If we are not in full view, store the current camera size and distance to next cave
         //in order to smoothly move camera
         if (!cameraFullScreen)
         {
             currentSize = cam.orthographicSize;
+            expectedTimeChange = expectedTime;
+            elapsedTimeChange = 0;
+            elapsedTimeChange += Time.deltaTime;
+            lastPosition = transform.position;
             startMoveDistance = Mathf.Sqrt(Mathf.Pow(transform.position.x - currentCave.transform.position.x, 2) + Mathf.Pow(transform.position.y - currentCave.transform.position.y, 2));
         }
     }

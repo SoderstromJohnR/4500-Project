@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5172197077995127368}
   - component: {fileID: 3659341934738445424}
   m_Layer: 0
-  m_Name: minerPlaceholder
+  m_Name: lostMiner
   m_TagString: RandomMiner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5172197077995127369}
-  m_LocalRotation: {x: 0, y: 0, z: 0.92387956, w: 0.38268343}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.05, y: -0.05, z: 0}
-  m_LocalScale: {x: 0.07, y: 0.07, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 135}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5172197077995127371
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -69,14 +69,14 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1643339427
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ed45c7a7f89e25c41aed65a7f7179a07, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fa2ac71679028f04bb862dec66ba22b2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.82, y: 1.29}
+  m_Size: {x: 1.5, y: 4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -107,6 +107,6 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 1, y: 0}
+  m_Offset: {x: 0.99999994, y: -3.1974423e-14}
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 1.7728281
