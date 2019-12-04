@@ -21,7 +21,8 @@ public class johnRootController : MonoBehaviour
     private GameObject debris;
     private GameObject caveExit;
     private int tempIndex;
-    private List<int> nodeIndices = new List<int>(); //Added to track all indices of created nodes
+    [SerializeField] private List<int> nodeIndices = new List<int>(); //Added to track all indices of created nodes
+    private List<int> visitedIndices = new List<int>(); //Added to track indices of visited nodes
 
     [SerializeField] private int numMovesVisitAll;
 
@@ -41,24 +42,19 @@ public class johnRootController : MonoBehaviour
 
     void Awake()
     {
+        
         activate = true;
         totalNodes = 1;
-        //makePaths();
-
-        //Should get half of the x distance shown
-        //startXDim = Camera.main.orthographicSize;
-        //Now keep smaller for smaller trees, closer to full size as we add to the depth
-        //startXDim = (maxDepth / (maxDepth + 1)) * startXDim;
         float distPerNode = GetComponent<Renderer>().bounds.size.x;
         float gap = depthDistance / maxDepth;
         int numLeaves = (int)Mathf.Pow(2, maxDepth);
         float totalXDim = distPerNode * numLeaves + gap * (numLeaves - 1);
         startXDim = totalXDim / 2;
-        //startXDim = halfWidth * ((float)maxDepth / (float)(maxDepth + 2));
         currentDepth = 1;
         tempIndex = 2;
         indexCount = 1;
         nodeIndices.Add(1); //Index 1 will not be added through functions, it already exists
+        
 
         if (isLimitedToTotalNodes)
         {
@@ -613,7 +609,7 @@ public class johnRootController : MonoBehaviour
         {
             rightExit = true;
         }
-
+        
         //Calculate necessary values to place and angle debris correctly
         float deltaX = startXDim / 2;
         float deltaY = depthDistance;
@@ -688,8 +684,8 @@ public class johnRootController : MonoBehaviour
 
             //Fetch the SpriteRenderer from the GameObject
             SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
-            //Set the GameObject's Color to green
-            nodeImage.color = Color.green;
+            //Set the GameObject's Color to white
+            nodeImage.color = Color.white;
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -705,8 +701,9 @@ public class johnRootController : MonoBehaviour
         {
             //Fetch the SpriteRenderer from the GameObject
             SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
-            //Set the GameObject's Color to blue
-            nodeImage.color = Color.white;
+            //Set the GameObject's Color to sepia
+            Color32 color = new Color(232f / 255f, 184f / 255f, 137f / 255f);
+            nodeImage.color = color;
         }
         visiting = false;
     }
@@ -718,5 +715,87 @@ public class johnRootController : MonoBehaviour
             currentPath.transform.localScale = new Vector3(currentPath.transform.localScale.x, 5, currentPath.transform.localScale.z);
         }
 
+    }
+
+    //Track which nodes the player has visited
+    //If we added events to nodeStat to only push it out the first time
+    //they're visited, we could cut this down and reduce computing time,
+    //but close to the deadline now.
+    public void addVisitedIndex(int index)
+    {
+        if (!visitedIndices.Contains(index))
+        {
+            visitedIndices.Add(index);
+        }
+    }
+
+    //Checks if any unvisited nodes remain under the player
+    //Use only when the player is going to its parent
+    //Otherwise it will always return true
+    //Could use refactoring with the pre like traversal
+    public bool optimalMoveToParent(int target, int player)
+    {
+        if (target == player / 2)
+        {
+            Debug.Log("Checking optimal move");
+            List<int> tempList = nodeIndices;
+            Debug.Log(nodeIndices.Count);
+            Debug.Log(tempList.Count);
+            Debug.Log(getNodeIndices().Count);
+            tempList.Add(player);
+            //Stack simulates recursive traversal
+            Stack<int> tempStack = new Stack<int>(maxDepth + 2);
+            //Start with the player index
+            tempStack.Push(player);
+            int current = tempStack.Peek();
+            while (tempStack.Count > 0)
+            {
+                Debug.Log("Checking left side from: " + current.ToString());
+                //Calculate left index, travel to it if it exists
+                int left = current * 2;
+                while (tempList.Contains(left))
+                {
+                    Debug.Log("Moving down left side, index: " + left.ToString());
+                    if (!visitedIndices.Contains(left))
+                    {
+                        Debug.Log("Found an unvisited child: " + left.ToString());
+                        return false;
+                    }
+                    //Check the left side
+                    tempStack.Push(left);
+                    //Our current index is now the one we 'traveled' to, recalculate left child
+                    current = left;
+                    left = current * 2;
+                    //Remove current index so we don't revisit nodes multiple times
+                    tempList.Remove(current);
+                }
+                //Once we've traveled as far left as possible, without revisiting nodes, travel to right index if it exists
+                int right = left + 1;
+                if (tempList.Contains(right))
+                {
+                    if (!visitedIndices.Contains(right))
+                    {
+                        Debug.Log("Found an unvisited child: " + right.ToString());
+                        return false;
+                    }
+                    //Check the right side
+                    tempStack.Push(right);
+                    //Our current index is now the one we 'traveled' to, don't need to recalculate since this is an if statement
+                    current = right;
+                    tempList.Remove(current);
+                }
+                //If there are no left or right children, remove the current index and 'travel' back to the parent
+                else
+                {
+                    if (tempStack.Pop() != player)
+                    {
+                        Debug.Log("Moving back up list to check");
+                        current = tempStack.Peek();
+                    }
+                }
+            }
+        }
+        Debug.Log("No unvisited children");
+        return true;
     }
 }

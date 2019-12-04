@@ -101,6 +101,7 @@ public class playerSC : MonoBehaviour
                 {
                     if (CaveIsReachable(1))
                     {
+                        root.GetComponent<johnRootController>().addVisitedIndex(1);
                         playerActualSpeed = playerSpeed;
                         if (caveIndex != 1) isMoving = true;
                         caveIndex = 1;
@@ -118,6 +119,7 @@ public class playerSC : MonoBehaviour
                     int hitIndex = hit.GetComponent<nodeStat>().getIndex();
                     if (CaveIsReachable(hitIndex))
                     {
+                        root.GetComponent<johnRootController>().addVisitedIndex(hitIndex);
                         playerActualSpeed = playerSpeed;
                         if (caveIndex != hitIndex) isMoving = true;
                         caveIndex = hitIndex;
@@ -159,12 +161,14 @@ public class playerSC : MonoBehaviour
                     {
                         if (tempIndex == 1)
                         {
+                            root.GetComponent<johnRootController>().addVisitedIndex(tempIndex);
                             caveIndex = 1;
                             targetPosition = root.transform.position;
                             numCaveMoves += 1;
                         }
                         else if (CaveIsReachable(tempIndex))
                         {
+                            root.GetComponent<johnRootController>().addVisitedIndex(tempIndex);
                             caveIndex = tempIndex;
                             targetPosition = root.GetComponent<johnRootController>().findObject(caveIndex).transform.position;
                             numCaveMoves += 1;
@@ -209,6 +213,14 @@ public class playerSC : MonoBehaviour
     //True if the cave with index targetIndex is reachable from the cave with index caveIndex
     private bool CaveIsReachable(int targetIndex)
     {
+        //May want to add some check here for gamemode, since it's not needed for
+        //something like breadth-first search
+        bool optimalMove = root.GetComponent<johnRootController>().optimalMoveToParent(targetIndex, caveIndex);
+        if (!optimalMove)
+        {
+            Debug.Log("Go back! Bad move!");
+        }
+
         //Get the current node and find if it has debris blocking the path
         //Not necessary in checking for parent node access, any debris is already destroyed
         bool left = false;
