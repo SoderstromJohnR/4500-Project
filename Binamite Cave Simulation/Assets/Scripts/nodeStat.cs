@@ -178,8 +178,8 @@ public class nodeStat : MonoBehaviour
             visited = true;
             //Fetch the SpriteRenderer from the GameObject
             SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
-            //Set the GameObject's Color to green
-            nodeImage.color = Color.green;
+            //Set the GameObject's Color to white
+            nodeImage.color = Color.white;
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -195,9 +195,11 @@ public class nodeStat : MonoBehaviour
         {
             //Fetch the SpriteRenderer from the GameObject
             SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
-            //Set the GameObject's Color to blue
-            nodeImage.color = Color.white;
+            //Set the GameObject's Color to sepia
+            Color32 color = new Color(232f / 255f, 184f / 255f, 137f / 255f);
+            nodeImage.color = color;
         }
         visiting = false;
+        
     }
 }
