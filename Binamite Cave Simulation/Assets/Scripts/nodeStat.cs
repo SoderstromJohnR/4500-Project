@@ -5,7 +5,9 @@ using UnityEngine;
 public class nodeStat : MonoBehaviour
 {
     public int depth;
-    public int index;
+
+    public int index; ///
+
     private float yPosition;
     private int currentDepth;
     [SerializeField] private bool leftDebris;

@@ -79,11 +79,17 @@ public class johnRootController : MonoBehaviour
 
         caveExit = Resources.Load<GameObject>("caveExit");
         setCaveExit();
-        //Use for first gamemode
-        debris = Resources.Load<GameObject>("basicDebrisPlaceholder");
-        setInitialDebris(true, true);
-        //Use for second gamemode, episode 2
-        setRandomMiner();
+        // Use for first gamemode
+        if (tempGamemode == 11) {
+            debris = Resources.Load<GameObject>("basicDebrisPlaceholder");
+            setInitialDebris(true, true);
+        }
+
+        // Use for second gamemode, episode 2
+        else if (tempGamemode == 22)
+        {
+            setRandomMiner();
+        }
 
         Invoke("preLikeTraverse", .5f);
     }

@@ -154,7 +154,8 @@ public class playerSC : MonoBehaviour
                 {
                     playerActualSpeed = playerSpeed;
                     int tempIndex = hit.GetComponent<caveExitController>().targetIndex;
-                    if (tempIndex != caveIndex)
+                    int exitCaveIndex = hit.GetComponentInParent<nodeStat>().index;
+                    if (tempIndex != caveIndex && exitCaveIndex == caveIndex)
                     {
                         if (tempIndex == 1)
                         {

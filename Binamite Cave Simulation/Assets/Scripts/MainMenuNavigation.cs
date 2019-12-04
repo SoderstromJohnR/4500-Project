@@ -9,7 +9,7 @@ public class MainMenuNavigation : MonoBehaviour
     {
         print("PlayCavingGame firing!");
 
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("CavingGame1");
 
     }
 
@@ -17,7 +17,7 @@ public class MainMenuNavigation : MonoBehaviour
     {
         print("PlaySearchingGame firing!");
 
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("SearchingGame1");
     }
 
 

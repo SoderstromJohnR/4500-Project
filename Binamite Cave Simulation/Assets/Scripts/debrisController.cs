@@ -26,15 +26,30 @@ public class debrisController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {        
+        if (Input.GetKeyDown(KeyCode.D) && detonationIsAllowed())
+        {
+            removeDebris();
+        }
+    }
+    
+    // Returns true if dynamite is flagged for removal in mode 0
+    // Only true in mode 1 where player is in root and not moving
+    private bool detonationIsAllowed()
     {
-        if (Input.GetKeyDown(KeyCode.D) && flagDestroy && tempGamemode == 0)
+        // Returns true if there is debris to be detonated
+        if(tempGamemode == 0)
         {
-            removeDebris();
-        }
-        else if (Input.GetKeyDown(KeyCode.D) && flagDestroy && tempGamemode == 1 && player.GetComponent<playerSC>().getIndex() == 1)
+            return flagDestroy;
+
+        // Returns true if there is debris to be detonated and the player is stationary in the root node
+        }else if (tempGamemode == 1)
         {
-            removeDebris();
+            return flagDestroy
+            && player.GetComponent<playerSC>().getIndex() == 1
+            && !player.GetComponent<playerSC>().checkMoving();
         }
+        return false;
     }
 
     //If player clicks on debris, will call to set it to be destroyed
