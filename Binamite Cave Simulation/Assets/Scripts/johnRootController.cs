@@ -39,7 +39,7 @@ public class johnRootController : MonoBehaviour
 
     public bool visiting;
 
-    void Start()
+    void Awake()
     {
         activate = true;
         totalNodes = 1;

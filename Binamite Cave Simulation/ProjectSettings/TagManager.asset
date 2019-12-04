@@ -12,6 +12,7 @@ TagManager:
   - Debris
   - CaveExit
   - Root
+  - Navigation
   layers:
   - Default
   - TransparentFX
