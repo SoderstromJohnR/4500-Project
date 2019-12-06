@@ -125,11 +125,13 @@ public class nodeStat : MonoBehaviour
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(angle + 90, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = index * 2;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = index;
         }
         if (right)
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 - angle, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = index * 2 + 1;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = index;
         }
 
         //Now place the exit to parent
@@ -139,11 +141,13 @@ public class nodeStat : MonoBehaviour
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(90 - angle, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = index / 2;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = index;
         }
         else
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 + angle, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = index / 2;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = index;
         }
     }
 

@@ -21,6 +21,12 @@ public class johnRootController : MonoBehaviour
     private GameObject debris;
     private GameObject caveExit;
     private int tempIndex;
+
+    //We learned later that, at least while testing in the editor, the list gets reset
+    //Unfortunately, this makes it harder to test for a suboptimal move going to a parent
+    //For our initial purposes however, this still works in finding the minimum number
+    //of moves to visit all caves and generating the full size camera bounds.
+    //For tracking suboptimal moves with visitedIndices, more work is needed.
     [SerializeField] private List<int> nodeIndices = new List<int>(); //Added to track all indices of created nodes
     private List<int> visitedIndices = new List<int>(); //Added to track indices of visited nodes
 
@@ -40,6 +46,9 @@ public class johnRootController : MonoBehaviour
 
     public bool visiting;
 
+    /* Calculate and instantiate everything for a binary tree at the start
+     * of the game. Automatically called at the start of the scene.
+     */
     void Awake()
     {
         
@@ -55,11 +64,13 @@ public class johnRootController : MonoBehaviour
         indexCount = 1;
         nodeIndices.Add(1); //Index 1 will not be added through functions, it already exists
         
-
+        //Check first if a specific number of nodes for the tree are desired
         if (isLimitedToTotalNodes)
         {
             createLimitedNumberCaves();
         }
+        //Create either a complete or an incomplete binary tree, with a percent chance
+        //that can be modified through chanceCompleteTree including 0% and 100%.
         else
         {
             float typeCaveNetwork = Random.Range(0.0f, 1.0f);
@@ -73,20 +84,26 @@ public class johnRootController : MonoBehaviour
             }
         }
 
+        //Load the caveExit object and set on all nodes after they have been initialized
         caveExit = Resources.Load<GameObject>("caveExit");
         setCaveExit();
+
         // Use for first gamemode
+        //Adds debris to all nodes with children, unless specified otherwise
         if (tempGamemode == 11) {
             debris = Resources.Load<GameObject>("basicDebrisPlaceholder");
             setInitialDebris(true, true);
         }
 
         // Use for second gamemode, episode 2
+        //Sets a lost miner in a random max depth node
         else if (tempGamemode == 22)
         {
             setRandomMiner();
         }
 
+        //Pause for half a second to make sure the list is correct, then find
+        //the minimum number of moves to visit all trees
         Invoke("preLikeTraverse", .5f);
     }
 
@@ -621,11 +638,13 @@ public class johnRootController : MonoBehaviour
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(angle + 90, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = 2;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = 1;
         }
         if (rightExit)
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 - angle, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = 3;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = 1;
         }
 
         //Now loop through other nodes and pass the startXDim and depthDistance values to calculate angles - don't need to start at index 0, already done

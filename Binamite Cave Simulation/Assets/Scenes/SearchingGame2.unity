@@ -214,6 +214,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6436714496432262621, guid: ba04195c556335140aada68856b528e3,
+        type: 3}
+      propertyPath: m_DrawHalo
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6436714496432262623, guid: ba04195c556335140aada68856b528e3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -833,7 +838,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
       propertyPath: maxDepth
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 370671975, guid: f68cf2a5eaf43b14eba446f1bc09ae8f, type: 3}
       propertyPath: tempGamemode
