@@ -8,7 +8,7 @@ public class reveal : MonoBehaviour
     void Start()
     {
         SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
-        //Set the GameObject's Color to green
+        //Set the GameObject's Color to black
         nodeImage.color = Color.black;
     }
 
@@ -20,7 +20,7 @@ public class reveal : MonoBehaviour
         if (dist <= 3)
         {
             SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
-            //Set the GameObject's Color to green
+            //Set the GameObject's Color to white
             nodeImage.color = Color.white;
         }
     }
