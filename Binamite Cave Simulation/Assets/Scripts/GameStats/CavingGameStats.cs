@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// This class defines a record of player activity between detonation events, including the indeces
+/// This class defines a record of player activity between detonation events, including the Indices
 /// of the nodes visited and the indecies of the rubble piles that have been rigged with dynamite.
 /// </summary>
 public class RiggingRecord
 {
-    public List<int> riggedRubbleIndeces; // The indecies of rubble piles rigged
+    public List<int> riggedRubbleIndices; // The indecies of rubble piles rigged
     public List<int> riggingTraversal; // Indecies of visited nodes since previous detonation
 
     public RiggingRecord()
     {
-        riggedRubbleIndeces = new List<int>();
+        riggedRubbleIndices = new List<int>();
         riggingTraversal = new List<int>();
     }
 }
 
 /// <summary>
-/// This class extends the GameStats class to track stats particular to a caving game, including the indeces
+/// This class extends the GameStats class to track stats particular to a caving game, including the Indices
 /// of the nodes visited and the indecies of the rubble piles that have been rigged with dynamite, the
 /// number of times the player pressed the dynamite button and some dynamite exploded, and the number
 /// of sticks of dynamite that were exploded.
@@ -32,6 +32,7 @@ public class CavingGameStats : GameStats
 
     public CavingGameStats()
     {
+        riggingRecords = new List<RiggingRecord>();
         riggingRecords.Add(new RiggingRecord());
         numDetonations = 0;
         numExplosions = 0;
@@ -66,7 +67,7 @@ public class CavingGameStats : GameStats
             copy = new RiggingRecord();
 
             // Copies each member list in each record
-            copy.riggedRubbleIndeces = record.riggedRubbleIndeces.GetRange(0, record.riggedRubbleIndeces.Count);
+            copy.riggedRubbleIndices = record.riggedRubbleIndices.GetRange(0, record.riggedRubbleIndices.Count);
             copy.riggingTraversal = copy.riggingTraversal.GetRange(0, copy.riggingTraversal.Count);
 
             returnRecords.Add(copy);
@@ -85,12 +86,12 @@ public class CavingGameStats : GameStats
         Debug.Log("GameStats - numDetonations: " + numDetonations);
 
         // Adds the number of charges rigged since last detonation to numExplosions
-        numExplosions += riggingRecords[riggingRecords.Count - 1].riggedRubbleIndeces.Count;
+        numExplosions += riggingRecords[riggingRecords.Count - 1].riggedRubbleIndices.Count;
 
         riggingRecords.Add(new RiggingRecord());
     }
 
-    /*  This method adds the passed index to the visitedNodeIndeces set and the traversal list,
+    /*  This method adds the passed index to the visitedNodeIndices set and the traversal list,
      *  and the list of nodes visited since the previous detonation (riggingTraversal).
      *  Call this method when and only when the player has moved to a new node. */
     public void addVisitedNodeIndex(int index)
@@ -107,6 +108,6 @@ public class CavingGameStats : GameStats
     public void addRiggedRubbleIndex(int index)
     {
         // Adds the index to the current rigging record
-        riggingRecords[riggingRecords.Count - 1].riggedRubbleIndeces.Add(index);
+        riggingRecords[riggingRecords.Count - 1].riggedRubbleIndices.Add(index);
     }
 }

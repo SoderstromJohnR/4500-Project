@@ -5,6 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuNavigation : MonoBehaviour
 {
+    void Awake()
+    {
+        // Initializes scene transition manager instance
+        SceneTransitionManager.Instance.initialize();
+    }
+
     public void PlayCavingGame()
     {
         print("PlayCavingGame firing!");

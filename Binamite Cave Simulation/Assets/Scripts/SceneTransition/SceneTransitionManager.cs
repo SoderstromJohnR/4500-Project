@@ -14,15 +14,6 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     public GameStats currentGameStats; // Statistics on player actions in the current game
     public List<GameStats> gameStatsList; // Collection of all game statistics
 
-    /*
-    // The set of tree preserving transitions
-    (string, string)[] treePreservingTransitions = new (string, string)[]
-    {
-        ("SearchingGame1", "SearchingGame2"),
-        ("SearchingGame3", "SearchingGame4")
-    };
-    */
-    
     // The set of transitions to be substituted with a transition to the main menu
     (string, string) mainMenuTransition = ("SearchingGame2", "CavingGame1");
 
@@ -30,8 +21,16 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     {
         Debug.Log("CONSTRUCTING SceneTransitionManager");
 
+        gameStatsList = new List<GameStats>();
+
         // Sets newStats as SceneManager delegate method
         SceneManager.sceneLoaded += newStats;
+    }
+
+    // This method will trigger the construction of a SceneTransitionManager if one doesn't exist
+    public void initialize()
+    {
+        Debug.Log("initialize called on scene transition manager");
     }
 
     /* This method creates a new GameStats object, assigns it to currentGameStats, and adds
