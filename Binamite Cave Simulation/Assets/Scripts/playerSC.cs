@@ -109,7 +109,10 @@ public class playerSC : MonoBehaviour
                         //Send new index to camera
                         setExpectedTime();
                         camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
+
+                        // Records cave move
                         numCaveMoves += 1;
+                        SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(1);
                     }
                 }
                 //Use this if the player clicked on a cave other than the entrance
@@ -127,7 +130,10 @@ public class playerSC : MonoBehaviour
                         //Send new index to camera
                         setExpectedTime();
                         camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
+
+                        // Records cave move
                         numCaveMoves += 1;
+                        SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(hitIndex);
                     }
                 }
                 //Check to see if debris is in the current cave
@@ -161,13 +167,19 @@ public class playerSC : MonoBehaviour
                         {
                             caveIndex = 1;
                             targetPosition = root.transform.position;
+
+                            // Records cave move
                             numCaveMoves += 1;
+                            SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(1);
                         }
                         else if (CaveIsReachable(tempIndex))
                         {
                             caveIndex = tempIndex;
                             targetPosition = root.GetComponent<johnRootController>().findObject(caveIndex).transform.position;
+
+                            // Records cave move
                             numCaveMoves += 1;
+                            SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(tempIndex);
                         }
                         setExpectedTime();
                         camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);

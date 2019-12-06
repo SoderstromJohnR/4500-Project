@@ -98,7 +98,7 @@ public class GameStats
         }
 
         this.existingNodeIndices = Indices.GetRange(0, Indices.Count); // Copies argument list values
-        printList(this.existingNodeIndices);
+        Debug.Log("GameStats - Setting existing nodes: \n" + listToString(Indices));
     }
 
     /*  This method adds the passed index to the visitedNodeIndices set and the traversal list.
@@ -107,11 +107,11 @@ public class GameStats
     {
         visitedNodeIndices.Add(index); // Adds index to HashSet
         traversal.Add(index); // Adds index to list
-        Debug.Log("GameStats - Adding index: " + index);
-        printList(traversal);
+        Debug.Log("GameStats - Adding index: " + index
+            + "\n Traversal: " + listToString(traversal));
     }
 
-    public void printList(List<int> list)
+    private string listToString(List<int> list)
     {
         string listString = "";
 
@@ -119,7 +119,8 @@ public class GameStats
         {
             listString += index.ToString() + ", ";
         }
+        listString.Remove(listString.Length - 1, 1);
 
-        Debug.Log(listString);
+        return listString;
     }
 }
