@@ -42,7 +42,9 @@ public class johnRootController : MonoBehaviour
 
     void Awake()
     {
-        
+        // Initializes SceneTransitionManager singleton if one doesn't already exist
+        SceneTransitionManager.Instance.initialize();
+
         activate = true;
         totalNodes = 1;
         float distPerNode = GetComponent<Renderer>().bounds.size.x;
@@ -88,6 +90,12 @@ public class johnRootController : MonoBehaviour
         }
 
         Invoke("preLikeTraverse", .5f);
+    }
+
+    void Start()
+    {
+        // Adds existing node indices to the current game stats
+        SceneTransitionManager.Instance.currentGameStats.setExistingNodeIndices(nodeIndices);
     }
 
     void createCompleteCaves(int depth = 1, int divX = 1, float currentX = 0.0f, int index = 2)
