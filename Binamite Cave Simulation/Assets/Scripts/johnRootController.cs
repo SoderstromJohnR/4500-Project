@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class johnRootController : MonoBehaviour
 {
     
@@ -36,6 +37,8 @@ public class johnRootController : MonoBehaviour
 
     public int tempGamemode;
     public int tempEpisode;
+
+    public Episode episode;
 
     public bool visiting;
 
@@ -83,13 +86,13 @@ public class johnRootController : MonoBehaviour
         caveExit = Resources.Load<GameObject>("caveExit");
         setCaveExit();
         // Use for first gamemode
-        if (tempGamemode == 11) {
+        if (tempGamemode == 11 || episode.mode() == GameMode.caving ) {
             debris = Resources.Load<GameObject>("basicDebrisPlaceholder");
             setInitialDebris(true, true);
         }
 
         // Use for second gamemode, episode 2
-        else if (tempGamemode == 22)
+        else if (tempGamemode == 22 || episode == Episode.searching2)
         {
             setRandomMiner();
         }

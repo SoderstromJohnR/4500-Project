@@ -56,12 +56,13 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\BackButton.cs" />
+     <Compile Include="Assets\Scripts\Enums\EpisodeEnums.cs" />
      <Compile Include="Assets\Scripts\GameStats\CavingGameStats.cs" />
      <Compile Include="Assets\Scripts\GameStats\GameStats.cs" />
      <Compile Include="Assets\Scripts\GameStats\SearchingGameStats.cs" />
+     <Compile Include="Assets\Scripts\Interruption\playerInterruptionActivatorController.cs" />
+     <Compile Include="Assets\Scripts\Interruption\playerInterruptionController.cs" />
      <Compile Include="Assets\Scripts\MainMenuNavigation.cs" />
-     <Compile Include="Assets\Scripts\SceneTransition\Episode.cs" />
-     <Compile Include="Assets\Scripts\SceneTransition\GameMode.cs" />
      <Compile Include="Assets\Scripts\SceneTransition\SceneTransitionManager.cs" />
      <Compile Include="Assets\Scripts\SceneTransition\Singleton.cs" />
      <Compile Include="Assets\Scripts\audioObjController.cs" />
@@ -82,11 +83,17 @@
      <Compile Include="Assets\Scripts\optionsController.cs" />
      <Compile Include="Assets\Scripts\pathController.cs" />
      <Compile Include="Assets\Scripts\pauseController.cs" />
+     <Compile Include="Assets\Scripts\pauseMenuController.cs" />
      <Compile Include="Assets\Scripts\playerSC.cs" />
      <Compile Include="Assets\Scripts\reveal.cs" />
      <Compile Include="Assets\Scripts\rootController.cs" />
      <Compile Include="Assets\Scripts\tarikTestChange.cs" />
      <Compile Include="Assets\Scripts\volumeController.cs" />
+     <Compile Include="Assets\asdf.cs" />
+     <Compile Include="Assets\driverController.cs" />
+     <Compile Include="Assets\interrupterController.cs" />
+     <Compile Include="Assets\interrupterInstantiater.cs" />
+     <Compile Include="Assets\playerInterrupterTestDriver.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
