@@ -86,8 +86,6 @@
      <Compile Include="Assets\Scripts\pauseMenuController.cs" />
      <Compile Include="Assets\Scripts\playerSC.cs" />
      <Compile Include="Assets\Scripts\reveal.cs" />
-     <Compile Include="Assets\Scripts\rootController.cs" />
-     <Compile Include="Assets\Scripts\tarikTestChange.cs" />
      <Compile Include="Assets\Scripts\volumeController.cs" />
      <Compile Include="Assets\asdf.cs" />
      <Compile Include="Assets\driverController.cs" />

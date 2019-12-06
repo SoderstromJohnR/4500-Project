@@ -125,11 +125,13 @@ public class nodeStat : MonoBehaviour
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(angle + 90, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = index * 2;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = index;
         }
         if (right)
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 - angle, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = index * 2 + 1;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = index;
         }
 
         //Now place the exit to parent
@@ -139,11 +141,13 @@ public class nodeStat : MonoBehaviour
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(90 - angle, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = index / 2;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = index;
         }
         else
         {
             tempCaveExit = Instantiate(caveExit, transform.position, Quaternion.AngleAxis(270 + angle, Vector3.forward), transform);
             tempCaveExit.GetComponent<caveExitController>().targetIndex = index / 2;
+            tempCaveExit.GetComponent<caveExitController>().originIndex = index;
         }
     }
 
@@ -178,8 +182,8 @@ public class nodeStat : MonoBehaviour
             visited = true;
             //Fetch the SpriteRenderer from the GameObject
             SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
-            //Set the GameObject's Color to green
-            nodeImage.color = Color.green;
+            //Set the GameObject's Color to white
+            nodeImage.color = Color.white;
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -195,9 +199,11 @@ public class nodeStat : MonoBehaviour
         {
             //Fetch the SpriteRenderer from the GameObject
             SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
-            //Set the GameObject's Color to blue
-            nodeImage.color = Color.white;
+            //Set the GameObject's Color to sepia
+            Color32 color = new Color(232f / 255f, 184f / 255f, 137f / 255f);
+            nodeImage.color = color;
         }
         visiting = false;
+        
     }
 }

@@ -41,7 +41,7 @@ public class minerSearchGame : MonoBehaviour
         minerFound = false;
     }
 
-    int getCaveIndex()
+    public int getCaveIndex()
     {
         return caveIndex;
     }
@@ -72,13 +72,22 @@ public class minerSearchGame : MonoBehaviour
                     isLeft = false;
                 }
                 //Move to next parent node
-                checkIndex = checkIndex / 2;
+                checkIndex /= 2;
             }
 
             //If previous loop completed without finding the player, they are in the wrong subtree
             if (checkIndex != playerIndex)
             {
-                minerShoutPosition = root.GetComponent<johnRootController>().findObject(playerIndex / 2).transform.position;
+                //Checks if the parent node of the player is the root, which doesn't have an index to find
+                //through findObject(int index)
+                if (playerIndex / 2 == 1)
+                {
+                    minerShoutPosition = root.transform.position;
+                }
+                else
+                {
+                    minerShoutPosition = root.GetComponent<johnRootController>().findObject(playerIndex / 2).transform.position;
+                }
                 minerShoutPosition -= player.transform.position;
                 minerShoutPosition = minerShoutPosition.normalized * distance;
                 minerShoutPosition += player.transform.position;
