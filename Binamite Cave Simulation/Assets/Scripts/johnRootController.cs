@@ -443,9 +443,6 @@ public class johnRootController : MonoBehaviour
                 Stretch(Instantiate(path), parentNode.transform.position, rightChild.transform.position, true);
             }
         }
-        
-        
-
 
     }
 
@@ -763,32 +760,34 @@ public class johnRootController : MonoBehaviour
     //Use only when the player is going to its parent
     //Otherwise it will always return true
     //Could use refactoring with the pre like traversal
-    public bool optimalMoveToParent(int target, int player)
+    public bool optimalMoveToParent(int targetIndex, int playerIndex)
     {
-        if (target == player / 2)
+        if (targetIndex == playerIndex / 2)
         {
-            Debug.Log("Checking optimal move");
-            List<int> tempList = SceneTransitionManager.Instance.currentGameStats.getExistingNodeIndices();
+            //Debug.Log("Checking optimal move");
+            List<int> uncheckedExistingIndices = SceneTransitionManager.Instance.currentGameStats.getExistingNodeIndices();
+            HashSet<int> visitedIndices = SceneTransitionManager.Instance.currentGameStats.getVisitedNodeIndices();
+
             Debug.Log(nodeIndices.Count);
-            Debug.Log(tempList.Count);
+            Debug.Log(uncheckedExistingIndices.Count);
             Debug.Log(getNodeIndices().Count);
-            tempList.Add(player);
+            uncheckedExistingIndices.Add(playerIndex);
             //Stack simulates recursive traversal
             Stack<int> tempStack = new Stack<int>(maxDepth + 2);
             //Start with the player index
-            tempStack.Push(player);
+            tempStack.Push(playerIndex);
             int current = tempStack.Peek();
             while (tempStack.Count > 0)
             {
-                Debug.Log("Checking left side from: " + current.ToString());
+                //Debug.Log("Checking left side from: " + current.ToString());
                 //Calculate left index, travel to it if it exists
                 int left = current * 2;
-                while (tempList.Contains(left))
+                while (uncheckedExistingIndices.Contains(left))
                 {
-                    Debug.Log("Moving down left side, index: " + left.ToString());
+                    //Debug.Log("Moving down left side, index: " + left.ToString());
                     if (!visitedIndices.Contains(left))
                     {
-                        Debug.Log("Found an unvisited child: " + left.ToString());
+                        //Debug.Log("Found an unvisited child: " + left.ToString());
                         return false;
                     }
                     //Check the left side
@@ -797,29 +796,29 @@ public class johnRootController : MonoBehaviour
                     current = left;
                     left = current * 2;
                     //Remove current index so we don't revisit nodes multiple times
-                    tempList.Remove(current);
+                    uncheckedExistingIndices.Remove(current);
                 }
                 //Once we've traveled as far left as possible, without revisiting nodes, travel to right index if it exists
                 int right = left + 1;
-                if (tempList.Contains(right))
+                if (uncheckedExistingIndices.Contains(right))
                 {
                     if (!visitedIndices.Contains(right))
                     {
-                        Debug.Log("Found an unvisited child: " + right.ToString());
+                        //Debug.Log("Found an unvisited child: " + right.ToString());
                         return false;
                     }
                     //Check the right side
                     tempStack.Push(right);
                     //Our current index is now the one we 'traveled' to, don't need to recalculate since this is an if statement
                     current = right;
-                    tempList.Remove(current);
+                    uncheckedExistingIndices.Remove(current);
                 }
                 //If there are no left or right children, remove the current index and 'travel' back to the parent
                 else
                 {
-                    if (tempStack.Pop() != player)
+                    if (tempStack.Pop() != playerIndex)
                     {
-                        Debug.Log("Moving back up list to check");
+                        //Debug.Log("Moving back up list to check");
                         current = tempStack.Peek();
                     }
                 }
@@ -828,4 +827,23 @@ public class johnRootController : MonoBehaviour
         Debug.Log("No unvisited children");
         return true;
     }
+
+  /*  bool isOptimalMove(int targetIndex, int playerIndex)
+    {
+        // Gets lists of indices of caves that exist and those of caves that have been visited
+        List<int> existingIndices = SceneTransitionManager.Instance.currentGameStats.getExistingNodeIndices();
+        List<int> visitedIndices = SceneTransitionManager.Instance.currentGameStats.getExistingNodeIndices();
+
+        // Returns true if the player is moving to an unvisited child
+        if (targetIndex > playerIndex && !visitedIndices.Contains(targetIndex)) { return true;  }
+
+        void addSubTreeIndices(int playerIndex)
+        {
+            
+        }
+
+
+
+        // Populates list with indices that could be in the subtree rooted at playerIndex
+    } */
 }

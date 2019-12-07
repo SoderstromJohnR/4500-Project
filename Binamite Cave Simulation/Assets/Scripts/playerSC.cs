@@ -20,6 +20,9 @@ public class playerSC : MonoBehaviour
     private bool clearDebris = false;
     private bool cameraFollow = true;
 
+    private GameObject badCaveTarget; // Temporarily stores a sub-optimal destination cave
+    private int badCaveTargetIndex;  // Temporarily stores the index of a sub-optimal destination
+
     private Vector3 targetPosition;
     private Vector3 clickPosition;
     private Vector3 storePosition;
@@ -264,10 +267,20 @@ public class playerSC : MonoBehaviour
         //May want to add some check here for gamemode, since it's not needed for
         //something like breadth-first search
         
-        bool optimalMove = root.GetComponent<johnRootController>().optimalMoveToParent(targetIndex, caveIndex);
-        if (!optimalMove)
+        // Interrupts the player if the current episode is searching1 and the move is not optimal
+        if (SceneTransitionManager.Instance.currentEpisode == Episode.searching1
+           && !root.GetComponent<johnRootController>().optimalMoveToParent(targetIndex, caveIndex))
         {
             Debug.Log("Go back! Bad move!");
+
+            // Records target
+            badCaveTargetIndex = targetIndex;
+            badCaveTarget = cave;
+
+            // Interrupts player
+            GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
+                .activateInterrupt(onYesClicked, onNoClicked, "Message");
+            return false;
         }
 
         //Get the current node and find if it has debris blocking the path
@@ -302,6 +315,16 @@ public class playerSC : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public void onYesClicked()
+    {
+        setDestinationToCave(badCaveTargetIndex, badCaveTarget);
+    }
+
+    public void onNoClicked()
+    {
+        Debug.Log("playerSC - No clicked.");
     }
 
     // FixedUpdate is called at a fixed interval. Use for physics code.
