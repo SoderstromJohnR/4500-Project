@@ -61,7 +61,7 @@ public class playerSC : MonoBehaviour
     {
         //Test for a mouse click and make sure the player is not currently moving
         //or placing debris.
-        if (!clearDebris && !isMoving && Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !clearDebris && !isMoving)
         {
             //Get world coordinates of mouse input
             clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -243,6 +243,21 @@ public class playerSC : MonoBehaviour
         // Console logging
         Debug.Log("Going to center of cave instead");
         Debug.Log("Player index: " + caveIndex.ToString());
+
+        rotateTowardsDestination();
+    }
+
+    void rotateTowardsDestination()
+    {
+        targetPosition.z = transform.position.z;
+
+        //Reset elapsed time. The expected travel time has already been set
+        elapsedTime = 0;
+
+        //Get the directional vector from the player's location to the mouse input
+        Vector2 direction = new Vector2(targetPosition.x - transform.position.x, targetPosition.y - transform.position.y);
+        //Rotate toward mouse input
+        transform.up = direction;
     }
 
     //Set an expected travel time, speeding it up if travel would take longer than maxTime seconds
