@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// This class defines a controller for an empty game object which is designed to activate
-/// an object with playerInterruptionController attached when activateInterrupt is called.
+/// This class defines a controller that activates a prompt that interrupts the player to ask
+/// a question. When the player clicks yes or no, the corresponding method that was passed to
+/// it will be called.
 /// 
 /// Methods that conform to the OnYesClicked and OnNoClicked protocols defined in
 /// playerInterruptionController.cs can then be passed to it through the method activateInterrupt,
 /// defined in this file.
 /// 
-/// To configure this script to activate an object:
+/// To configure this script to activate an object that interrupts the game:
 ///     1. Drag the playerInterruptionActivator onto the hierarchy pane.
 ///     2. Drag the object to be instantiated by this script into the hierarchy pane.
 ///        (this project includes a playerInterruption prefab in Assets/Prefabs/Interruption)
@@ -23,7 +24,7 @@ using UnityEngine;
 ///        GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
 ///            .activateInterrupt(onYesClicked, onNoClicked, "Message");
 ///             
-/// where onYesClicked and onNoClicked are methods that conform to the aformentioned OnYesClicked and OnNoClick
+/// where onYesClicked and onNoClicked are methods that conform to the OnYesClicked and OnNoClick
 /// protocols in the file playerInterruptionController.cs.
 /// </summary>
 
@@ -38,38 +39,8 @@ public class playerInterruptionActivatorController : MonoBehaviour
         playerInterruption.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // Press Q to activate the playerInterruption for testing purposes
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (!playerInterruption.activeInHierarchy)
-            {
-                activateInterrupt(yesMessage, noMessage);
-            }
-            else if (playerInterruption.activeInHierarchy)
-            {
-                continueGame();
-            }
-        }
-    }
-
-    // Prints a yes message to console
-    public void yesMessage()
-    {
-        Debug.Log("playerInterruptionActivatorController - Yes!");
-    }
-
-    // Prints a no message to console
-    public void noMessage()
-    {
-        Debug.Log("playerInterruptionActivatorController - No!");
-    }
-
-    /* Sets the assigned playerInterruption game object to active and passes methods yesClicked 
-     * and noClicked that conform to the delegates OnYesClicked and OnNoClicked defined in 
-     * playerInterruptionController.cs */
+    /* Sets the assigned playerInterruption game object to active, sets method arguments as delegates,
+     * and stops time. */
     public void activateInterrupt(OnYesClicked yesClicked, OnNoClicked noClicked, string message = null)
     {
         if (!playerInterruption.activeInHierarchy)

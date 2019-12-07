@@ -20,6 +20,9 @@ public class playerSC : MonoBehaviour
     private bool clearDebris = false;
     private bool cameraFollow = true;
 
+    private GameObject badCaveTarget; // Temporarily stores a sub-optimal destination cave
+    private int badCaveTargetIndex;  // Temporarily stores the index of a sub-optimal destination
+
     private Vector3 targetPosition;
     private Vector3 clickPosition;
     private Vector3 storePosition;
@@ -58,7 +61,7 @@ public class playerSC : MonoBehaviour
     {
         //Test for a mouse click and make sure the player is not currently moving
         //or placing debris.
-        if (!clearDebris && !isMoving && Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !clearDebris && !isMoving && Time.timeScale != 0)
         {
             //Get world coordinates of mouse input
             clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -163,7 +166,8 @@ public class playerSC : MonoBehaviour
                         {
                             cameraFollow = false;
                             //Check now if debris is in the same cave
-                            if ((caveIndex == 1 && hit.GetComponent<debrisController>().getChildOfRoot()) || (!hit.GetComponent<debrisController>().getChildOfRoot() && hit.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
+                            if ((caveIndex == 1 && hit.GetComponent<debrisController>().getChildOfRoot()) 
+                                || (!hit.GetComponent<debrisController>().getChildOfRoot() && hit.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
                             {
                                 playerActualSpeed = playerSpeed * 0.3f;
                                 targetPosition = hit.transform.position;
@@ -177,43 +181,26 @@ public class playerSC : MonoBehaviour
                     //Check to see if a cave exit was clicked, then use its index to get the new cave
                     else if (hit.tag == "CaveExit")
                     {
-                        playerActualSpeed = playerSpeed;
-                        int tempIndex = hit.GetComponent<caveExitController>().targetIndex;
+                        int exitTargetIndex = hit.GetComponent<caveExitController>().targetIndex;
                         int exitCaveIndex = hit.GetComponent<caveExitController>().originIndex;
-                        if (tempIndex != caveIndex && exitCaveIndex == caveIndex)
-                        {
-                            if (tempIndex == 1)
-                            {
-                                caveIndex = 1;
-                                targetPosition = root.transform.position;
-                            }
-                            else if (CaveIsReachable(tempIndex, hit))
-                            {
-                                caveIndex = tempIndex;
-                                targetPosition = root.GetComponent<johnRootController>().findObject(caveIndex).transform.position;
-                            }
-                            setExpectedTime();
-                            camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
-                            Debug.Log("Going to cave this exits to.");
-                            Debug.Log("Player index: " + caveIndex.ToString());
-                            caveIndex = tempIndex;
+                        
 
-                            // Records cave move
-                            numCaveMoves += 1;
-                            SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(tempIndex);
+                        // Attempts to move if the target is not the current cave and the exit is an exit of the current cave
+                        if (exitTargetIndex != caveIndex && exitCaveIndex == caveIndex)
+                        {
+                            // Gets a reference to the target cave, which is the root if the target index is 1
+                            GameObject targetCave = (exitTargetIndex == 1 ? root 
+                                : root.GetComponent<johnRootController>().findObject(exitTargetIndex));
+
+                            if (CaveIsReachable(exitTargetIndex, targetCave))
+                            {
+                                setDestinationToCave(exitTargetIndex, targetCave);
+                            }
                         }
                     }
 
-                    //Back to working with any target position
-                    targetPosition.z = transform.position.z;
-
-                    //Reset elapsed time. The expected travel time has already been set
-                    elapsedTime = 0;
-
-                    //Get the directional vector from the player's location to the mouse input
-                    Vector2 direction = new Vector2(targetPosition.x - transform.position.x, targetPosition.y - transform.position.y);
-                    //Rotate toward mouse input
-                    transform.up = direction;
+                    // Finishes preparing for movement to any destination
+                    prepareMovement();
                 }
             }
         }
@@ -240,6 +227,23 @@ public class playerSC : MonoBehaviour
         // Console logging
         Debug.Log("Going to center of cave instead");
         Debug.Log("Player index: " + caveIndex.ToString());
+
+        prepareMovement();
+    }
+
+    // Finishes preparing for movement to any destination
+    void prepareMovement()
+    {
+        //Back to working with any target position
+        targetPosition.z = transform.position.z;
+
+        //Reset elapsed time. The expected travel time has already been set
+        elapsedTime = 0;
+
+        //Get the directional vector from the player's location to the mouse input
+        Vector2 direction = new Vector2(targetPosition.x - transform.position.x, targetPosition.y - transform.position.y);
+        //Rotate toward mouse input
+        transform.up = direction;
     }
 
     //Set an expected travel time, speeding it up if travel would take longer than maxTime seconds
@@ -264,10 +268,20 @@ public class playerSC : MonoBehaviour
         //May want to add some check here for gamemode, since it's not needed for
         //something like breadth-first search
         
-        bool optimalMove = root.GetComponent<johnRootController>().optimalMoveToParent(targetIndex, caveIndex);
-        if (!optimalMove)
+        // Interrupts the player if the current episode is searching1 and the move is not optimal
+        if (SceneTransitionManager.Instance.currentEpisode == Episode.searching1
+           && !root.GetComponent<johnRootController>().optimalMoveToParent(targetIndex, caveIndex))
         {
             Debug.Log("Go back! Bad move!");
+
+            // Records target
+            badCaveTargetIndex = targetIndex;
+            badCaveTarget = cave;
+
+            // Interrupts player
+            GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
+                .activateInterrupt(onYesClicked, onNoClicked, "Message");
+            return false;
         }
 
         //Get the current node and find if it has debris blocking the path
@@ -302,6 +316,16 @@ public class playerSC : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public void onYesClicked()
+    {
+        setDestinationToCave(badCaveTargetIndex, badCaveTarget);
+    }
+
+    public void onNoClicked()
+    {
+        Debug.Log("playerSC - No clicked.");
     }
 
     // FixedUpdate is called at a fixed interval. Use for physics code.
