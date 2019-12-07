@@ -28,7 +28,6 @@ public class cameraController : MonoBehaviour
     private Vector3 currentCavePosition;
     private bool nodesMade = false;
     private bool cameraFullScreen = true;
-    private bool cameraZoomBig = true;
     private bool changingZoom = false;
     private bool nodeZoomCamera = false;
     private List<int> nodeIndices;
@@ -274,7 +273,7 @@ public class cameraController : MonoBehaviour
         //in order to smoothly move camera
         if (!cameraFullScreen)
         {
-            currentSize = cam.orthographicSize;
+            setCurrentAndTargets();
             expectedTimeChange = expectedTime;
             elapsedTimeChange = 0;
             elapsedTimeChange += Time.deltaTime;
