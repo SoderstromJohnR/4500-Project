@@ -166,7 +166,8 @@ public class playerSC : MonoBehaviour
                         {
                             cameraFollow = false;
                             //Check now if debris is in the same cave
-                            if ((caveIndex == 1 && hit.GetComponent<debrisController>().getChildOfRoot()) || (!hit.GetComponent<debrisController>().getChildOfRoot() && hit.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
+                            if ((caveIndex == 1 && hit.GetComponent<debrisController>().getChildOfRoot()) 
+                                || (!hit.GetComponent<debrisController>().getChildOfRoot() && hit.GetComponentInParent<nodeStat>().getIndex() == caveIndex))
                             {
                                 playerActualSpeed = playerSpeed * 0.3f;
                                 targetPosition = hit.transform.position;
@@ -180,43 +181,26 @@ public class playerSC : MonoBehaviour
                     //Check to see if a cave exit was clicked, then use its index to get the new cave
                     else if (hit.tag == "CaveExit")
                     {
-                        playerActualSpeed = playerSpeed;
-                        int tempIndex = hit.GetComponent<caveExitController>().targetIndex;
+                        int exitTargetIndex = hit.GetComponent<caveExitController>().targetIndex;
                         int exitCaveIndex = hit.GetComponent<caveExitController>().originIndex;
-                        if (tempIndex != caveIndex && exitCaveIndex == caveIndex)
-                        {
-                            if (tempIndex == 1)
-                            {
-                                caveIndex = 1;
-                                targetPosition = root.transform.position;
-                            }
-                            else if (CaveIsReachable(tempIndex, hit))
-                            {
-                                caveIndex = tempIndex;
-                                targetPosition = root.GetComponent<johnRootController>().findObject(caveIndex).transform.position;
-                            }
-                            setExpectedTime();
-                            camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
-                            Debug.Log("Going to cave this exits to.");
-                            Debug.Log("Player index: " + caveIndex.ToString());
-                            caveIndex = tempIndex;
+                        
 
-                            // Records cave move
-                            numCaveMoves += 1;
-                            SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(tempIndex);
+                        // Attempts to move if the target is not the current cave and the exit is an exit of the current cave
+                        if (exitTargetIndex != caveIndex && exitCaveIndex == caveIndex)
+                        {
+                            // Gets a reference to the target cave, which is the root if the target index is 1
+                            GameObject targetCave = (exitTargetIndex == 1 ? root 
+                                : root.GetComponent<johnRootController>().findObject(exitTargetIndex));
+
+                            if (CaveIsReachable(exitTargetIndex, targetCave))
+                            {
+                                setDestinationToCave(exitTargetIndex, targetCave);
+                            }
                         }
                     }
 
-                    //Back to working with any target position
-                    targetPosition.z = transform.position.z;
-
-                    //Reset elapsed time. The expected travel time has already been set
-                    elapsedTime = 0;
-
-                    //Get the directional vector from the player's location to the mouse input
-                    Vector2 direction = new Vector2(targetPosition.x - transform.position.x, targetPosition.y - transform.position.y);
-                    //Rotate toward mouse input
-                    transform.up = direction;
+                    // Finishes preparing for movement to any destination
+                    prepareMovement();
                 }
             }
         }
@@ -244,11 +228,13 @@ public class playerSC : MonoBehaviour
         Debug.Log("Going to center of cave instead");
         Debug.Log("Player index: " + caveIndex.ToString());
 
-        rotateTowardsDestination();
+        prepareMovement();
     }
 
-    void rotateTowardsDestination()
+    // Finishes preparing for movement to any destination
+    void prepareMovement()
     {
+        //Back to working with any target position
         targetPosition.z = transform.position.z;
 
         //Reset elapsed time. The expected travel time has already been set
