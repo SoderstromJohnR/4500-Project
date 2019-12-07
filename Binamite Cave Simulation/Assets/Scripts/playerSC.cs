@@ -61,7 +61,7 @@ public class playerSC : MonoBehaviour
     {
         //Test for a mouse click and make sure the player is not currently moving
         //or placing debris.
-        if (Input.GetMouseButtonDown(0) && !clearDebris && !isMoving)
+        if (Input.GetMouseButtonDown(0) && !clearDebris && !isMoving && Time.timeScale != 0)
         {
             //Get world coordinates of mouse input
             clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
