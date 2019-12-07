@@ -120,7 +120,6 @@ public class playerSC : MonoBehaviour
                     {
                         if (CaveIsReachable(1))
                         {
-                            root.GetComponent<johnRootController>().addVisitedIndex(1);
                             playerActualSpeed = playerSpeed;
                             if (caveIndex != 1) isMoving = true;
                             caveIndex = 1;
@@ -140,7 +139,6 @@ public class playerSC : MonoBehaviour
                         int hitIndex = hit.GetComponent<nodeStat>().getIndex();
                         if (CaveIsReachable(hitIndex))
                         {
-                            root.GetComponent<johnRootController>().addVisitedIndex(hitIndex);
                             playerActualSpeed = playerSpeed;
                             if (caveIndex != hitIndex) isMoving = true;
                             caveIndex = hitIndex;
@@ -184,13 +182,11 @@ public class playerSC : MonoBehaviour
                         {
                             if (tempIndex == 1)
                             {
-                                root.GetComponent<johnRootController>().addVisitedIndex(tempIndex);
                                 caveIndex = 1;
                                 targetPosition = root.transform.position;
                             }
                             else if (CaveIsReachable(tempIndex))
                             {
-                                root.GetComponent<johnRootController>().addVisitedIndex(tempIndex);
                                 caveIndex = tempIndex;
                                 targetPosition = root.GetComponent<johnRootController>().findObject(caveIndex).transform.position;
                             }
@@ -198,9 +194,7 @@ public class playerSC : MonoBehaviour
                             camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
                             Debug.Log("Going to cave this exits to.");
                             Debug.Log("Player index: " + caveIndex.ToString());
-                            root.GetComponent<johnRootController>().addVisitedIndex(tempIndex);
                             caveIndex = tempIndex;
-                            targetPosition = root.GetComponent<johnRootController>().findObject(caveIndex).transform.position;
 
                             // Records cave move
                             numCaveMoves += 1;

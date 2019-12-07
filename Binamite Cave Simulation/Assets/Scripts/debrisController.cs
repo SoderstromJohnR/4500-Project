@@ -66,7 +66,7 @@ public class debrisController : MonoBehaviour
         player.GetComponent<playerSC>().incExplosions();
 
         childDynamite.GetComponent<dynamiteController>().runExplosion();
-        Destroy(GetComponent<SpriteRenderer>());
+        GetComponent<SpriteRenderer>().enabled = false;
         if (childOfRoot && isLeftDebris)
         {
             GetComponentInParent<johnRootController>().removeLeftDebris();
