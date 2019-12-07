@@ -13,6 +13,7 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
 {
     public GameStats currentGameStats; // Statistics on player actions in the current game
     public List<GameStats> gameStatsList; // Collection of all game statistics
+    public Episode currentEpisode; // The current episode, obtained from the scene name and episode enum
 
     // The set of transitions to be substituted with a transition to the main menu
     (string, string) mainMenuTransition = ("SearchingGame2", "CavingGame1");
@@ -23,35 +24,57 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
 
         gameStatsList = new List<GameStats>();
 
-        // Sets newStats as SceneManager delegate method
-        SceneManager.sceneLoaded += newStats;
+        // Sets prepareForScene as SceneManager delegate method
+        SceneManager.sceneLoaded += onSceneLoad;
     }
 
     // This method will trigger the construction of a SceneTransitionManager if one doesn't exist
     public void initialize()
     {
         Debug.Log("initialize called on scene transition manager");
+        prepareForScene(SceneManager.GetActiveScene());
+    }
+
+    // This method can be called to ensure a singleton SceneTransitionManager instance exists
+    public void empty() { }
+
+    // SceneManager calls this method when a new scene loads
+    void onSceneLoad(Scene scene, LoadSceneMode mode)
+    {
+        prepareForScene(scene);
     }
 
     /* This method creates a new GameStats object, assigns it to currentGameStats, and adds
      * it to gameStatsList. It is called by SceneManager whenever a new scene is loaded, 
      * before start functions execute. */
-    void newStats(Scene scene, LoadSceneMode mode)
+    void prepareForScene(Scene scene)
     {
         Debug.Log("SceneTransitionManager - Scene loaded: " + scene.name);
 
-        string name = scene.name;
-        name = name.Remove(name.Length - 1);
+        newStats(scene.name); // Adds new GameStats object
+        currentEpisode = EpisodeMethods.fromSceneName(scene.name);
 
-        switch (name)
+        Debug.Log("Current Episode: " + currentEpisode.sceneName());
+    }
+
+    /* This method creates a new GameStats object, assigns it to currentGameStats, and adds
+     * it to gameStatsList. */
+    void newStats(string sceneName)
+    {
+        Debug.Log("Adding newStats - " + sceneName);
+        sceneName = sceneName.Remove(sceneName.Length - 1);
+
+        switch (sceneName)
         {
             case "SearchingGame":
-                newSearchingStats();
+                currentGameStats = new SearchingGameStats();
                 break;
             case "CavingGame":
-                newCavingStats();
+                currentGameStats = new CavingGameStats();
                 break;
         }
+
+        gameStatsList.Add(currentGameStats);
     }
 
     // Loads the next episode in the episode in the queue for the current game mode
@@ -84,20 +107,6 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     public void startCavingGame()
     {
         SceneManager.LoadScene("CavingGame1");
-    }
-
-    // Creates and adds a new current SearchingGameStats object and adds it to the list
-    private void newSearchingStats()
-    {
-        currentGameStats = new SearchingGameStats();
-        gameStatsList.Add(currentGameStats);
-    }
-
-    // Creates and adds a new current CavingGameStats object and adds it to the list
-    private void newCavingStats()
-    {
-        currentGameStats = new CavingGameStats();
-        gameStatsList.Add(currentGameStats);
     }
 
     // Stops the tree from being destroyed

@@ -14,6 +14,7 @@ public class SearchingGameStats : GameStats
     public SearchingGameStats()
     {
         numShouts = 0;
+        Debug.LogWarning("New SearchingGameStats");
     }
 
     // Returns the number of times the player has shouted this game

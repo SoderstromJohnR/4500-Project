@@ -35,6 +35,8 @@ public class playerSC : MonoBehaviour
      */
     void Start()
     {
+        
+
         //Set the target position immediately to the player's starting location
         targetPosition = transform.position;
         caveIndex = 1;
@@ -118,7 +120,7 @@ public class playerSC : MonoBehaviour
                     //Use this if the player clicks on the root node/entrance
                     if (hit.name == "Root Node")
                     {
-                        if (CaveIsReachable(1))
+                        if (CaveIsReachable(1, hit))
                         {
                             playerActualSpeed = playerSpeed;
                             if (caveIndex != 1) isMoving = true;
@@ -137,7 +139,7 @@ public class playerSC : MonoBehaviour
                     else if (hit.name == "Node(Clone)")
                     {
                         int hitIndex = hit.GetComponent<nodeStat>().getIndex();
-                        if (CaveIsReachable(hitIndex))
+                        if (CaveIsReachable(hitIndex, hit))
                         {
                             playerActualSpeed = playerSpeed;
                             if (caveIndex != hitIndex) isMoving = true;
@@ -185,7 +187,7 @@ public class playerSC : MonoBehaviour
                                 caveIndex = 1;
                                 targetPosition = root.transform.position;
                             }
-                            else if (CaveIsReachable(tempIndex))
+                            else if (CaveIsReachable(tempIndex, hit))
                             {
                                 caveIndex = tempIndex;
                                 targetPosition = root.GetComponent<johnRootController>().findObject(caveIndex).transform.position;
@@ -217,6 +219,29 @@ public class playerSC : MonoBehaviour
         }
     }
 
+    // Sets the players current cave index and the coordinates of the target position
+    void setDestinationToCave(int hitIndex, GameObject hit)
+    {
+        // Sets player in motion
+        playerActualSpeed = playerSpeed;
+        targetPosition = hit.transform.position;
+        if (caveIndex != hitIndex) isMoving = true;
+        caveIndex = hitIndex;
+
+        // Sends new index to camera
+        setExpectedTime();
+        camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
+
+        // Records cave move
+        numCaveMoves += 1;
+        SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(hitIndex);
+        root.GetComponent<johnRootController>().addVisitedIndex(hitIndex);
+
+        // Console logging
+        Debug.Log("Going to center of cave instead");
+        Debug.Log("Player index: " + caveIndex.ToString());
+    }
+
     //Set an expected travel time, speeding it up if travel would take longer than maxTime seconds
     void setExpectedTime()
     {
@@ -234,10 +259,11 @@ public class playerSC : MonoBehaviour
     }
 
     //True if the cave with index targetIndex is reachable from the cave with index caveIndex
-    private bool CaveIsReachable(int targetIndex)
+    private bool CaveIsReachable(int targetIndex, GameObject cave)
     {
         //May want to add some check here for gamemode, since it's not needed for
         //something like breadth-first search
+        
         bool optimalMove = root.GetComponent<johnRootController>().optimalMoveToParent(targetIndex, caveIndex);
         if (!optimalMove)
         {

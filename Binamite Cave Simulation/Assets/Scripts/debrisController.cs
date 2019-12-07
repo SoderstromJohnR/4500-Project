@@ -12,6 +12,7 @@ public class debrisController : MonoBehaviour
     private GameObject player;
 
     private int tempGamemode = 1;
+    private Episode currentEpisode;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +23,8 @@ public class debrisController : MonoBehaviour
         //gameObject.transform.localScale = new Vector3(.1f, .1f, 1);
         flagDestroy = false;
         player = GameObject.FindGameObjectWithTag("Player");
+
+        currentEpisode = SceneTransitionManager.Instance.currentEpisode;
     }
 
     // Update is called once per frame
@@ -33,23 +36,18 @@ public class debrisController : MonoBehaviour
         }
     }
     
-    // Returns true if dynamite is flagged for removal in mode 0
-    // Only true in mode 1 where player is in root and not moving
+    // Returns true if dynamite is flagged for episode caving2
+    // Only true in caving1 where player is in root and not moving
     private bool detonationIsAllowed()
     {
-        // Returns true if there is debris to be detonated
-        if(tempGamemode == 0)
-        {
-            return flagDestroy;
-
         // Returns true if there is debris to be detonated and the player is stationary in the root node
-        }else if (tempGamemode == 1)
+        if (currentEpisode == Episode.caving1)
         {
             return flagDestroy
             && player.GetComponent<playerSC>().getIndex() == 1
             && !player.GetComponent<playerSC>().checkMoving();
         }
-        return false;
+        return flagDestroy;
     }
 
     //If player clicks on debris, will call to set it to be destroyed

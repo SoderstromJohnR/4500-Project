@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class johnRootController : MonoBehaviour
 {
     
@@ -43,6 +44,8 @@ public class johnRootController : MonoBehaviour
 
     public int tempGamemode;
     public int tempEpisode;
+
+    public Episode episode; // The current episode, to be set in the inspector
 
     public bool visiting;
 
@@ -91,15 +94,13 @@ public class johnRootController : MonoBehaviour
         setCaveExit();
 
         // Use for first gamemode
-        //Adds debris to all nodes with children, unless specified otherwise
-        if (tempGamemode == 11) {
+        if (tempGamemode == 11 || episode.mode() == GameMode.caving ) {
             debris = Resources.Load<GameObject>("basicDebrisPlaceholder");
             setInitialDebris(true, true);
         }
 
         // Use for second gamemode, episode 2
-        //Sets a lost miner in a random max depth node
-        else if (tempGamemode == 22)
+        else if (tempGamemode == 22 || episode == Episode.searching2)
         {
             setRandomMiner();
         }
@@ -112,6 +113,7 @@ public class johnRootController : MonoBehaviour
     void Start()
     {
         // Adds existing node indices to the current game stats
+        SceneTransitionManager.Instance.initialize();
         SceneTransitionManager.Instance.currentGameStats.setExistingNodeIndices(nodeIndices);
     }
 
@@ -287,6 +289,7 @@ public class johnRootController : MonoBehaviour
         newNode.GetComponent<nodeStat>().setIndex(index);
         totalNodes += 1;
         nodeIndices.Add(index);
+        Debug.Log("Created node " + index);
     }
 
 
@@ -765,7 +768,7 @@ public class johnRootController : MonoBehaviour
         if (target == player / 2)
         {
             Debug.Log("Checking optimal move");
-            List<int> tempList = nodeIndices;
+            List<int> tempList = SceneTransitionManager.Instance.currentGameStats.getExistingNodeIndices();
             Debug.Log(nodeIndices.Count);
             Debug.Log(tempList.Count);
             Debug.Log(getNodeIndices().Count);
