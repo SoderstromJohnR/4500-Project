@@ -45,7 +45,7 @@ public class johnRootController : MonoBehaviour
     public int tempGamemode;
     public int tempEpisode;
 
-    public Episode episode;
+    public Episode episode; // The current episode, to be set in the inspector
 
     public bool visiting;
 
@@ -113,6 +113,7 @@ public class johnRootController : MonoBehaviour
     void Start()
     {
         // Adds existing node indices to the current game stats
+        SceneTransitionManager.Instance.initialize();
         SceneTransitionManager.Instance.currentGameStats.setExistingNodeIndices(nodeIndices);
     }
 
@@ -288,6 +289,7 @@ public class johnRootController : MonoBehaviour
         newNode.GetComponent<nodeStat>().setIndex(index);
         totalNodes += 1;
         nodeIndices.Add(index);
+        Debug.Log("Created node " + index);
     }
 
 
@@ -766,7 +768,7 @@ public class johnRootController : MonoBehaviour
         if (target == player / 2)
         {
             Debug.Log("Checking optimal move");
-            List<int> tempList = nodeIndices;
+            List<int> tempList = SceneTransitionManager.Instance.currentGameStats.getExistingNodeIndices();
             Debug.Log(nodeIndices.Count);
             Debug.Log(tempList.Count);
             Debug.Log(getNodeIndices().Count);

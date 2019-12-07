@@ -9,7 +9,7 @@ public enum GameMode
 }
 
 
-static class EpisodeExtensionMethods
+static class EpisodeMethods
 {
     public static GameMode mode(this Episode episode)
     {
@@ -44,6 +44,25 @@ static class EpisodeExtensionMethods
                 return "SearchingGame2";
             default:
                 return "Default";
+        }
+    }
+
+    public static Episode fromSceneName(string sceneName)
+    {
+        switch (sceneName)
+        {
+            case "MainMenu":
+                return Episode.mainMenu;
+            case "CavingGame1":
+                return Episode.caving1;
+            case "CavingGame2":
+                return Episode.caving2;
+            case "SearchingGame1":
+                return Episode.searching1;
+            case "SearchingGame2":
+                return Episode.searching2;
+            default:
+                return Episode.mainMenu;
         }
     }
 }

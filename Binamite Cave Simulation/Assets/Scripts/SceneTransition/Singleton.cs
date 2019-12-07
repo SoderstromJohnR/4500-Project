@@ -32,6 +32,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
                 {
                     // Search for existing instance.
                     m_Instance = (T)FindObjectOfType(typeof(T));
+                    Debug.LogWarning("Type of singleton: " + typeof(T));
 
                     // Create new instance if one doesn't already exist.
                     if (m_Instance == null)
@@ -61,5 +62,6 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     private void OnDestroy()
     {
         m_ShuttingDown = true;
+        Debug.LogWarning("DESTROYING SINGLETON!!!");
     }
 }
