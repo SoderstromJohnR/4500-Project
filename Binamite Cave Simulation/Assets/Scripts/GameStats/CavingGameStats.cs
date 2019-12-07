@@ -36,6 +36,9 @@ public class CavingGameStats : GameStats
         riggingRecords.Add(new RiggingRecord());
         numDetonations = 0;
         numExplosions = 0;
+
+
+        Debug.LogWarning("New CavingGameStats");
     }
 
 
