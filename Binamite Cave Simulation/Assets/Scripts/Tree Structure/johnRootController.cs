@@ -10,18 +10,14 @@ public class johnRootController : MonoBehaviour
     public GameObject path;
     public GameObject miner;
     public int maxDepth;
-    public float halfWidth;
     public float depthDistance;
     public float chanceCompleteTree;
     public bool isLimitedToTotalNodes;
     public int limitedTreeNodes;
-    private int indexCount;
-    private int currentDepth;
     private float startXDim;
-    private GameObject theNode;
     private GameObject debris;
     private GameObject caveExit;
-    private int tempIndex;
+    //private int tempIndex;
 
     //We learned later that, at least while testing in the editor, the list gets reset
     //Unfortunately, this makes it harder to test for a suboptimal move going to a parent
@@ -40,7 +36,7 @@ public class johnRootController : MonoBehaviour
     private GameObject parentNode;
     private GameObject leftChild;
     private GameObject rightChild;
-    public int totalNodes;
+    private int totalNodes;
 
     public int tempGamemode;
     public int tempEpisode;
@@ -64,9 +60,6 @@ public class johnRootController : MonoBehaviour
         int numLeaves = (int)Mathf.Pow(2, maxDepth);
         float totalXDim = distPerNode * numLeaves + gap * (numLeaves - 1);
         startXDim = totalXDim / 2;
-        currentDepth = 1;
-        tempIndex = 2;
-        indexCount = 1;
         nodeIndices.Add(1); //Index 1 will not be added through functions, it already exists
         
         //Check first if a specific number of nodes for the tree are desired
@@ -326,6 +319,7 @@ public class johnRootController : MonoBehaviour
     public GameObject findObject(int n)
     {
         GameObject[] nodes;
+        GameObject theNode = null;
         
         nodes = GameObject.FindGameObjectsWithTag("Node");
         foreach (GameObject currentNode in nodes)
@@ -374,6 +368,7 @@ public class johnRootController : MonoBehaviour
         return findObject(possibleIndices[randomIndex]);
     }
 
+    /*
     public void setIndex(int n)
     {
         if (n > 1)
@@ -392,7 +387,9 @@ public class johnRootController : MonoBehaviour
         }
         
     }
-    public void setPaths(int n)
+    */
+
+    void setPaths(int n)
     {
         if (n > 2)
         {
@@ -734,7 +731,7 @@ public class johnRootController : MonoBehaviour
         }
         visiting = false;
     }
-    public void setPathWidth()
+    void setPathWidth()
     {
         GameObject[] paths = GameObject.FindGameObjectsWithTag("Path");
         foreach (GameObject currentPath in paths)
@@ -744,6 +741,8 @@ public class johnRootController : MonoBehaviour
 
     }
 
+    //Outdated function which is now covered in the Scene Manager
+    /*
     //Track which nodes the player has visited
     //If we added events to nodeStat to only push it out the first time
     //they're visited, we could cut this down and reduce computing time,
@@ -754,7 +753,7 @@ public class johnRootController : MonoBehaviour
         {
             visitedIndices.Add(index);
         }
-    }
+    }*/
 
     //Checks if any unvisited nodes remain under the player
     //Use only when the player is going to its parent

@@ -6,8 +6,6 @@ public class nodeStat : MonoBehaviour
 {
     public int depth;
     public int index;
-    private float yPosition;
-    private int currentDepth;
     [SerializeField] private bool leftDebris;
     [SerializeField] private bool rightDebris;
     private GameObject debris;
@@ -19,9 +17,6 @@ public class nodeStat : MonoBehaviour
     {
         visited = false;
         GetComponent<SpriteRenderer>().sortingLayerName = "Cave";
-        
-
-        currentDepth = 1;
 
         setDepth();
     }
@@ -37,14 +32,14 @@ public class nodeStat : MonoBehaviour
     }
     public void setDepth()
     {
-        //this function finds finds and sets the depth of the node
+        //this function finds and sets the depth of the node
         //based on its current y position
-
+        int currentDepth = 1;
         //find the controller for root node
         GameObject root = GameObject.Find("Root Node");
         johnRootController rc = root.GetComponent<johnRootController>();
         //set yPosition to Depth Distance (from johnRootController) minus Root Node's y position      
-        yPosition = (root.transform.position.y - rc.depthDistance);
+        float yPosition = (root.transform.position.y - rc.depthDistance);
         //while nodes left set depth
         while (currentDepth <= rc.maxDepth)
         {

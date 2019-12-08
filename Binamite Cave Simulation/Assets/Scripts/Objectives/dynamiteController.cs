@@ -11,17 +11,17 @@ public class dynamiteController : MonoBehaviour
         explodeAnim = GetComponent<Animator>();
         
     }
-
+    /*
     // Update is called once per frame
     void Update()
     {
     }
-
+    */
     private void DestroySelf()
     {
         Destroy(gameObject);
     }
-
+    
     public void runExplosion()
     {
         explodeAnim.Play("explosion");

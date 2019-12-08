@@ -18,27 +18,19 @@ public class cameraController : MonoBehaviour
     private Vector3 zoomCaveCamera;
     private float nodeZoomSize;
     
-    private float distance;
-    private float startMoveDistance;
     private float elapsedChangeZoom;
     private float elapsedTimeChange;
     private float expectedTimeChange;
-    private Vector3 lastPosition;
-    private GameObject currentCave;
-    private Vector3 currentCavePosition;
     private bool nodesMade = false;
     private bool cameraFullScreen = true;
     private bool changingZoom = false;
     private bool nodeZoomCamera = false;
-    private List<int> nodeIndices;
-    private Vector3 offset;
     private Camera cam;
 
     // Start is called before the first frame update
     void Start()
     {
         cam = Camera.main;
-        currentCave = root;
     }
 
     // LateUpdate runs once every frame after all items have been processed
@@ -131,7 +123,7 @@ public class cameraController : MonoBehaviour
     void getCaveFullBounds()
     {
         Vector3 nodeSize = root.GetComponent<Renderer>().bounds.size;
-        nodeIndices = root.GetComponent<johnRootController>().getNodeIndices();
+        List<int> nodeIndices = root.GetComponent<johnRootController>().getNodeIndices();
         int leftIndex = 1;
         int rightIndex = 1;
 
@@ -257,28 +249,15 @@ public class cameraController : MonoBehaviour
     //Get expected time for the player to move
     public void changePlayerIndex(int index, float expectedTime)
     {
-        //Change the current cave to the new one for size and position changes
-        if (index == 1)
-        {
-            currentCave = root;
-        }
-        else
-        {
-            currentCave = root.GetComponent<johnRootController>().findObject(index);
-        }
         getCaveZoomBounds(index);
-        currentCavePosition = currentCave.transform.position;
-        currentCavePosition.z = transform.position.z;
         //If we are not in full view, store the current camera size and distance to next cave
         //in order to smoothly move camera
-        if (!cameraFullScreen)
+        if (!cameraFullScreen && !nodeZoomCamera)
         {
             setCurrentAndTargets();
             expectedTimeChange = expectedTime;
             elapsedTimeChange = 0;
             elapsedTimeChange += Time.deltaTime;
-            lastPosition = transform.position;
-            startMoveDistance = Mathf.Sqrt(Mathf.Pow(transform.position.x - currentCave.transform.position.x, 2) + Mathf.Pow(transform.position.y - currentCave.transform.position.y, 2));
         }
     }
 }
