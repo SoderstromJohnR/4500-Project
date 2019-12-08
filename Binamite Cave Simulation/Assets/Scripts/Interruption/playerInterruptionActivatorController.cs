@@ -11,25 +11,14 @@ using UnityEngine;
 /// playerInterruptionController.cs can then be passed to it through the method activateInterrupt,
 /// defined in this file.
 /// 
-/// To configure this script to activate an object that interrupts the game:
-///     1. Drag the playerInterruptionActivator onto the hierarchy pane.
-///     2. Drag the object to be instantiated by this script into the hierarchy pane.
-///        (this project includes a playerInterruption prefab in Assets/Prefabs/Interruption)
-///     3. Highlight the playerInterruptionActivator.
-///     4. Drag playerInterruption from the hierarchy to the Player Interruption area in the
-///        Player Interruption Activator Controller (Script) area in the inspector.
-/// 
-/// To activate an object that has been configured as above, the following call can be used directly:
-///     
-///        GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
-///            .activateInterrupt(onYesClicked, onNoClicked, "Message");
-///             
-/// where onYesClicked and onNoClicked are methods that conform to the OnYesClicked and OnNoClick
-/// protocols in the file playerInterruptionController.cs.
+/// The playerInterruptionActivator is part of the interruptSystem prefab and activates the 
+/// playerInterruption prefab contained therein. 
 /// </summary>
 
 public class playerInterruptionActivatorController : MonoBehaviour
 {
+    public delegate void onInterruptionStart();
+
     [SerializeField] private GameObject playerInterruption;
 
     // Start is called before the first frame update
@@ -37,11 +26,14 @@ public class playerInterruptionActivatorController : MonoBehaviour
     {
         // Disables the interruption object by default
         playerInterruption.SetActive(false);
+        promptWithInstructions();
     }
 
     /* Sets the assigned playerInterruption game object to active, sets method arguments as delegates,
-     * and stops time. */
-    public void activateInterrupt(OnYesClicked yesClicked, OnNoClicked noClicked, string message = null)
+     * stops time, and passes optional arguments representing new message text, left button text, and
+     * right button text to the newly activated interruption prefab. */
+    public void activateInterrupt(OnYesClicked yesClicked, OnNoClicked noClicked,
+        string message = null, string affirmativeText = null, string negativeText = null)
     {
         if (!playerInterruption.activeInHierarchy)
         {
@@ -58,7 +50,23 @@ public class playerInterruptionActivatorController : MonoBehaviour
             playerInterruption.GetComponent<playerInterruptionController>().onYesClicked += continueGame;
             playerInterruption.GetComponent<playerInterruptionController>().onNoClicked += continueGame;
 
-            // This "stops time," by disabling scripts that still work while timescale is set to 1
+            // Sets text if arguments are not default
+            if (message != null)
+            {
+                playerInterruption.GetComponent<playerInterruptionController>().setMessage(message);
+            }
+
+            if (affirmativeText != null)
+            {
+                playerInterruption.GetComponent<playerInterruptionController>().setAffirmativeText(affirmativeText);
+            }
+
+            if (negativeText != null)
+            {
+                playerInterruption.GetComponent<playerInterruptionController>().setNegativeText(negativeText);
+            }
+
+            // This "stops time" by disabling scripts that still work while timescale is set to 1
             Time.timeScale = 0;
         }
     }
@@ -71,5 +79,45 @@ public class playerInterruptionActivatorController : MonoBehaviour
 
         // Enables scripts that require a non-zero timescale
         Time.timeScale = 1;
+    }
+
+    // Activates the playerInterruption with an episode-specific message instructing the player
+    void promptWithInstructions()
+    {
+        Episode currentEpisode = SceneTransitionManager.Instance.currentEpisode;
+
+        switch (currentEpisode)
+        {
+            case Episode.caving1:
+                activateInterrupt(Empty, Skip,
+                    "Place dynamite, go back to the entrance, and press D to detonate.", "Ok!", "Skip");
+                break;
+            case Episode.caving2:
+                activateInterrupt(Empty, Skip,
+                    "Do the same thing, but in a more, shall we say, complete way.", "Ok!", "Skip");
+                break;
+            case Episode.caving3:
+                activateInterrupt(Empty, Skip,
+                    "Now you can detonate everywhere! See if you can go quicker.", "Right on!", "Skip");
+                break;
+            case Episode.searching1:
+                activateInterrupt(Empty, Skip,
+                    "Your buddy lost a chisel. Can you find it?", "Sure!", "No!");
+                break;
+            case Episode.searching2:
+                activateInterrupt(Empty, Skip,
+                    "Oh no, now your buddy IS lost! Press S to shout.", "Okay!", "Meh.");
+                break;
+            default:
+                break;
+        }
+    }
+
+    // An empty method to pass to the activateInterrupt method
+    void Empty() { }
+
+    void Skip()
+    {
+        SceneTransitionManager.Instance.loadNextScene();
     }
 }

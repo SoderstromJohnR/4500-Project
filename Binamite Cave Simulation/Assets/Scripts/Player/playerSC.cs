@@ -277,7 +277,7 @@ public class playerSC : MonoBehaviour
 
             // Interrupts player
             GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
-                .activateInterrupt(onYesClicked, onNoClicked, "Message");
+                .activateInterrupt(onYesClicked, onNoClicked, "Are you sure? There's a better way.", "Move", "Undo");
             return false;
         }
 
@@ -315,11 +315,13 @@ public class playerSC : MonoBehaviour
         }
     }
 
+    // Called by playerInterruption yes button
     public void onYesClicked()
     {
         setDestinationToCave(badCaveTargetIndex, badCaveTarget);
     }
 
+    // Called by playerInterruption no button
     public void onNoClicked()
     {
         Debug.Log("playerSC - No clicked.");

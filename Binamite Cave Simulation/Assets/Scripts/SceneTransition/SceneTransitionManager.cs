@@ -16,7 +16,7 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     public Episode currentEpisode; // The current episode, obtained from the scene name and episode enum
 
     // The set of transitions to be substituted with a transition to the main menu
-    (string, string) mainMenuTransition = ("SearchingGame2", "CavingGame1");
+    string[] mainMenuTransition = { "CavingGame3", "SearchingGame1" };
 
     protected SceneTransitionManager()
     {
@@ -78,23 +78,49 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     }
 
     // Loads the next episode in the episode in the queue for the current game mode
-    public void loadNextEpisode()
+    public void loadNextScene()
     {
         //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         string currentSceneName = SceneManager.GetActiveScene().name;
         string nextSceneName = sceneNameByBuildIndex(SceneManager.GetActiveScene().buildIndex + 1);
 
-        /*if (treePreservingTransitions.Contains((currentSceneName, nextSceneName)))
-        {
-            preserveTree();
-        }
-        else */
-        
-        if (mainMenuTransition == (currentSceneName, nextSceneName))
+        Debug.Log("SceneTransitionManager.loadNextScene() - currentSceneName: " + currentSceneName);
+        Debug.Log("SceneTransitionManager.loadNextScene() - nextSceneName: " + nextSceneName);
+        Debug.Log("SceneTransitionManager.loadNextScene() - mainMenuTransition[0]: " + mainMenuTransition[0]);
+        Debug.Log("SceneTransitionManager.loadNextScene() - mainMenuTransition[1]: " + mainMenuTransition[1]);
+        Debug.Log(currentSceneName == mainMenuTransition[0]);
+        Debug.Log(nextSceneName == mainMenuTransition[1]);
+
+        if (nextSceneName.Length == 0
+            || mainMenuTransition[0] == currentSceneName && mainMenuTransition[1] == nextSceneName)
         {
             nextSceneName = "MainMenu";
+            Debug.Log("SceneTransitionManager.loadNextScene() - nextSceneName in transition: " + nextSceneName);
         }
         SceneManager.LoadScene(nextSceneName);
+    }
+
+    // Loads the previous scene in the queue for the current game mode, or the main menu
+    public void loadPreviousScene()
+    {
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        string previousScene = sceneNameByBuildIndex(SceneManager.GetActiveScene().buildIndex - 1);
+
+        Debug.Log("SceneTransitionManager.loadNextScene() - currentSceneName: " + currentSceneName);
+        Debug.Log("SceneTransitionManager.loadNextScene() - nextSceneName: " + previousScene);
+        Debug.Log("SceneTransitionManager.loadNextScene() - mainMenuTransition[0]: " + mainMenuTransition[0]);
+        Debug.Log("SceneTransitionManager.loadNextScene() - mainMenuTransition[1]: " + mainMenuTransition[1]);
+        Debug.Log(currentSceneName == mainMenuTransition[1]);
+        Debug.Log(previousScene == mainMenuTransition[0]);
+
+        if (previousScene.Length == 0
+            || mainMenuTransition[1] == currentSceneName && mainMenuTransition[0] == previousScene)
+        {
+            previousScene = "MainMenu";
+            Debug.Log("SceneTransitionManager.loadNextScene() - nextSceneName in transition: " + previousScene);
+        }
+        SceneManager.LoadScene(previousScene);
     }
 
     // Loads SearchingGame1
@@ -132,6 +158,9 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     {
         string path = SceneUtility.GetScenePathByBuildIndex(buildIndex);
 
+        // Returns an empty string if the path doesn't exist
+        if (path.Length == 0) return "";
+
         // Finds index of the beginning of the name
         int beginning = path.LastIndexOf("\\") + 1;
         if (beginning <= 0) { beginning = path.LastIndexOf("/") + 1; };
@@ -146,96 +175,3 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     }
 }
 
-/* ABANDONDED IMPLEMENTATION:
-
-public string MyTestString = "WOHOO! SceneTransitionManager WORKS!!!";
-
-public GameStats currentGameStats; // Statistics on player actions in the current game
-public List<GameStats> gameStatsList; // Collection of all game statistics
-
-// Queue of episodes in the searching game mode
-private Episode[] searchingEpisodeQueue = new Episode[] { 
-    Episode.searching1, Episode.searching2
-};
-
-// Queue of episodes in the caving game mode
-private Episode[] cavingEpisodeQueue = new Episode[]
-{
-    Episode.caving1, Episode.caving2
-};
-
-private Episode[] defaultQueue = new Episode[] { };
-
-private Episode currentEpisode;
-private int currentEpisodeIndex; // The index of the current episode in either queue
-private HashSet<Episode> treelessEpisodes; // Scenes that use the previous scene's tree
-
-// Prevents non-singleton constructor use
-protected SceneTransitionManager() {
-    Debug.Log("CONSTRUCTING SceneTransitionManager");
-    gameStatsList = new List<GameStats>();
-
-    // Initializes hash-set of Episodes that use the previous episode's tree
-    treelessEpisodes = new HashSet<Episode>();
-    treelessEpisodes.Add(Episode.searching2);
-    treelessEpisodes.Add(Episode.searching4);
-
-    // Sets currentEpisodeIndex and currentEpisode to MainMenu
-    currentEpisodeIndex = -1; // Sentinal for mainMenu
-    currentEpisode = Episode.mainMenu;
-}
-
-// Loads the next episode in the episode in the queue for the current game mode
-public void loadNextEpisode()
-{
-    Debug.Log("SceneTransitionManager - loadNextEpisode called!");
-    Episode[] episodeQueue = defaultQueue;
-    Episode episodeToLoad = Episode.mainMenu;
-
-    // Selects the episodeQueue that corresponds to the current game mode
-    switch (currentEpisode.mode())
-    {
-        case GameMode.searching:
-            episodeQueue = searchingEpisodeQueue;
-
-            break;
-
-    }
-
-    // Sets episodeToLoad to next episode in queue if it exists or mainMenu if not
-    currentEpisodeIndex++;
-    if (-1 < currentEpisodeIndex && currentEpisodeIndex < episodeQueue.Length)
-    {
-        episodeToLoad = episodeQueue[currentEpisodeIndex];
-    }
-    else
-    {
-        currentEpisodeIndex = -1; // Sentinal for mainMenu
-    }
-    currentEpisode = episodeToLoad;
-
-    Debug.Log("Loading episode " + episodeToLoad.sceneName());
-
-    // Preserves the tree if sceneToLoad doesn't have a tree
-    if (treelessEpisodes.Contains(episodeToLoad))
-    {
-        Debug.Log("preserving tree");
-        preserveTree();
-    }
-
-    SceneManager.LoadScene(episodeToLoad.sceneName());
-}
-
-public void startSearchingGame()
-{
-    currentEpisodeIndex = 0;
-    currentEpisode = searchingEpisodeQueue[currentEpisodeIndex];
-    SceneManager.LoadScene(currentEpisode.sceneName());
-}
-
-public void startCavingGame()
-{
-    currentEpisodeIndex = 0;
-    currentEpisode = cavingEpisodeQueue[currentEpisodeIndex];
-    SceneManager.LoadScene(currentEpisode.sceneName());
-}*/

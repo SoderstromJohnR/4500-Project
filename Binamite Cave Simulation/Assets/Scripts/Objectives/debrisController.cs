@@ -34,12 +34,12 @@ public class debrisController : MonoBehaviour
         }
     }
     
-    // Returns true if dynamite is flagged for episode caving2
-    // Only true in caving1 where player is in root and not moving
+    // Returns true if dynamite is flagged for episode caving3
+    // Only true in caving1 and 2 where player is in root and not moving
     private bool detonationIsAllowed()
     {
         // Returns true if there is debris to be detonated and the player is stationary in the root node
-        if (currentEpisode == Episode.caving1)
+        if (currentEpisode != Episode.caving3)
         {
             return flagDestroy
             && player.GetComponent<playerSC>().getIndex() == 1
@@ -53,7 +53,7 @@ public class debrisController : MonoBehaviour
     {
         flagDestroy = true;
         childDynamite = Instantiate(dynamite, transform);
-        Debug.Log("Preparing to destroy");
+        //Debug.Log("Preparing to destroy");
     }
 
     //Destroy all debris that is set to go off
@@ -85,7 +85,7 @@ public class debrisController : MonoBehaviour
     //Send a message when the object is destroyed
     void OnDestroy()
     {
-        Debug.Log("Debris destroyed");
+        //Debug.Log("Debris destroyed");
     }
 
     public void setChildOfRoot(bool status)
