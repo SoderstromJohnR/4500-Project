@@ -6,8 +6,7 @@ public class onLoadPrompter : MonoBehaviour
 {
     Episode currentEpisode;
 
-    // Start is called before the first frame update
-    void Start()
+    void promptWithInstructions()
     {
         currentEpisode = SceneTransitionManager.Instance.currentEpisode;
         Debug.LogWarning("onLoadPrompter.Start() - Current Episode: " + currentEpisode.sceneName());

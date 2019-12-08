@@ -277,7 +277,7 @@ public class playerSC : MonoBehaviour
 
             // Interrupts player
             GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
-                .activateInterrupt(onYesClicked, onNoClicked);
+                .activateInterrupt(onYesClicked, onNoClicked, "Are you sure? There's a better way.", "Move", "Undo");
             return false;
         }
 

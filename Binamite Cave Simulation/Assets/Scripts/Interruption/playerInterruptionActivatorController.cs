@@ -30,13 +30,17 @@ using UnityEngine;
 
 public class playerInterruptionActivatorController : MonoBehaviour
 {
+    public delegate void onInterruptionStart();
+
     [SerializeField] private GameObject playerInterruption;
+    [SerializeField] private GameObject onLoadPrompter;
 
     // Start is called before the first frame update
     void Start()
     {
         // Disables the interruption object by default
         playerInterruption.SetActive(false);
+        promptWithInstructions();
     }
 
     /* Sets the assigned playerInterruption game object to active, sets method arguments as delegates,
@@ -89,5 +93,52 @@ public class playerInterruptionActivatorController : MonoBehaviour
 
         // Enables scripts that require a non-zero timescale
         Time.timeScale = 1;
+    }
+
+    // Activates the playerInterruption with an episode-specific message instructing the player
+    void promptWithInstructions()
+    {
+        Episode currentEpisode = SceneTransitionManager.Instance.currentEpisode;
+        Debug.LogWarning("onLoadPrompter.Start() - Current Episode: " + currentEpisode.sceneName());
+
+        switch (currentEpisode)
+        {
+            case Episode.caving1:
+                activateInterrupt(Empty, Skip,
+                    "Place dynamite, go back, and press D to detonate.", "Ok!", "Skip");
+                break;
+            case Episode.caving2:
+                activateInterrupt(Empty, Skip,
+                    "Do the same thing, but in a more, shall we say, complete way.", "Ok!", "Skip");
+                break;
+            case Episode.caving3:
+                activateInterrupt(Empty, Skip,
+                    "Now you can detonate everywhere! See if you can go quicker.", "Right on!", "Skip");
+                break;
+            case Episode.searching1:
+                activateInterrupt(Empty, Skip,
+                    "Your buddy lost a chisel. Can you find it?", "Sure!", "No!");
+                break;
+            case Episode.searching2:
+                activateInterrupt(Empty, Skip,
+                    "Oh no, now your buddy IS lost! Press S to shout.", "Okay!", "Meh.");
+                break;
+            default:
+                Debug.LogWarning("onLoadPrompter: UNPROMPTED EPISODE");
+                break;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    void Empty() { }
+
+    void Skip()
+    {
+        SceneTransitionManager.Instance.loadNextScene();
     }
 }
