@@ -33,9 +33,6 @@ public class pauseController : MonoBehaviour
             gameObject.transform.position = new Vector3(camera.transform.position.x, camera.transform.position.y, 0);
             pauseSwitch = 1;
             pauseCountDown = NUM_FRAMES_TO_WAIT;
-
-            // Stops time
-            Time.timeScale = 0;
            
         }
 
@@ -45,9 +42,6 @@ public class pauseController : MonoBehaviour
             gameObject.transform.position = new Vector3(100, 100, 0);
             pauseSwitch = 0;
             pauseCountDown = NUM_FRAMES_TO_WAIT;
-
-            // Restarts time
-            Time.timeScale = 1;
         }
 
     }

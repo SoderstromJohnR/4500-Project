@@ -41,7 +41,8 @@ public class playerInterruptionActivatorController : MonoBehaviour
 
     /* Sets the assigned playerInterruption game object to active, sets method arguments as delegates,
      * and stops time. */
-    public void activateInterrupt(OnYesClicked yesClicked, OnNoClicked noClicked, string message = null)
+    public void activateInterrupt(OnYesClicked yesClicked, OnNoClicked noClicked,
+        string message = null, string affirmativeText = null, string negativeText = null)
     {
         if (!playerInterruption.activeInHierarchy)
         {
@@ -58,7 +59,23 @@ public class playerInterruptionActivatorController : MonoBehaviour
             playerInterruption.GetComponent<playerInterruptionController>().onYesClicked += continueGame;
             playerInterruption.GetComponent<playerInterruptionController>().onNoClicked += continueGame;
 
-            // This "stops time," by disabling scripts that still work while timescale is set to 1
+            // Sets text if arguments are not default
+            if (message != null)
+            {
+                playerInterruption.GetComponent<playerInterruptionController>().setMessage(message);
+            }
+
+            if (affirmativeText != null)
+            {
+                playerInterruption.GetComponent<playerInterruptionController>().setAffirmativeText(affirmativeText);
+            }
+
+            if (negativeText != null)
+            {
+                playerInterruption.GetComponent<playerInterruptionController>().setNegativeText(negativeText);
+            }
+
+            // This "stops time" by disabling scripts that still work while timescale is set to 1
             Time.timeScale = 0;
         }
     }
