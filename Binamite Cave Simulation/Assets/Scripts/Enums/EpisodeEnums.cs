@@ -1,6 +1,6 @@
 ﻿/* This file contains enumerated types useful for identifying episodes, 
- * scene names, and game modes. It needs to be updated when new scenes 
- * and game modes are added. */
+ * scene names, and game modes. It should be updated with the addition of
+ * new scenes and game modes. */
 
 /// <summary>
 /// The Episode enum contains one entry for each episode, mainMenu, and none.
@@ -11,7 +11,7 @@ public enum Episode
 }
 
 /// <summary>
-/// The GameMode enum contains an entry for each game mode, mainMenu, and none.
+/// The GameMode enum contains a entry for each game mode, mainMenu, and none.
 /// </summary>
 public enum GameMode
 {
@@ -19,9 +19,9 @@ public enum GameMode
 }
 
 /// <summary>
-/// EpisodeMethods defines static extension methods for retrieving a GameMode from
+/// EpisodeMethods contain static extension methods for retrieving a GameMode from
 /// the corresponding episode, a scene name from the corresponding episode, or an
-/// episode from a string matching the scene name of an episode.
+/// episode from a String matching the scene name of an episode.
 /// </summary>
 static class EpisodeMethods
 {

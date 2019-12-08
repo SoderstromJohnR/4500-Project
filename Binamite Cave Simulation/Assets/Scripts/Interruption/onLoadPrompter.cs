@@ -2,27 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// This script prompts the user at the beginning of each episode with instructions on how to
-/// accomplish the game's objective.
-/// </summary>
 public class onLoadPrompter : MonoBehaviour
 {
+    Episode currentEpisode;
+
     // Start is called before the first frame update
-    // Uses the playerInterruptionActivationController to prompt the user
     void Start()
     {
-        // Gets current episode and playerInterruptionActivationController
-        Episode currentEpisode = SceneTransitionManager.Instance.currentEpisode;
+        currentEpisode = SceneTransitionManager.Instance.currentEpisode;
+        Debug.LogWarning("onLoadPrompter.Start() - Current Episode: " + currentEpisode.sceneName());
+
         playerInterruptionActivatorController controller =
             GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>();
 
-        // Prompts the user based on the current episode
         switch (currentEpisode)
         {
             case Episode.caving1:
                 controller.activateInterrupt(Empty, Skip, 
-                    "Place dynamite, go back to the entrance, and press D to detonate.", "Ok!", "Skip");
+                    "Place dynamite, go back, and press D to detonate.", "Ok!", "Skip");
                 break;
             case Episode.caving2:
                 controller.activateInterrupt(Empty, Skip,
@@ -46,13 +43,17 @@ public class onLoadPrompter : MonoBehaviour
         }
     }
 
-    // Passed to do nothing on affirmative click
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
     void Empty()
     {
 
     }
 
-    // Skips current episode
     void Skip()
     {
         SceneTransitionManager.Instance.loadNextScene();
