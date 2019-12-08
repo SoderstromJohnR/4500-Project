@@ -11,21 +11,8 @@ using UnityEngine;
 /// playerInterruptionController.cs can then be passed to it through the method activateInterrupt,
 /// defined in this file.
 /// 
-/// To configure this script to activate an object that interrupts the game:
-///     1. Drag the playerInterruptionActivator onto the hierarchy pane.
-///     2. Drag the object to be instantiated by this script into the hierarchy pane.
-///        (this project includes a playerInterruption prefab in Assets/Prefabs/Interruption)
-///     3. Highlight the playerInterruptionActivator.
-///     4. Drag playerInterruption from the hierarchy to the Player Interruption area in the
-///        Player Interruption Activator Controller (Script) area in the inspector.
-/// 
-/// To activate an object that has been configured as above, the following call can be used directly:
-///     
-///        GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
-///            .activateInterrupt(onYesClicked, onNoClicked, "Message");
-///             
-/// where onYesClicked and onNoClicked are methods that conform to the OnYesClicked and OnNoClick
-/// protocols in the file playerInterruptionController.cs.
+/// The playerInterruptionActivator is part of the interruptSystem prefab and activates the 
+/// playerInterruption prefab contained therein. 
 /// </summary>
 
 public class playerInterruptionActivatorController : MonoBehaviour
@@ -33,7 +20,6 @@ public class playerInterruptionActivatorController : MonoBehaviour
     public delegate void onInterruptionStart();
 
     [SerializeField] private GameObject playerInterruption;
-    [SerializeField] private GameObject onLoadPrompter;
 
     // Start is called before the first frame update
     void Start()
@@ -99,13 +85,12 @@ public class playerInterruptionActivatorController : MonoBehaviour
     void promptWithInstructions()
     {
         Episode currentEpisode = SceneTransitionManager.Instance.currentEpisode;
-        Debug.LogWarning("onLoadPrompter.Start() - Current Episode: " + currentEpisode.sceneName());
 
         switch (currentEpisode)
         {
             case Episode.caving1:
                 activateInterrupt(Empty, Skip,
-                    "Place dynamite, go back, and press D to detonate.", "Ok!", "Skip");
+                    "Place dynamite, go back to the entrance, and press D to detonate.", "Ok!", "Skip");
                 break;
             case Episode.caving2:
                 activateInterrupt(Empty, Skip,
@@ -124,17 +109,11 @@ public class playerInterruptionActivatorController : MonoBehaviour
                     "Oh no, now your buddy IS lost! Press S to shout.", "Okay!", "Meh.");
                 break;
             default:
-                Debug.LogWarning("onLoadPrompter: UNPROMPTED EPISODE");
                 break;
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // An empty method to pass to the activateInterrupt method
     void Empty() { }
 
     void Skip()
