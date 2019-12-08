@@ -8,8 +8,8 @@ using UnityEngine;
 /// </summary>
 public class RiggingRecord
 {
-    public List<int> riggedRubbleIndices; // The indecies of rubble piles rigged
-    public List<int> riggingTraversal; // Indecies of visited nodes since previous detonation
+    public List<int> riggedRubbleIndices; // The indices  of rubble piles rigged
+    public List<int> riggingTraversal; // indices  of visited nodes since previous detonation
 
     public RiggingRecord()
     {

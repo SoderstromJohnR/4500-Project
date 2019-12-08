@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// This class defines an encapsulated set of statistics on the players
-/// actions over the course of a single game and the nature of the cave network.
+/// This class defines an encapsulated set of statistics on the players actions over the course 
+/// of a single episode, as well as a representation of the cave network as a set of indices.
 /// </summary>
 
 public class GameStats
@@ -27,15 +27,15 @@ public class GameStats
     // Returns a copy of the list of the Indices of all the nodes in the cave network
     public List<int> getExistingNodeIndices()
     {
-        return new List<int>(this.existingNodeIndices);
         Debug.Log("GameStats - existingNodeIndices: " + this.existingNodeIndices);
+        return new List<int>(this.existingNodeIndices);
     }
 
     // Returns a copy of the HashSet of nodes visited by the player in this game
     public HashSet<int> getVisitedNodeIndices()
     {
-        return new HashSet<int>(this.visitedNodeIndices);
         Debug.Log("GameStats - visitedNodeIndices: " + this.visitedNodeIndices);
+        return new HashSet<int>(this.visitedNodeIndices);
     }
 
     // Returns a copy of the list of indecies of nodes in the order they were traversed
@@ -47,8 +47,8 @@ public class GameStats
     // Returns the number of times the player moved in this game
     public int getNumMoves()
     {
-        return traversal.Count;
         Debug.Log("GameStats - numMoves: " + traversal.Count);
+        return traversal.Count;
     }
 
     // Returns true of the number of nodes visited equals the number of nodes in the tree
@@ -111,7 +111,7 @@ public class GameStats
             + "\n Traversal: " + listToString(traversal));
     }
 
-    private string listToString(List<int> list)
+    private static string listToString(List<int> list)
     {
         string listString = "";
 

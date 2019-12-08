@@ -85,5 +85,12 @@ public class lostItemController : MonoBehaviour
         playerHasWon = true; // Indicates the player has won
         transform.position = player.transform.position; // Moves the item to the player
         GetComponent<Renderer>().enabled = true; // Shows the lost item
+
+        GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
+            .activateInterrupt(SceneTransitionManager.Instance.loadNextScene, empty, "You did it!", "Next", "Explore");
     }
+
+    // An empty function to pass to the interruption
+    void empty() { }
+
 }

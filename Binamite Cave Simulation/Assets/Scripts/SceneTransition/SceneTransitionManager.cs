@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 
 /// <summary>
-/// This class defines a singleton object which persists throughout each game,
-/// manages the preservation of game objects between scenes, and records
-/// player statistics using a public GameStats object.
+/// This class defines a singleton object which persists throughout each game for managing the preservation of game 
+/// objects between scenes, selecting scenes to load, and storing a record of player activity using a public 
+/// GameStats object.
 /// </summary>
 public class SceneTransitionManager : Singleton<SceneTransitionManager>
 {
@@ -18,6 +18,7 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     // The set of transitions to be substituted with a transition to the main menu
     string[] mainMenuTransition = { "CavingGame3", "SearchingGame1" };
 
+    // Called by the singleton class, intitializes gameStatsList and adds onSceneLoaded as a SceneManager delegate
     protected SceneTransitionManager()
     {
         Debug.Log("CONSTRUCTING SceneTransitionManager");
@@ -88,14 +89,12 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
         Debug.Log("SceneTransitionManager.loadNextScene() - nextSceneName: " + nextSceneName);
         Debug.Log("SceneTransitionManager.loadNextScene() - mainMenuTransition[0]: " + mainMenuTransition[0]);
         Debug.Log("SceneTransitionManager.loadNextScene() - mainMenuTransition[1]: " + mainMenuTransition[1]);
-        Debug.Log(currentSceneName == mainMenuTransition[0]);
-        Debug.Log(nextSceneName == mainMenuTransition[1]);
 
         if (nextSceneName.Length == 0
             || mainMenuTransition[0] == currentSceneName && mainMenuTransition[1] == nextSceneName)
         {
             nextSceneName = "MainMenu";
-            Debug.Log("SceneTransitionManager.loadNextScene() - nextSceneName in transition: " + nextSceneName);
+            Debug.Log("SceneTransitionManager.loadNextScene() - loading " + nextSceneName);
         }
         SceneManager.LoadScene(nextSceneName);
     }
@@ -109,11 +108,8 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
 
         Debug.Log("SceneTransitionManager.loadNextScene() - currentSceneName: " + currentSceneName);
         Debug.Log("SceneTransitionManager.loadNextScene() - nextSceneName: " + previousScene);
-        Debug.Log("SceneTransitionManager.loadNextScene() - mainMenuTransition[0]: " + mainMenuTransition[0]);
         Debug.Log("SceneTransitionManager.loadNextScene() - mainMenuTransition[1]: " + mainMenuTransition[1]);
-        Debug.Log(currentSceneName == mainMenuTransition[1]);
-        Debug.Log(previousScene == mainMenuTransition[0]);
-
+        Debug.Log("SceneTransitionManager.loadNextScene() - mainMenuTransition[0]: " + mainMenuTransition[0]);
         if (previousScene.Length == 0
             || mainMenuTransition[1] == currentSceneName && mainMenuTransition[0] == previousScene)
         {
@@ -133,14 +129,6 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     public void startCavingGame()
     {
         SceneManager.LoadScene("CavingGame1");
-    }
-
-    // Stops the tree from being destroyed
-    private void preserveTree()
-    {
-        Debug.Log("SceneTransitionManager - preserveTree() called!");
-        /*preserveObjectsWithTag("Node");
-        preserveObjectsWithTag("Path");*/
     }
 
     // Prevents any objects with the passed tag from being destroyed when a new scene loads

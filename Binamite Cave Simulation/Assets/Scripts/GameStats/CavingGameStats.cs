@@ -4,9 +4,9 @@ using UnityEngine;
 
 /// <summary>
 /// This class extends the GameStats class to track stats particular to a caving game, including the Indices
-/// of the nodes visited and the indecies of the rubble piles that have been rigged with dynamite, the
+/// of the nodes visited and the indices of the rubble piles that have been rigged with dynamite, the
 /// number of times the player pressed the dynamite button and some dynamite exploded, and the number
-/// of sticks of dynamite that were exploded.
+/// of sticks of dynamite that exploded.
 /// </summary>
 public class CavingGameStats : GameStats
 {
@@ -16,13 +16,13 @@ public class CavingGameStats : GameStats
 
     public CavingGameStats()
     {
+        // Initalizes the list of rigging records and adds a new one
         riggingRecords = new List<RiggingRecord>();
         riggingRecords.Add(new RiggingRecord());
+
+        // Initializes other stats to 0
         numDetonations = 0;
         numExplosions = 0;
-
-
-        Debug.LogWarning("New CavingGameStats");
     }
 
 
@@ -31,15 +31,15 @@ public class CavingGameStats : GameStats
     // Returns the number of times the player has detonated dynamite in this game
     public int getNumDetonations()
     {
-        return numDetonations;
         Debug.Log("GameStats - numDetonations: " + numDetonations);
+        return numDetonations;
     }
 
     // Returns the number of sticks of dynamite that have been detonated
     public int getNumExplosions()
     {
-        return numExplosions;
         Debug.Log("GameStats - numExplosions: " + numExplosions);
+        return numExplosions;
     }
 
     // Returns a deep copy of the list of rigging records
@@ -74,6 +74,7 @@ public class CavingGameStats : GameStats
 
         // Adds the number of charges rigged since last detonation to numExplosions
         numExplosions += riggingRecords[riggingRecords.Count - 1].riggedRubbleIndices.Count;
+        Debug.Log("GameStats - numExposions: " + numDetonations);
 
         riggingRecords.Add(new RiggingRecord());
     }
@@ -83,7 +84,7 @@ public class CavingGameStats : GameStats
      *  Call this method when and only when the player has moved to a new node. */
     public void addVisitedNodeIndex(int index)
     {
-        // Adds node to base class traversal
+        // Adds node to base class traversal and set of visited nodes
         base.addVisitedNodeIndex(index);
 
         // Adds node to current rigging record traversal

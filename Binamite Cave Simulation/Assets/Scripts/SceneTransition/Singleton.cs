@@ -3,7 +3,13 @@
 /// <summary>
 /// Inherit from this base class to create a singleton.
 /// e.g. public class MyClassName : Singleton<MyClassName> {}
+/// 
+/// In the context of Unity, a singleton is an object that is not destroyed when scenes 
+/// load and not re-created if an instance already exists. Any object of a class that 
+/// inherits from Singleton<T> has this property.
+/// 
 /// CITATION: This implementation is from http://wiki.unity3d.com/index.php/Singleton
+/// 
 /// </summary>
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
