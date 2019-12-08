@@ -10,8 +10,7 @@ public class debrisController : MonoBehaviour
     private GameObject dynamite;
     private GameObject childDynamite;
     private GameObject player;
-
-    private int tempGamemode = 1;
+    
     private Episode currentEpisode;
 
     // Start is called before the first frame update

@@ -9,9 +9,7 @@ public class playerSC : MonoBehaviour
     public GameObject root;
 
     private int caveIndex;
-    private int currentCaveIndex;
     private float playerActualSpeed;
-    private float targetDistance;
     private float elapsedTime;
     private float expectedTime;
 
@@ -38,8 +36,6 @@ public class playerSC : MonoBehaviour
      */
     void Start()
     {
-        
-
         //Set the target position immediately to the player's starting location
         targetPosition = transform.position;
         caveIndex = 1;
@@ -222,7 +218,8 @@ public class playerSC : MonoBehaviour
         // Records cave move
         numCaveMoves += 1;
         SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(hitIndex);
-        root.GetComponent<johnRootController>().addVisitedIndex(hitIndex);
+        //Not needed with the SceneTransitionManager handling this, and the root's list would reset anyway
+        //root.GetComponent<johnRootController>().addVisitedIndex(hitIndex);
 
         // Console logging
         Debug.Log("Going to center of cave instead");
@@ -395,7 +392,9 @@ public class playerSC : MonoBehaviour
     {
         numCaveMoves = 0;
         numMinerShouts = 0;
+        numExplosions = 0;
         numDetonations = 0;
+        foundMiner = false;
         transform.position = root.transform.position;
         targetPosition = transform.position;
         caveIndex = 1;

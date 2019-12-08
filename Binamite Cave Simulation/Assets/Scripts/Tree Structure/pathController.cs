@@ -9,7 +9,7 @@ public class pathController : MonoBehaviour
     {
         GetComponent<SpriteRenderer>().sortingLayerName = "Tunnel";
     }
-
+    /*
     // Update is called once per frame
     void Update()
     {
@@ -27,4 +27,5 @@ public class pathController : MonoBehaviour
         scale.x = Vector3.Distance(_initialPosition, _finalPosition);
         _sprite.transform.localScale = scale;
     }
+    */
 }

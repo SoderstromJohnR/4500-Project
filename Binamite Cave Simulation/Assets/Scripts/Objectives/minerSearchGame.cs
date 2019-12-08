@@ -7,8 +7,7 @@ public class minerSearchGame : MonoBehaviour
     private GameObject minerShout;
     private GameObject minerThanks;
     private GameObject player;
-
-    private Vector3 nodeSize;
+    
     private float distance;
     private Vector3 minerShoutPosition;
     private int caveIndex; // The index of the cave the miner is in
@@ -20,7 +19,7 @@ public class minerSearchGame : MonoBehaviour
     void Start()
     {
         SpriteRenderer nodeImage = GetComponent<SpriteRenderer>();
-        //Set the GameObject's Color to green
+        //Set the GameObject's Color to black
         nodeImage.color = Color.black;
 
         GetComponent<SpriteRenderer>().sortingLayerName = "OtherMiner";
@@ -30,7 +29,7 @@ public class minerSearchGame : MonoBehaviour
         root = GameObject.Find("Root Node");
 
         player = GameObject.Find("player");
-        nodeSize = GetComponentInParent<Renderer>().bounds.size / 1.5f;
+        Vector3 nodeSize = GetComponentInParent<Renderer>().bounds.size / 1.5f;
         distance = nodeSize.x * nodeSize.x + nodeSize.y * nodeSize.y;
         distance = Mathf.Pow(distance, 0.5f);
 

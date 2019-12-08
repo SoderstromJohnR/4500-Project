@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class followPlayer : MonoBehaviour
 {
-    int maxDepth;
     float depthDistance;
-    float multSize;
-    johnRootController sc;
     Vector3 startScale;
     GameObject player;
     Vector3 origPosition;
@@ -17,14 +14,13 @@ public class followPlayer : MonoBehaviour
     {
         //transform.localScale = new Vector3(5, 3, 1);
         //Retrieve values from the root controller to calculate range
-        sc = GameObject.FindGameObjectWithTag("Root").GetComponent<johnRootController>();
-        maxDepth = sc.maxDepth;
+        johnRootController sc = GameObject.FindGameObjectWithTag("Root").GetComponent<johnRootController>();
         depthDistance = sc.depthDistance;
 
         //Generate a multiplier for the starting scale based on tree's x and y distances
         //xDim is the x distance from the root node to either child
         float xDim = sc.getBaseXDistance() / 2;
-        multSize = Mathf.Sqrt(xDim * xDim + depthDistance * depthDistance);
+        float multSize = Mathf.Sqrt(xDim * xDim + depthDistance * depthDistance);
         multSize /= GetComponent<Renderer>().bounds.size.x;
         multSize *= 2.5f;// - maxDepth / (maxDepth + 1);
 
@@ -48,7 +44,7 @@ public class followPlayer : MonoBehaviour
         //create visibility (light to fend off 'fog of war')
         letThereBeLight();
     }
-    public void letThereBeLight()
+    void letThereBeLight()
     {
         //GameObject root = GameObject.FindGameObjectWithTag("Root");
         //johnRootController sc = root.GetComponent<johnRootController>();
