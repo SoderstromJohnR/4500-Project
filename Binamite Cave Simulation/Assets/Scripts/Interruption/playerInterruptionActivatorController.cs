@@ -40,7 +40,8 @@ public class playerInterruptionActivatorController : MonoBehaviour
     }
 
     /* Sets the assigned playerInterruption game object to active, sets method arguments as delegates,
-     * and stops time. */
+     * stops time, and passes optional arguments representing new message text, left button text, and
+     * right button text to the newly activated interruption prefab. */
     public void activateInterrupt(OnYesClicked yesClicked, OnNoClicked noClicked,
         string message = null, string affirmativeText = null, string negativeText = null)
     {

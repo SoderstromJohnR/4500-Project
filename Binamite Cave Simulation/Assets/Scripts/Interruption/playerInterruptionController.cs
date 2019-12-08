@@ -10,15 +10,16 @@ public delegate void OnYesClicked();
 public delegate void OnNoClicked();
 
 /// <summary>
-/// playerInterruptionController.cs defines the behavior of a UI element that interrupts
+/// This script defines the behavior of a UI element that interrupts
 /// the player. It should be attatched to the playerInterruption prefab, which is designed
 /// to be activated by the script playerInterruptionActivatorController. The prefab has
 /// two buttons and a text area containing text that can be set with setMessage, 
 /// setAffirmativeText, and setNegativeText, respectively.
 /// 
 /// The methods yesClicked and noClicked execute whichever methods were added to the 
-/// onYesClicked and onNoClicked delegates. They're intended to be delegates of the left
-/// and right buttons, respectively.
+/// onYesClicked and onNoClicked fields. Any such methods referenced in onYesClicked 
+/// and onNoClicked will be called when the player clicks the left or right buttons, 
+/// respectively.
 /// </summary>
 
 public class playerInterruptionController : MonoBehaviour
