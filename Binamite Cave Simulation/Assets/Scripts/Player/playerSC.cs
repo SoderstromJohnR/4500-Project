@@ -315,11 +315,13 @@ public class playerSC : MonoBehaviour
         }
     }
 
+    // Called by playerInterruption yes button
     public void onYesClicked()
     {
         setDestinationToCave(badCaveTargetIndex, badCaveTarget);
     }
 
+    // Called by playerInterruption no button
     public void onNoClicked()
     {
         Debug.Log("playerSC - No clicked.");

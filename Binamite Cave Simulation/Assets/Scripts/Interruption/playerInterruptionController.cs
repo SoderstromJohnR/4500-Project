@@ -11,7 +11,7 @@ public delegate void OnNoClicked();
 
 /// <summary>
 /// This script defines the behavior of a UI element that interrupts
-/// the player. It should be attatched to the playerInterruption prefab, which is designed
+/// the player. It should be attached to the playerInterruption prefab, which is designed
 /// to be activated by the script playerInterruptionActivatorController. The prefab has
 /// two buttons and a text area containing text that can be set with setMessage, 
 /// setAffirmativeText, and setNegativeText, respectively.
