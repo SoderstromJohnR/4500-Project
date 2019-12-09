@@ -3,36 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// This class defines a controller that activates a prompt that interrupts the player to ask
-/// a question. When the player clicks yes or no, the corresponding method that was passed to
-/// it will be called.
-/// 
-/// Methods that conform to the OnYesClicked and OnNoClicked protocols defined in
-/// playerInterruptionController.cs can then be passed to it through the method activateInterrupt,
-/// defined in this file.
-/// 
-/// The playerInterruptionActivator is part of the interruptSystem prefab and activates the 
-/// playerInterruption prefab contained therein. 
+/// This class defines a controller that activates a quiz display UI component.
 /// </summary>
 
-public class playerInterruptionActivatorController : MonoBehaviour
+public class quizDisplayActivatorController : MonoBehaviour
 {
-    public delegate void onInterruptionStart();
-
-    // Set as playerInterruption prefab in the editor
-    [SerializeField] private GameObject playerInterruption;
+    // Set as quizDisplay prefab in the editor
+    [SerializeField] private GameObject quizDisplay;
 
     // Start is called before the first frame update
     void Start()
     {
         // Disables the interruption object by default
-        playerInterruption.SetActive(false);
-        promptWithInstructions();
+        quizDisplay.SetActive(false);
     }
 
     /* Sets the assigned playerInterruption game object to active, sets method arguments as delegates,
      * stops time, and passes optional arguments representing new message text, left button text, and
-     * right button text to the newly activated interruption prefab. */
+     * right button text to the newly activated interruption prefab. 
     public void activateInterrupt(OnYesClicked yesClicked, OnNoClicked noClicked,
         string message = null, string affirmativeText = null, string negativeText = null)
     {
@@ -70,19 +58,19 @@ public class playerInterruptionActivatorController : MonoBehaviour
             // This "stops time" by disabling scripts that still work while timescale is set to 1
             Time.timeScale = 0;
         }
-    }
+    }*/
 
     // This method returns the timescale to 1 and movement resumes
     private void continueGame()
     {
-        Debug.Log("playerInterruptionActivatorController - Game Continued");
-        playerInterruption.SetActive(false);
+        Debug.Log("quizDisplayActivatorController - Game Continued");
+        quizDisplay.SetActive(false);
 
         // Enables scripts that require a non-zero timescale
         Time.timeScale = 1;
     }
 
-    // Activates the playerInterruption with an episode-specific message instructing the player
+    /* // Activates the playerInterruption with an episode-specific message instructing the player
     void promptWithInstructions()
     {
         Episode currentEpisode = SceneTransitionManager.Instance.currentEpisode;
@@ -112,9 +100,9 @@ public class playerInterruptionActivatorController : MonoBehaviour
             default:
                 break;
         }
-    }
+    }*/
 
-    // An empty method to pass to the activateInterrupt method
+    // An empty method to pass to the showQuiz method
     void Empty() { }
 
     void Skip()

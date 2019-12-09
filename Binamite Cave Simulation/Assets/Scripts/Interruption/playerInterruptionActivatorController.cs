@@ -117,6 +117,7 @@ public class playerInterruptionActivatorController : MonoBehaviour
     // An empty method to pass to the activateInterrupt method
     void Empty() { }
 
+    // Loads the next scene using SceneTransitionManager
     void Skip()
     {
         SceneTransitionManager.Instance.loadNextScene();

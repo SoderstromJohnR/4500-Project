@@ -20,6 +20,23 @@ public delegate void OnNoClicked();
 /// onYesClicked and onNoClicked fields. Any such methods referenced in onYesClicked 
 /// and onNoClicked will be called when the player clicks the left or right buttons, 
 /// respectively.
+/// 
+/// To configure this script to activate an object that interrupts the game:
+///     1. Drag the playerInterruptionActivator onto the hierarchy pane.
+///     2. Drag the object to be instantiated by this script into the hierarchy pane.
+///        (this project includes a playerInterruption prefab in Assets/Prefabs/Interruption)
+///     3. Highlight the playerInterruptionActivator.
+///     4. Drag playerInterruption from the hierarchy to the Player Interruption area in the
+///        Player Interruption Activator Controller (Script) area in the inspector.
+/// 
+/// To activate an object that has been configured as above, the following call can be used directly:
+///     
+///        GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
+///            .activateInterrupt(onYesClicked, onNoClicked, "Message");
+///             
+/// where onYesClicked and onNoClicked are methods that conform to the OnYesClicked and OnNoClick
+/// protocols in the file playerInterruptionController.cs.
+/// 
 /// </summary>
 
 public class playerInterruptionController : MonoBehaviour
