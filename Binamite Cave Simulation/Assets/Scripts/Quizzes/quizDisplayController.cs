@@ -12,9 +12,19 @@ public delegate void OnEnterClicked();
 public delegate void OnSkipClicked();
 
 /// <summary>
-/// This script defines the behavior of a UI element that displays a series of
-/// questions about binary trees.
+/// This script defines the behavior of a UI element that displays a question
+/// about binary trees. It is part of the questionSystem prefab.
 /// 
+/// The text of the question can be set with the method setQuestionText. When the user
+/// enters an answer that cannot be converted to an integer, the message "Try an integer" 
+/// will be displayed in the feedback text. Otherwise, the answer is converted to an integer,
+/// and presses the enter button, it will be passed as an argument to the OnEnterClicked delegate
+/// functions assigned to answerIsCorrect, which should return true if it is. If this function does 
+/// return true, "Correct!" will be displayed and the text on the "Skip" button will be changed to 
+/// "Next." Otherwise, "Incorrect" is displayed.
+/// 
+/// When the player enters a string that can't be converted to an integer, the message
+/// "Try an integer" will be displayed in the feedback text.
 /// </summary>
 
 public class quizDisplayController : MonoBehaviour
@@ -36,6 +46,7 @@ public class quizDisplayController : MonoBehaviour
     public GameObject feedbackText; // The text field with the feedback
     public GameObject enterText;    // The text on the enter button
     public GameObject skipText;     // The text on the skip button
+
     public GameObject answerTextField;      // The text field where the player enters an answer
 
     private string answerInputString = "";  // The input string, updated by inputTextChanged
@@ -55,19 +66,20 @@ public class quizDisplayController : MonoBehaviour
         {
             // Sets feedback if the answer is not an integer
             feedback.color = red;
-            feedback.SetText("Try an Integer");
+            feedback.SetText("Try an integer.");
         }
         else if (answerIsCorrect(answerInt))
         {
-            // Sets correct answer feedback text
+            // Sets correct answer feedback text and skip button text to "Next"
             feedback.color = green;
             feedback.SetText("Correct!");
+            skipText.GetComponent<TextMeshProUGUI>().SetText("Next");
         }
         else
         {
             // Sets incorrect answer feedback text
             feedback.color = red;
-            feedbackText.GetComponent<TextMeshProUGUI>().SetText("Incorrect!");
+            feedbackText.GetComponent<TextMeshProUGUI>().SetText("Incorrect.");
         }
     }
 

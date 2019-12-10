@@ -55,6 +55,12 @@ public class GameStats
         return traversal.Count - 1;
     }
 
+    // Returns the number of caves in the cave system
+    public int getNumCaves()
+    {
+        return existingNodeIndices.Count;
+    }
+
     // Returns true of the number of nodes visited equals the number of nodes in the tree
     public bool playerHasVisitedAllNodes()
     {

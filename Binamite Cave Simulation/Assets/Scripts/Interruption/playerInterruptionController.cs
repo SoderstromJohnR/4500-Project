@@ -5,20 +5,20 @@ using UnityEngine.UI;
 
 using TMPro; //The TextMeshPro library
 
-// Define delegates for methods to call when yes or no are clicked on an interruption
-public delegate void OnYesClicked();
-public delegate void OnNoClicked();
+// Define delegates for methods to call when left or left are clicked on an interruption
+public delegate void OnLeftButtonClicked();
+public delegate void OnRightButtonClicked();
 
 /// <summary>
 /// This script defines the behavior of a UI element that interrupts
 /// the player. It should be attached to the playerInterruption prefab, which is designed
 /// to be activated by the script playerInterruptionActivatorController. The prefab has
 /// two buttons and a text area containing text that can be set with setMessage, 
-/// setAffirmativeText, and setNegativeText, respectively.
+/// setleftButtonText, and setleftButtonText, respectively.
 /// 
-/// The methods yesClicked and noClicked execute whichever methods were added to the 
-/// onYesClicked and onNoClicked fields. Any such methods referenced in onYesClicked 
-/// and onNoClicked will be called when the player clicks the left or right buttons, 
+/// The methods leftClicked and leftClicked execute whichever methods were added to the 
+/// OnLeftButtonClicked and OnRightButtonClicked fields. Any such methods referenced in OnLeftButtonClicked 
+/// and OnRightButtonClicked will be called when the player clicks the left or right buttons, 
 /// respectively.
 /// 
 /// To configure this script to activate an object that interrupts the game:
@@ -32,10 +32,10 @@ public delegate void OnNoClicked();
 /// To activate an object that has been configured as above, the following call can be used directly:
 ///     
 ///        GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
-///            .activateInterrupt(onYesClicked, onNoClicked, "Message");
+///            .activateInterrupt(OnLeftButtonClicked, OnRightButtonClicked, "Message");
 ///             
-/// where onYesClicked and onNoClicked are methods that conform to the OnYesClicked and OnNoClick
-/// protocols in the file playerInterruptionController.cs.
+/// where OnLeftButtonClicked and OnRightButtonClicked are methods that conform to the OnLeftButtonClicked and 
+/// OnRightClick protocols in the file playerInterruptionController.cs.
 /// 
 /// </summary>
 
@@ -43,24 +43,24 @@ public class playerInterruptionController : MonoBehaviour
 {
     // TextMeshPro text objects to be set in inspector
     public GameObject messageText; // The message to display
-    public GameObject affirmativeText; // The text on the yes button
-    public GameObject negativeText; // The text on the no button
+    public GameObject leftButtonText; // The text on the left button
+    public GameObject rightButtonText; // The text on the right button
 
-    public OnYesClicked onYesClicked; // Methods that will be called in yesClicked()
-    public OnNoClicked onNoClicked; // Methods that will be called in noClicked()
+    public OnLeftButtonClicked onLeftButtonClicked; // Methods that will be called in leftClicked()
+    public OnRightButtonClicked onRightButtonClicked; // Methods that will be called in leftClicked()
 
     // Calls delegate methods associated with the affirmative button
-    public void yesClicked()
+    public void leftClicked()
     {
-        onYesClicked();
-        Debug.Log("playerInterruptionController - yes clicked");
+        onLeftButtonClicked();
+        Debug.Log("playerInterruptionController - left clicked");
     }
 
     // Calls delegate methods associated with the negative button
-    public void noClicked()
+    public void rightClicked()
     {
-        onNoClicked();
-        Debug.Log("playerInterruptionController - no clicked");
+        onRightButtonClicked();
+        Debug.Log("playerInterruptionController - right clicked");
     }
 
     // Sets the message text to be displayed
@@ -69,15 +69,15 @@ public class playerInterruptionController : MonoBehaviour
         messageText.GetComponent<TextMeshProUGUI>().SetText(message);
     }
 
-    // Sets the text on what would otherwise be the yes button
-    public void setAffirmativeText(string affirmation)
+    // Sets the text on the left button
+    public void setLeftButtonText(string leftText)
     {
-        affirmativeText.GetComponent<TextMeshProUGUI>().SetText(affirmation);
+        leftButtonText.GetComponent<TextMeshProUGUI>().SetText(leftText);
     }
 
-    // Sets the text on what would otherwise be the no buton
-    public void setNegativeText(string negation)
+    // Sets the text on the right 
+    public void setRightButtonText(string rightText)
     {
-        negativeText.GetComponent<TextMeshProUGUI>().SetText(negation);
+        rightButtonText.GetComponent<TextMeshProUGUI>().SetText(rightText);
     }
 }

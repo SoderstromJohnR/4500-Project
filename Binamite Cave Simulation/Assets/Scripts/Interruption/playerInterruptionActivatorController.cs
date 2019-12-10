@@ -7,7 +7,7 @@ using UnityEngine;
 /// a question. When the player clicks yes or no, the corresponding method that was passed to
 /// it will be called.
 /// 
-/// Methods that conform to the OnYesClicked and OnNoClicked protocols defined in
+/// Methods that conform to the OnLeftButtonClicked and OnRightButtonClicked protocols defined in
 /// playerInterruptionController.cs can then be passed to it through the method activateInterrupt,
 /// defined in this file.
 /// 
@@ -25,46 +25,48 @@ public class playerInterruptionActivatorController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Disables the interruption object by default
         playerInterruption.SetActive(false);
+
+        // Prompts the user with instructions
         promptWithInstructions();
     }
 
     /* Sets the assigned playerInterruption game object to active, sets method arguments as delegates,
      * stops time, and passes optional arguments representing new message text, left button text, and
      * right button text to the newly activated interruption prefab. */
-    public void activateInterrupt(OnYesClicked yesClicked, OnNoClicked noClicked,
-        string message = null, string affirmativeText = null, string negativeText = null)
+    public void activateInterrupt(OnLeftButtonClicked leftButtonClicked, OnRightButtonClicked rightButtonClicked,
+        string message = null, string leftText = null, string rightText = null)
     {
         if (!playerInterruption.activeInHierarchy)
         {
-            Debug.Log("playerInterruptionActivatorController - Interrupt Activated!");
+            playerInterruptionController interruptionController =
+                playerInterruption.GetComponent<playerInterruptionController>();
 
             // Activates interruption
             playerInterruption.SetActive(true);
 
             // Overwrites delegates for yes and no buttons
-            playerInterruption.GetComponent<playerInterruptionController>().onYesClicked = yesClicked;
-            playerInterruption.GetComponent<playerInterruptionController>().onNoClicked = noClicked;
+            interruptionController.onLeftButtonClicked = leftButtonClicked;
+            interruptionController.onRightButtonClicked = rightButtonClicked;
 
             // Adds continueGame to the button delegates
-            playerInterruption.GetComponent<playerInterruptionController>().onYesClicked += continueGame;
-            playerInterruption.GetComponent<playerInterruptionController>().onNoClicked += continueGame;
+            interruptionController.onLeftButtonClicked += continueGame;
+            interruptionController.onRightButtonClicked += continueGame;
 
             // Sets text if arguments are not default
             if (message != null)
             {
-                playerInterruption.GetComponent<playerInterruptionController>().setMessage(message);
+                interruptionController.setMessage(message);
             }
 
-            if (affirmativeText != null)
+            if (leftText != null)
             {
-                playerInterruption.GetComponent<playerInterruptionController>().setAffirmativeText(affirmativeText);
+                interruptionController.setLeftButtonText(leftText);
             }
 
-            if (negativeText != null)
+            if (rightText != null)
             {
-                playerInterruption.GetComponent<playerInterruptionController>().setNegativeText(negativeText);
+                interruptionController.setRightButtonText(rightText);
             }
 
             // This "stops time" by disabling scripts that still work while timescale is set to 1

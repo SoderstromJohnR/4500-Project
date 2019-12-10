@@ -79,13 +79,15 @@ public class lostItemController : MonoBehaviour
     // This procedure is intended for when the victory condition of the game has been met
     void performVictoryProcedure()
     {
-        Debug.Log("VICTORY!!!!!");
         playerHasWon = true; // Indicates the player has won
         transform.position = player.transform.position; // Moves the item to the player
         GetComponent<Renderer>().enabled = true; // Shows the lost item
 
+        // Activates an interrupt where the second button starts a quiz
         GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
-            .activateInterrupt(SceneTransitionManager.Instance.loadNextScene, empty, "You did it!", "Next", "Explore");
+            .activateInterrupt(SceneTransitionManager.Instance.loadNextScene,
+                GameObject.Find("quizDisplayActivator").GetComponent<quizDisplayActivatorController>().startQuiz,
+                "You did it!", "Next", "Quiz");
     }
 
     // An empty function to pass to the interruption

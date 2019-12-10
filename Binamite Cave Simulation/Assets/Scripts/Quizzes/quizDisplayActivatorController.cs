@@ -11,6 +11,9 @@ public class quizDisplayActivatorController : MonoBehaviour
     // Set as quizDisplay prefab in the editor
     [SerializeField] private GameObject quizDisplay;
 
+    // The index of the quiz displayed
+    private int questionIndex = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,47 +21,32 @@ public class quizDisplayActivatorController : MonoBehaviour
         quizDisplay.SetActive(false);
     }
 
-    /* Sets the assigned playerInterruption game object to active, sets method arguments as delegates,
-     * stops time, and passes optional arguments representing new message text, left button text, and
-     * right button text to the newly activated interruption prefab. 
-    public void activateInterrupt(OnYesClicked yesClicked, OnNoClicked noClicked,
-        string message = null, string affirmativeText = null, string negativeText = null)
+    /* Sets the assigned quizDisplay game object to active, sets method arguments as delegates,
+     * stops time, and passes arguments representing new message text*/
+    public void activateQuizDisplay(string question, 
+        quizDisplayController.OnEnterClicked answerIsCorrect, 
+        quizDisplayController.OnSkipClicked skipQuestion)
     {
-        if (!playerInterruption.activeInHierarchy)
+        if (!quizDisplay.activeInHierarchy)
         {
-            Debug.Log("playerInterruptionActivatorController - Interrupt Activated!");
+            Debug.Log("quizDisplayActivatorController - Quiz Activated!");
+
+            quizDisplayController quizController = quizDisplay.GetComponent<quizDisplayController>();
 
             // Activates interruption
-            playerInterruption.SetActive(true);
+            quizDisplay.SetActive(true);
 
             // Overwrites delegates for yes and no buttons
-            playerInterruption.GetComponent<playerInterruptionController>().onYesClicked = yesClicked;
-            playerInterruption.GetComponent<playerInterruptionController>().onNoClicked = noClicked;
+            quizController.answerIsCorrect = answerIsCorrect;
+            quizController.onSkipClicked = skipQuestion;
 
-            // Adds continueGame to the button delegates
-            playerInterruption.GetComponent<playerInterruptionController>().onYesClicked += continueGame;
-            playerInterruption.GetComponent<playerInterruptionController>().onNoClicked += continueGame;
-
-            // Sets text if arguments are not default
-            if (message != null)
-            {
-                playerInterruption.GetComponent<playerInterruptionController>().setMessage(message);
-            }
-
-            if (affirmativeText != null)
-            {
-                playerInterruption.GetComponent<playerInterruptionController>().setAffirmativeText(affirmativeText);
-            }
-
-            if (negativeText != null)
-            {
-                playerInterruption.GetComponent<playerInterruptionController>().setNegativeText(negativeText);
-            }
+            // Sets the text of the question
+            quizController.setQuestionText(question);
 
             // This "stops time" by disabling scripts that still work while timescale is set to 1
             Time.timeScale = 0;
         }
-    }*/
+    }
 
     // This method returns the timescale to 1 and movement resumes
     private void continueGame()
@@ -70,37 +58,72 @@ public class quizDisplayActivatorController : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    /* // Activates the playerInterruption with an episode-specific message instructing the player
-    void promptWithInstructions()
+    // Starts the quiz appropriate to the current episode
+    public void startQuiz()
     {
         Episode currentEpisode = SceneTransitionManager.Instance.currentEpisode;
 
         switch (currentEpisode)
         {
-            case Episode.caving1:
-                activateInterrupt(Empty, Skip,
-                    "Place dynamite, go back to the entrance, and press D to detonate.", "Ok!", "Skip");
+            // Displays the next quiz question for Go Caving episode 1
+            /*case Episode.caving1:
+                nextCaving1Question();
                 break;
             case Episode.caving2:
-                activateInterrupt(Empty, Skip,
-                    "Do the same thing, but in a more, shall we say, complete way.", "Ok!", "Skip");
+                nextCaving2Question();
                 break;
             case Episode.caving3:
-                activateInterrupt(Empty, Skip,
-                    "Now you can detonate everywhere! See if you can go quicker.", "Right on!", "Skip");
+                nextCaving3Question();
                 break;
+                */
+
             case Episode.searching1:
-                activateInterrupt(Empty, Skip,
-                    "Your buddy lost a chisel. Can you find it?", "Sure!", "No!");
+                nextSearching1Question();
                 break;
+
+                /*
             case Episode.searching2:
-                activateInterrupt(Empty, Skip,
-                    "Oh no, now your buddy IS lost! Press S to shout.", "Okay!", "Meh.");
+                nextSearching2Question();
                 break;
+                */
+
             default:
+                Debug.LogWarning("quizDisplayActivationController - current episode has no quiz!");
                 break;
         }
-    }*/
+    }
+
+    // Displays the next caving question on the quizDisplay, which is to be set in the inspector
+    public void nextSearching1Question()
+    {
+        GameStats stats = SceneTransitionManager.Instance.currentGameStats;
+
+        switch (questionIndex)
+        {
+            case 0:
+                questionIndex++;
+                continueGame();
+                activateQuizDisplay(question: "How many caves are there?",
+                    answerIsCorrect: x => x == stats.getNumCaves(),
+                    skipQuestion: nextSearching1Question);
+                
+                Debug.Log("Question index: " + questionIndex);
+                break;
+            case 1:
+                activateQuizDisplay(question: "How many moves did you make?",
+                    answerIsCorrect: x => x == stats.getNumMoves(),
+                    skipQuestion: SceneTransitionManager.Instance.loadNextScene);
+                Debug.Log("CASE 1 FIRING");
+
+                // Resets index at the end of the quiz
+                questionIndex = 0;
+
+                break;
+            default:
+                Debug.LogWarning("Warning: nextCaving1Question fell through!");
+                break;
+        }
+    }
 
     // An empty method to pass to the showQuiz method
     void Empty() { }
