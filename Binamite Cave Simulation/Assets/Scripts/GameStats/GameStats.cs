@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 /// <summary>
 /// This class defines an encapsulated set of statistics on the players actions over the course 
@@ -14,11 +15,17 @@ public class GameStats
     private HashSet<int> visitedNodeIndices;  // The Indices of nodes the player has visited
     private List<int> traversal;  // The Indices of nodes the player visited in order
 
+    protected bool wasMutated = false; // Indicates whether mutators have been called
+
     public GameStats()
     {
         existingNodeIndices = new List<int>();
         visitedNodeIndices = new HashSet<int>();
         traversal = new List<int>();
+
+        // Represents that the player has visited the root node
+        visitedNodeIndices.Add(1);
+        traversal.Add(1);
     }
 
 
@@ -27,14 +34,12 @@ public class GameStats
     // Returns a copy of the list of the Indices of all the nodes in the cave network
     public List<int> getExistingNodeIndices()
     {
-        Debug.Log("GameStats - existingNodeIndices: " + this.existingNodeIndices);
         return new List<int>(this.existingNodeIndices);
     }
 
     // Returns a copy of the HashSet of nodes visited by the player in this game
     public HashSet<int> getVisitedNodeIndices()
     {
-        Debug.Log("GameStats - visitedNodeIndices: " + this.visitedNodeIndices);
         return new HashSet<int>(this.visitedNodeIndices);
     }
 
@@ -47,8 +52,7 @@ public class GameStats
     // Returns the number of times the player moved in this game
     public int getNumMoves()
     {
-        Debug.Log("GameStats - numMoves: " + traversal.Count);
-        return traversal.Count;
+        return traversal.Count - 1;
     }
 
     // Returns true of the number of nodes visited equals the number of nodes in the tree
@@ -59,9 +63,6 @@ public class GameStats
 
 
         bool hasVisited = numExisting == numVisited && numExisting != 0;
-        Debug.Log("GameStats - playerHasVisitedAllNodes:\n existingNodes = " 
-            + existingNodeIndices.Count.ToString() + ", visitedNodes = " + visitedNodeIndices.Count.ToString());
-        Debug.Log("playerHasVisitedAllNodes is " + hasVisited.ToString());
 
         return hasVisited;
     }
@@ -76,15 +77,35 @@ public class GameStats
         }
         else
         {
-            returnValue = -1; // Sentinel indicating no nodes have been visited
+            returnValue = -1; // Sentinel indicating the player hasn't moved
         }
 
-        Debug.Log("GameStats.getLastVistedNodeIndex() returning " + returnValue);
+        Debug.Log("GameStats.getLastVistedNodeIndex() returning " + returnValue
+            + "\n" + statsString());
 
         return returnValue;
 
     }
 
+    // Can be overridden in subclasses to augment a string representation of player activity
+    virtual public string statsString()
+    {
+        string str = "Traversal: " + Util.intListToString(traversal)
+                + "\nExisting node indices: " + Util.intListToString(existingNodeIndices)
+                + "\nVisited node indices: " + Util.intListToString(visitedNodeIndices.ToList())
+                + "\nNumber of existing nodes: " + existingNodeIndices.Count
+                + "\nNumber of visited nodes: " + visitedNodeIndices.Count
+                + "\nNumber of moves: " + (traversal.Count - 1)
+                + "\nThat the player has visited all nodes is " + playerHasVisitedAllNodes().ToString();
+
+        return str;
+    }
+
+    // Returns true if a mutator has been called on a given instance
+    public bool hasBeenMutated()
+    {
+        return wasMutated;
+    }
 
     /* MUTATORS */
 
@@ -94,33 +115,24 @@ public class GameStats
         // Alerts if visited nodes haven't been added before modification
         if (visitedNodeIndices != null && visitedNodeIndices.Count != 0)
         {
-            Debug.Log("GameStats - setExistingNodeIndices called when visitedNodeIndices is nonempty");
+            Debug.LogWarning("GameStats - setExistingNodeIndices called when visitedNodeIndices is nonempty");
         }
 
         this.existingNodeIndices = Indices.GetRange(0, Indices.Count); // Copies argument list values
-        Debug.Log("GameStats - Setting existing nodes: \n" + listToString(Indices));
+        wasMutated = true;
+        //Debug.Log("GameStats - Setting existing nodes\n" + statsString());
     }
 
     /*  This method adds the passed index to the visitedNodeIndices set and the traversal list.
         Call this method when and only when the player has moved to a new node. */
-    public void addVisitedNodeIndex(int index)
+    virtual public void addVisitedNodeIndex(int index)
     {
         visitedNodeIndices.Add(index); // Adds index to HashSet
         traversal.Add(index); // Adds index to list
-        Debug.Log("GameStats - Adding index: " + index
-            + "\n Traversal: " + listToString(traversal));
+        wasMutated = true;
+        // Debug.Log("GameStats - Adding index: " + index + "\n" + statsString());
     }
 
-    private static string listToString(List<int> list)
-    {
-        string listString = "";
+    
 
-        foreach (int index in list)
-        {
-            listString += index.ToString() + ", ";
-        }
-        listString.Remove(listString.Length - 1, 1);
-
-        return listString;
-    }
 }

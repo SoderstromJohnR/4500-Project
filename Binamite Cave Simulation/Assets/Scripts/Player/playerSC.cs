@@ -124,13 +124,14 @@ public class playerSC : MonoBehaviour
                             playerActualSpeed = playerSpeed;
                             if (caveIndex != 1) isMoving = true;
                             caveIndex = 1;
-                            Debug.Log("Going to center of entrance instead");
+                            //Debug.Log("Going to center of entrance instead");
                             targetPosition = hit.transform.position;
                             //Send new index to camera
                             setExpectedTime();
                             camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
                             // Records cave move
                             numCaveMoves += 1;
+
                             SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(1);
                         }
                     }
@@ -143,14 +144,15 @@ public class playerSC : MonoBehaviour
                             playerActualSpeed = playerSpeed;
                             if (caveIndex != hitIndex) isMoving = true;
                             caveIndex = hitIndex;
-                            Debug.Log("Going to center of cave instead");
+                            //Debug.Log("Going to center of cave instead");
                             targetPosition = hit.transform.position;
-                            Debug.Log("Player index: " + caveIndex.ToString());
+                            //Debug.Log("Player index: " + caveIndex.ToString());
                             //Send new index to camera
                             setExpectedTime();
                             camera.GetComponent<cameraController>().changePlayerIndex(caveIndex, expectedTime);
                             // Records cave move
                             numCaveMoves += 1;
+
                             SceneTransitionManager.Instance.currentGameStats.addVisitedNodeIndex(hitIndex);
                         }
                     }
@@ -222,8 +224,8 @@ public class playerSC : MonoBehaviour
         //root.GetComponent<johnRootController>().addVisitedIndex(hitIndex);
 
         // Console logging
-        Debug.Log("Going to center of cave instead");
-        Debug.Log("Player index: " + caveIndex.ToString());
+        //Debug.Log("Going to center of cave instead");
+        //Debug.Log("Player index: " + caveIndex.ToString());
 
         prepareMovement();
     }
@@ -414,6 +416,8 @@ public class playerSC : MonoBehaviour
     public void incExplosions()
     {
         numExplosions += 1;
+        (SceneTransitionManager.Instance.currentGameStats as CavingGameStats).incrementNumDetonations();
+
         detonation = true;
         Invoke("incDetonations", 0.5f);
     }

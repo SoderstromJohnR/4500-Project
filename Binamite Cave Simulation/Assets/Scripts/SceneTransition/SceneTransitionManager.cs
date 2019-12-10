@@ -18,14 +18,18 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     // The set of transitions to be substituted with a transition to the main menu
     string[] mainMenuTransition = { "CavingGame3", "SearchingGame1" };
 
+    public delegate void OnCurrentGameStatsUpdate(GameStats gameStats);
+    public OnCurrentGameStatsUpdate gameStatsUpdated;
+
+
     // Called by the singleton class, intitializes gameStatsList and adds onSceneLoaded as a SceneManager delegate
     protected SceneTransitionManager()
     {
-        Debug.Log("CONSTRUCTING SceneTransitionManager");
+        Debug.LogWarning("CONSTRUCTING SceneTransitionManager");
 
         gameStatsList = new List<GameStats>();
 
-        // Sets prepareForScene as SceneManager delegate method
+        // Sets onSceneLoad as SceneManager delegate method
         SceneManager.sceneLoaded += onSceneLoad;
     }
 
@@ -37,7 +41,9 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
     }
 
     // This method can be called to ensure a singleton SceneTransitionManager instance exists
-    public void empty() { }
+    public void ensureExistence() {
+        Debug.Log("Scene Transition Manager existance is ensured.");
+    }
 
     // SceneManager calls this method when a new scene loads
     void onSceneLoad(Scene scene, LoadSceneMode mode)
@@ -58,8 +64,8 @@ public class SceneTransitionManager : Singleton<SceneTransitionManager>
         Debug.Log("Current Episode: " + currentEpisode.sceneName());
     }
 
-    /* This method creates a new GameStats object, assigns it to currentGameStats, and adds
-     * it to gameStatsList. */
+    /* This method creates a new GameStats object of the appropriate type based on the name
+     * of the passed sceneName, assigns it to currentGameStats, and adds it to gameStatsList. */
     void newStats(string sceneName)
     {
         Debug.Log("Adding newStats - " + sceneName);

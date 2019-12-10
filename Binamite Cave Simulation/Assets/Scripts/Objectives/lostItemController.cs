@@ -33,7 +33,6 @@ public class lostItemController : MonoBehaviour
 
         // Gets player reference
         player = GameObject.FindGameObjectWithTag("Player");
-        Debug.Log("Player cave index: " + player.GetComponent<playerSC>().getIndex());
 
         // Gets node references
         GameObject [] nodes = GameObject.FindGameObjectsWithTag("Node");
@@ -69,7 +68,6 @@ public class lostItemController : MonoBehaviour
     void recordCurrentPlayerIndex()
     {
         visitedNodeIndices.Add(player.GetComponent<playerSC>().getIndex());
-        Debug.Log("Player index: " + player.GetComponent<playerSC>().getIndex());
     }
 
     // True if the number of existing node ind

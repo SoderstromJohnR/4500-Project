@@ -545,8 +545,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: yesClicked
+      - m_Target: {fileID: 4874813974653740612}
+        m_MethodName: enterClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -674,8 +674,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: noClicked
+      - m_Target: {fileID: 4874813974653740612}
+        m_MethodName: skipClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
