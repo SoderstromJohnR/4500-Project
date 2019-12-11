@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 5405280279933358578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 4, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -68,10 +68,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2058627587
+  m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 8857e77913d2b00489cfeeebd4687b04, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -96,9 +96,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   node: {fileID: 94365016284652643, guid: 9551a28dbba5fb84a8014d047cb8196f, type: 3}
   path: {fileID: 4545274290074083701, guid: cef4ee215d718874f8e367dca65fdee2, type: 3}
-  maxDepth: 4
+  miner: {fileID: 5172197077995127369, guid: 45c1867d51f76ec4e8c94ba232a19434, type: 3}
+  maxDepth: 3
   halfWidth: 8
-  depthDistance: 1.5
+  depthDistance: 5
+  chanceCompleteTree: 0.99
+  isLimitedToTotalNodes: 0
+  limitedTreeNodes: 9
+  numMovesVisitAll: 0
+  totalNodes: 6
+  tempGamemode: 1
+  tempEpisode: 0
 --- !u!58 &2404348916549335215
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -114,4 +122,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 2.0072365
