@@ -66,7 +66,7 @@ public class quizDisplayController : MonoBehaviour
         {
             // Sets feedback if the answer is not an integer
             feedback.color = red;
-            feedback.SetText("Try an integer.");
+            feedback.SetText("Invalid");
         }
         else if (answerIsCorrect(answerInt))
         {
@@ -79,32 +79,41 @@ public class quizDisplayController : MonoBehaviour
         {
             // Sets incorrect answer feedback text
             feedback.color = red;
-            feedbackText.GetComponent<TextMeshProUGUI>().SetText("Incorrect.");
+            feedbackText.GetComponent<TextMeshProUGUI>().SetText("Try Again");
         }
     }
 
     // Calls delegate methods associated with the skip button
     public void skipClicked()
     {
+        Debug.Log("On skip clicked: " + onSkipClicked);
+        Debug.Log("answerIsCorrect: " + answerIsCorrect);
         onSkipClicked();
     }
 
     // Sets the question text to be displayed
     public void setQuestionText(string question)
     {
+        Debug.Log("quizDisplayController - setting question: " + question);
         questionText.GetComponent<TextMeshProUGUI>().SetText(question);
+    }
+
+    // Sets the feedback text
+    public void setFeedback(string feedback)
+    {
+        feedbackText.GetComponent<TextMeshProUGUI>().SetText(feedback);
     }
 
     // Sets the text on what would otherwise be the skip button
     public void setSkipText(string nextMessage)
     {
+        Debug.Log("quizDisplayController - setting nextMessage: " + nextMessage);
         skipText.GetComponent<TextMeshProUGUI>().SetText(nextMessage);
     }
 
-    // Stores text from input
+    // Stores text from input. Should be an onTextChanged event for the text field in the inspector
     public void inputTextChanged(string input)
     {
         answerInputString = input;
-        Debug.Log("quizDisplayController - answerInputString:" + answerInputString);
     }
 }

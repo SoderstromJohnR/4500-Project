@@ -13,6 +13,8 @@ using UnityEngine;
 /// 
 /// The playerInterruptionActivator is part of the interruptSystem prefab and activates the 
 /// playerInterruption prefab contained therein. 
+/// 
+/// 
 /// </summary>
 
 public class playerInterruptionActivatorController : MonoBehaviour
@@ -37,42 +39,39 @@ public class playerInterruptionActivatorController : MonoBehaviour
     public void activateInterrupt(OnLeftButtonClicked leftButtonClicked, OnRightButtonClicked rightButtonClicked,
         string message = null, string leftText = null, string rightText = null)
     {
-        if (!playerInterruption.activeInHierarchy)
+        playerInterruptionController interruptionController =
+            playerInterruption.GetComponent<playerInterruptionController>();
+
+        // Activates interruption
+        playerInterruption.SetActive(true);
+
+        // Adds continueGame to the button delegates
+        interruptionController.onLeftButtonClicked = continueGame;
+        interruptionController.onRightButtonClicked = continueGame;
+
+        // Overwrites delegates for yes and no buttons
+        interruptionController.onLeftButtonClicked += leftButtonClicked;
+        interruptionController.onRightButtonClicked += rightButtonClicked;
+
+        // Sets text if arguments are not default
+        if (message != null)
         {
-            playerInterruptionController interruptionController =
-                playerInterruption.GetComponent<playerInterruptionController>();
-
-            // Activates interruption
-            playerInterruption.SetActive(true);
-
-            // Overwrites delegates for yes and no buttons
-            interruptionController.onLeftButtonClicked = leftButtonClicked;
-            interruptionController.onRightButtonClicked = rightButtonClicked;
-
-            // Adds continueGame to the button delegates
-            interruptionController.onLeftButtonClicked += continueGame;
-            interruptionController.onRightButtonClicked += continueGame;
-
-            // Sets text if arguments are not default
-            if (message != null)
-            {
-                interruptionController.setMessage(message);
-            }
-
-            if (leftText != null)
-            {
-                interruptionController.setLeftButtonText(leftText);
-            }
-
-            if (rightText != null)
-            {
-                interruptionController.setRightButtonText(rightText);
-            }
-
-            // This "stops time" by disabling scripts that still work while timescale is set to 1
-            Time.timeScale = 0;
+            interruptionController.setMessage(message);
         }
-    }
+
+        if (leftText != null)
+        {
+            interruptionController.setLeftButtonText(leftText);
+        }
+
+        if (rightText != null)
+        {
+            interruptionController.setRightButtonText(rightText);
+        }
+
+        // This "stops time" by disabling scripts that still work while timescale is set to 1
+        Time.timeScale = 0;
+}
 
     // This method returns the timescale to 1 and movement resumes
     private void continueGame()
@@ -105,7 +104,8 @@ public class playerInterruptionActivatorController : MonoBehaviour
                 break;
             case Episode.searching1:
                 activateInterrupt(Empty, Skip,
-                    "Your buddy lost a chisel. Can you find it?", "Sure!", "No!");
+                    "Your buddy lost a pickaxe. Can you find it?\n" +
+                    "Count the caves and times you move.", "Sure!", "No!");
                 break;
             case Episode.searching2:
                 activateInterrupt(Empty, Skip,

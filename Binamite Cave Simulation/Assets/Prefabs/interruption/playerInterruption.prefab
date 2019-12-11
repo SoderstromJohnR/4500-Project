@@ -113,8 +113,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messageText: {fileID: 8415398239399071363}
-  affirmativeText: {fileID: 7299167559402781214}
-  negativeText: {fileID: 7299167558991847624}
+  leftButtonText: {fileID: 0}
+  rightButtonText: {fileID: 0}
 --- !u!1 &7299167558311562606
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,7 +151,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -123, y: -92}
+  m_AnchoredPosition: {x: -123, y: -156.99998}
   m_SizeDelta: {x: 212.8, y: 54}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7299167558311562610
@@ -280,7 +280,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 123, y: -92.00001}
+  m_AnchoredPosition: {x: 123, y: -157}
   m_SizeDelta: {x: 212.8, y: 54}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7299167558760273697
@@ -566,7 +566,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 628.5, y: 352.7}
+  m_SizeDelta: {x: 854.9, y: 567.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7299167559176220710
 CanvasRenderer:
@@ -793,8 +793,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 16.6}
-  m_SizeDelta: {x: 400, y: 148}
+  m_AnchoredPosition: {x: 0, y: 30.7}
+  m_SizeDelta: {x: 581, y: 241}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1842699491140857995
 CanvasRenderer:
@@ -857,7 +857,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 258
+  m_textAlignment: 514
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -896,7 +896,7 @@ MonoBehaviour:
     spaceCount: 6
     wordCount: 7
     linkCount: 0
-    lineCount: 2
+    lineCount: 1
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0

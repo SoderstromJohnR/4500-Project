@@ -85,9 +85,11 @@ public class lostItemController : MonoBehaviour
 
         // Activates an interrupt where the second button starts a quiz
         GameObject.Find("playerInterruptionActivator").GetComponent<playerInterruptionActivatorController>()
-            .activateInterrupt(SceneTransitionManager.Instance.loadNextScene,
+            .activateInterrupt(
+                SceneTransitionManager.Instance.loadNextScene,
                 GameObject.Find("quizDisplayActivator").GetComponent<quizDisplayActivatorController>().startQuiz,
-                "You did it!", "Next", "Quiz");
+                "You did it!", "Next", "Quiz"
+             );
     }
 
     // An empty function to pass to the interruption

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using System.Linq;
 
 /// <summary>
@@ -59,6 +60,12 @@ public class GameStats
     public int getNumCaves()
     {
         return existingNodeIndices.Count;
+    }
+
+    // Returns the height of the tree
+    public int getTreeHeight()
+    {
+        return (int)Math.Floor(Math.Log((double)existingNodeIndices.Max(), 2.0));
     }
 
     // Returns true of the number of nodes visited equals the number of nodes in the tree
