@@ -11,4 +11,4 @@ For example, the root node had a root controller script which contains duplicate
 The project works, but it was a first in several ways for each of us and there was much for us to learn.
 
 #### What can we expect in the branches?
-As of 12/14/2019, the master branch contains the project files we built our final project on. The MarkQuiz branch contains the project files with additional work we did not have ready on time. While not complete, that branch adds quizzes we intended to add based on skill level to develop students' understanding of binary trees further.
+As of 12/14/2019, the master branch contains the project files we built our final project on. The MarkQuiz branch contains the project files with additional work we did not have ready on time. While not complete or fully tested, that branch adds quizzes we intended to add based on skill level to develop students' understanding of binary trees further.
